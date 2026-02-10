@@ -45,7 +45,7 @@ public class WaveManager : MonoBehaviour
         }
 
         IsSpawningComplete = true;
-        GameManager.Instance.CheckWaveComplete();
+        GameManager.Instance.OnSpawningComplete();
     }
 
     /// <summary>웨이브 번호 기반 자동 생성 (설계 문서 난이도 스케일링)</summary>

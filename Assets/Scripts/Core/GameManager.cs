@@ -13,8 +13,13 @@ public class GameManager : MonoBehaviour
 
     public event Action<GameState> OnStateChanged;
     public event Action<int> OnWaveChanged;
+    public event Action<float, float> OnPrepareTimerChanged;
 
     private int activeEnemyCount;
+    private float postSpawnTimer;
+    private bool postSpawnTimerActive;
+    private float prepareTimer;
+    private bool prepareCountdownActive;
 
     private void Awake()
     {
@@ -47,12 +52,52 @@ public class GameManager : MonoBehaviour
         Balloon.OnBalloonReachedBase -= OnBalloonRemoved;
     }
 
+    private void Update()
+    {
+        if (CurrentState == GameState.GameOver) return;
+
+        // 스폰 종료 후 타임아웃: 시간 경과 시 준비 단계로 전환
+        if (postSpawnTimerActive)
+        {
+            postSpawnTimer -= Time.deltaTime;
+            if (postSpawnTimer <= 0f)
+            {
+                postSpawnTimerActive = false;
+                TransitionToPrepare();
+            }
+        }
+
+        // 준비 단계 카운트다운: 만료 시 자동 시작
+        if (prepareCountdownActive)
+        {
+            prepareTimer -= Time.deltaTime;
+            OnPrepareTimerChanged?.Invoke(prepareTimer, GameConstants.PrepareDuration);
+            if (prepareTimer <= 0f)
+            {
+                prepareTimer = 0f;
+                prepareCountdownActive = false;
+                StartWave();
+            }
+        }
+    }
+
     public void StartWave()
     {
         if (CurrentState != GameState.Prepare) return;
 
+        // 조기 시작 보너스: 남은 시간에 비례
+        if (prepareCountdownActive && prepareTimer > 0f)
+        {
+            int bonus = Mathf.RoundToInt(
+                (prepareTimer / GameConstants.PrepareDuration) * GameConstants.EarlyStartBonusMax);
+            if (bonus > 0)
+            {
+                ResourceManager.Instance.AddEnergy(bonus);
+            }
+        }
+        prepareCountdownActive = false;
+
         CurrentWave++;
-        activeEnemyCount = 0;
         OnWaveChanged?.Invoke(CurrentWave);
         SetState(GameState.Wave);
         waveManager.StartWave(CurrentWave);
@@ -66,35 +111,43 @@ public class GameManager : MonoBehaviour
     private void OnBalloonRemoved(Balloon balloon)
     {
         activeEnemyCount--;
-        CheckWaveComplete();
+        TryCompleteWave();
     }
 
-    public void CheckWaveComplete()
+    /// <summary>WaveManager에서 스폰 완료 시 호출</summary>
+    public void OnSpawningComplete()
     {
-        if (activeEnemyCount <= 0 && waveManager.IsSpawningComplete && CurrentState == GameState.Wave)
+        if (!TryCompleteWave())
         {
-            HandleWaveCleared();
+            postSpawnTimer = GameConstants.PostSpawnTimeout;
+            postSpawnTimerActive = true;
         }
     }
 
-    private void HandleWaveCleared()
+    private bool TryCompleteWave()
     {
-        SetState(GameState.Clear);
-        // 짧은 딜레이 후 준비 단계로 전환
-        Invoke(nameof(TransitionToPrepare), 1f);
+        if (activeEnemyCount <= 0 && waveManager.IsSpawningComplete && CurrentState == GameState.Wave)
+        {
+            postSpawnTimerActive = false;
+            TransitionToPrepare();
+            return true;
+        }
+        return false;
     }
 
     private void TransitionToPrepare()
     {
-        if (CurrentState == GameState.Clear)
-        {
-            SetState(GameState.Prepare);
-        }
+        SetState(GameState.Prepare);
+        prepareTimer = GameConstants.PrepareDuration;
+        prepareCountdownActive = true;
+        OnPrepareTimerChanged?.Invoke(prepareTimer, GameConstants.PrepareDuration);
     }
 
     private void HandleGameOver()
     {
         if (CurrentState == GameState.GameOver) return;
+        postSpawnTimerActive = false;
+        prepareCountdownActive = false;
         waveManager.StopSpawning();
         SetState(GameState.GameOver);
     }

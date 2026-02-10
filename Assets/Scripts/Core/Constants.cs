@@ -43,6 +43,11 @@ public static class GameConstants
     public const string SortEnemy = "Enemy";
     public const string SortProjectile = "Projectile";
 
+    // Wave Timing
+    public const float PostSpawnTimeout = 15f;
+    public const float PrepareDuration = 20f;
+    public const int EarlyStartBonusMax = 50;
+
     public static float GetBalloonSpeed(BalloonLayer layer)
     {
         return 1.0f + ((int)layer - 1) * 0.5f;
