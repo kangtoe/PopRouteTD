@@ -53,7 +53,9 @@ public class InputManager : MonoBehaviour
 
     private Vector2 GetMouseWorldPos()
     {
-        return mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        Vector3 screenPos = Mouse.current.position.ReadValue();
+        screenPos.z = -mainCamera.transform.position.z;
+        return mainCamera.ScreenToWorldPoint(screenPos);
     }
 
     private void Update()
@@ -64,7 +66,9 @@ public class InputManager : MonoBehaviour
         var mouse = Mouse.current;
         if (mouse == null) return;
 
-        Vector2 worldPos = mainCamera.ScreenToWorldPoint(mouse.position.ReadValue());
+        Vector3 mouseScreenPos = mouse.position.ReadValue();
+        mouseScreenPos.z = -mainCamera.transform.position.z;
+        Vector2 worldPos = mainCamera.ScreenToWorldPoint(mouseScreenPos);
 
         if (isDragging)
         {
