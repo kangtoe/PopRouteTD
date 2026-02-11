@@ -64,7 +64,9 @@ public class TowerInfoUI : MonoBehaviour
 
         if (tower.IsAttacker)
         {
-            towerStatsText.text = $"ATK {tower.AttackDamage}  SPD {tower.AttackInterval:0.#}s  RNG {tower.AttackRange:0.#}";
+            var stats = $"ATK {tower.AttackDamage}  SPD {tower.AttackInterval:0.#}s  RNG {tower.AttackRange:0.#}";
+            if (tower.SplashRadius > 0f) stats += $"  SPLASH {tower.SplashRadius:0.#}";
+            towerStatsText.text = stats;
             SetPriorityButtonsVisible(true);
         }
         else

@@ -12,6 +12,7 @@ public class Tower : MonoBehaviour
     [SerializeField] private bool isAttacker = true;
     [SerializeField] private float energyPerTick;
     [SerializeField] private float energyTickInterval;
+    [SerializeField] private float splashRadius;
     [SerializeField] private float rotationSpeed = 360f;
 
     [SerializeField] private Transform firePoint;
@@ -29,12 +30,14 @@ public class Tower : MonoBehaviour
     public float AttackRange => attackRange;
     public int SellRefund => sellRefund;
     public bool IsAttacker => isAttacker;
+    public float SplashRadius => splashRadius;
     public SpriteRenderer RangeIndicator => rangeIndicator;
     public TargetPriority Priority { get; private set; } = TargetPriority.First;
 
     /// <summary>런타임 프리팹 생성 시 데이터 설정</summary>
     public void SetupData(string name, int towerCost, float damage, float interval, float range, int refund,
-        bool attacker = true, float enerPerTick = 0, float enerInterval = 0, float rotSpeed = 360f)
+        bool attacker = true, float enerPerTick = 0, float enerInterval = 0, float rotSpeed = 360f,
+        float splash = 0f)
     {
         towerName = name;
         cost = towerCost;
@@ -46,6 +49,7 @@ public class Tower : MonoBehaviour
         energyPerTick = enerPerTick;
         energyTickInterval = enerInterval;
         rotationSpeed = rotSpeed;
+        splashRadius = splash;
     }
 
     public void Initialize()
@@ -141,7 +145,7 @@ public class Tower : MonoBehaviour
         projObj.transform.position = spawnPos;
         projObj.transform.rotation = transform.rotation;
         var projectile = projObj.GetComponent<Projectile>();
-        projectile.Initialize((int)attackDamage);
+        projectile.Initialize((int)attackDamage, splashRadius);
     }
 
     private void SetSortingLayer(string layerName)

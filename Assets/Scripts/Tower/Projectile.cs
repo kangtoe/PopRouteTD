@@ -7,6 +7,7 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float lifetime = 3f;
 
     private int damage;
+    private float splashRadius;
     private Rigidbody2D rb;
     private float timer;
     private int enemyLayerMask;
@@ -18,9 +19,10 @@ public class Projectile : MonoBehaviour
         enemyLayerMask = 1 << LayerMask.NameToLayer(GameConstants.LayerEnemy);
     }
 
-    public void Initialize(int attackDamage)
+    public void Initialize(int attackDamage, float splash = 0f)
     {
         damage = attackDamage;
+        splashRadius = splash;
         timer = lifetime;
 
         rb.rotation = transform.eulerAngles.z;
@@ -42,10 +44,22 @@ public class Projectile : MonoBehaviour
     {
         if (((1 << other.gameObject.layer) & enemyLayerMask) == 0) return;
 
-        var balloon = other.GetComponent<Balloon>();
-        if (balloon == null) return;
+        if (splashRadius > 0f)
+        {
+            ExplosionEffect.Spawn(transform.position, splashRadius);
+            var hits = Physics2D.OverlapCircleAll(transform.position, splashRadius, enemyLayerMask);
+            foreach (var hit in hits)
+            {
+                var balloon = hit.GetComponent<Balloon>();
+                if (balloon != null) balloon.TakeDamage(damage);
+            }
+        }
+        else
+        {
+            var balloon = other.GetComponent<Balloon>();
+            if (balloon != null) balloon.TakeDamage(damage);
+        }
 
-        balloon.TakeDamage(damage);
         Deactivate();
     }
 
