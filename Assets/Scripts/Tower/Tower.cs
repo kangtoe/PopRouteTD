@@ -80,7 +80,11 @@ public class Tower : MonoBehaviour
         {
             rangeIndicator.gameObject.SetActive(show);
             float diameter = attackRange * 2f;
-            rangeIndicator.transform.localScale = new Vector3(diameter, diameter, 1f);
+            Vector3 parentScale = rangeIndicator.transform.parent.lossyScale;
+            rangeIndicator.transform.localScale = new Vector3(
+                diameter / parentScale.x,
+                diameter / parentScale.y,
+                1f);
         }
     }
 
@@ -142,13 +146,15 @@ public class Tower : MonoBehaviour
     private void SetSortingLayer(string layerName)
     {
         foreach (var sr in GetComponentsInChildren<SpriteRenderer>())
-            sr.sortingLayerName = layerName;
+            if (sr != rangeIndicator)
+                sr.sortingLayerName = layerName;
     }
 
     private void SetColor(Color color)
     {
         foreach (var sr in GetComponentsInChildren<SpriteRenderer>())
-            sr.color = color;
+            if (sr != rangeIndicator)
+                sr.color = color;
     }
 
     private void OnDrawGizmosSelected()
