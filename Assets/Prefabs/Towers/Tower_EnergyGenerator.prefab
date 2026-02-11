@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tower_EnergyGenerator
       objectReference: {fileID: 0}
+    - target: {fileID: 839426675806266128, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1398050108313427364, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
       propertyPath: m_Color.b
       value: 0.2

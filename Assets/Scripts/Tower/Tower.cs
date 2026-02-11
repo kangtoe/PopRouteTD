@@ -29,6 +29,7 @@ public class Tower : MonoBehaviour
     public float AttackRange => attackRange;
     public int SellRefund => sellRefund;
     public bool IsAttacker => isAttacker;
+    public SpriteRenderer RangeIndicator => rangeIndicator;
     public TargetPriority Priority { get; private set; } = TargetPriority.First;
 
     /// <summary>런타임 프리팹 생성 시 데이터 설정</summary>
@@ -146,8 +147,7 @@ public class Tower : MonoBehaviour
     private void SetSortingLayer(string layerName)
     {
         foreach (var sr in GetComponentsInChildren<SpriteRenderer>())
-            if (sr != rangeIndicator)
-                sr.sortingLayerName = layerName;
+            sr.sortingLayerName = layerName;
     }
 
     private void SetColor(Color color)

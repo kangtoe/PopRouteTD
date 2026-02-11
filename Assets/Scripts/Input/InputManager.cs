@@ -16,7 +16,7 @@ public class InputManager : MonoBehaviour
     private int towerLayerMask;
 
     private GameObject previewObj;
-    private SpriteRenderer previewRenderer;
+    private SpriteRenderer[] previewRenderers;
 
     public System.Action<Tower> OnTowerClicked;
     public System.Action OnEmptyClicked;
@@ -171,14 +171,34 @@ public class InputManager : MonoBehaviour
     private void CreatePreview()
     {
         DestroyPreview();
-        previewObj = new GameObject("PlacementPreview");
-        previewRenderer = previewObj.AddComponent<SpriteRenderer>();
+        previewObj = Instantiate(dragTowerPrefab);
+        previewObj.name = "PlacementPreview";
 
-        var sr = dragTowerPrefab.GetComponent<SpriteRenderer>();
-        previewRenderer.sprite = sr != null ? sr.sprite : null;
-        previewRenderer.sortingLayerName = GameConstants.SortTower;
-        previewRenderer.sortingOrder = 100;
-        previewObj.transform.localScale = dragTowerPrefab.transform.localScale;
+        // 게임플레이 컴포넌트 비활성화
+        foreach (var behaviour in previewObj.GetComponents<MonoBehaviour>())
+            behaviour.enabled = false;
+        foreach (var col in previewObj.GetComponentsInChildren<Collider2D>())
+            col.enabled = false;
+
+        // 범위 표시기 표시 & 프리뷰용 렌더러 수집 (범위 표시기 제외)
+        var tower = previewObj.GetComponent<Tower>();
+        SpriteRenderer rangeInd = null;
+        if (tower != null)
+        {
+            tower.ShowRange(true);
+            rangeInd = tower.RangeIndicator;
+        }
+
+        var allRenderers = previewObj.GetComponentsInChildren<SpriteRenderer>();
+        var rendererList = new System.Collections.Generic.List<SpriteRenderer>();
+        foreach (var sr in allRenderers)
+        {
+            if (sr == rangeInd) continue;
+            sr.sortingLayerName = GameConstants.SortTower;
+            sr.sortingOrder = 100;
+            rendererList.Add(sr);
+        }
+        previewRenderers = rendererList.ToArray();
     }
 
     private void UpdatePreview(Vector2 worldPos)
@@ -187,9 +207,12 @@ public class InputManager : MonoBehaviour
 
         previewObj.transform.position = (Vector3)worldPos;
         bool canPlace = CanPlaceAt(worldPos);
-        previewRenderer.color = canPlace
+        Color tint = canPlace
             ? new Color(0.3f, 0.8f, 0.3f, 0.5f)
             : new Color(0.8f, 0.3f, 0.3f, 0.5f);
+
+        foreach (var sr in previewRenderers)
+            sr.color = tint;
     }
 
     private void DestroyPreview()
@@ -198,7 +221,7 @@ public class InputManager : MonoBehaviour
         {
             Destroy(previewObj);
             previewObj = null;
-            previewRenderer = null;
+            previewRenderers = null;
         }
     }
 }
