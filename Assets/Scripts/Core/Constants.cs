@@ -48,6 +48,9 @@ public static class GameConstants
     public const float PrepareDuration = 20f;
     public const int EarlyStartBonusMax = 50;
 
+    // Tower Placement
+    public const float PlacementCooldown = 3f;
+
     public static float GetBalloonSpeed(BalloonLayer layer)
     {
         return 1.0f + ((int)layer - 1) * 0.5f;

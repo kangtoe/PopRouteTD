@@ -19,6 +19,8 @@ public class InputManager : MonoBehaviour
     private SpriteRenderer previewRenderer;
 
     public System.Action<Tower> OnTowerClicked;
+    public System.Action OnEmptyClicked;
+    public System.Action<GameObject> OnTowerPlaced;
 
     private void Awake()
     {
@@ -40,6 +42,9 @@ public class InputManager : MonoBehaviour
     public void BeginDrag(GameObject towerPrefab)
     {
         if (mainCamera == null) mainCamera = Camera.main;
+
+        // 드래그 시작 시 타워 정보 패널 닫기
+        OnEmptyClicked?.Invoke();
 
         dragTowerPrefab = towerPrefab;
         isDragging = true;
@@ -110,6 +115,10 @@ public class InputManager : MonoBehaviour
             var tower = hit.GetComponent<Tower>();
             if (tower != null) OnTowerClicked?.Invoke(tower);
         }
+        else
+        {
+            OnEmptyClicked?.Invoke();
+        }
     }
 
     private bool CanPlaceAt(Vector2 pos)
@@ -154,6 +163,7 @@ public class InputManager : MonoBehaviour
         var parent = towerParent != null ? towerParent : transform;
         var towerObj = Instantiate(dragTowerPrefab, (Vector3)pos, Quaternion.identity, parent);
         towerObj.GetComponent<Tower>().Initialize();
+        OnTowerPlaced?.Invoke(dragTowerPrefab);
         return true;
     }
 

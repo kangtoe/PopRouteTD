@@ -24,6 +24,8 @@ public class Tower : MonoBehaviour
 
     public string TowerName => towerName;
     public int Cost => cost;
+    public float AttackDamage => attackDamage;
+    public float AttackInterval => attackInterval;
     public float AttackRange => attackRange;
     public int SellRefund => sellRefund;
     public bool IsAttacker => isAttacker;
@@ -64,6 +66,12 @@ public class Tower : MonoBehaviour
     public void SetTargetPriority(TargetPriority priority)
     {
         Priority = priority;
+    }
+
+    public void Sell()
+    {
+        ResourceManager.Instance.AddEnergy(sellRefund);
+        Destroy(gameObject);
     }
 
     public void ShowRange(bool show)
