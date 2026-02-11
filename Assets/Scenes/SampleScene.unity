@@ -1247,7 +1247,7 @@ MonoBehaviour:
   - {fileID: 1817367166315376802, guid: 314484bca31869b45b63a2faabb94b28, type: 3}
   - {fileID: 2899472484784651288, guid: be503de3c11f5f34c8ba90523dcf71ad, type: 3}
   buttonParent: {fileID: 630125446}
-  towerButtonPrefab: {fileID: 7221268882004788324, guid: 210b764d9c69ad04fb73da82b9ddfc51, type: 3}
+  towerButtonPrefab: {fileID: 538165148242644719, guid: 210b764d9c69ad04fb73da82b9ddfc51, type: 3}
 --- !u!1 &640677521
 GameObject:
   m_ObjectHideFlags: 0
