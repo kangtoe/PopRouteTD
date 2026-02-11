@@ -2,7 +2,7 @@
 
 개발 항목별 구현 사항 정의
 
-> 관련 문서: [게임플레이](design/Gameplay.md) | [아군 유닛](design/Towers.md) | [적 유닛](design/Enemies.md) | [적 스폰](design/EnemySpawn.md)
+> 관련 문서: [게임플레이](design/Gameplay.md) | [아군 유닛](design/Towers.md) | [적 유닛](design/Enemies.md) | [적 스폰](design/EnemySpawn.md) | [아이템](design/Items.md)
 
 ---
 
@@ -99,6 +99,7 @@
 - [ ] 슬로우어 타워
 - [ ] 철갑 풍선
 - [ ] 골드 시스템 (적 처치 시 획득, 업그레이드/언락 용도)
+- [ ] 아이템 시스템 (적 처치 시 일정 확률, 제너레이터 생산 등)
 - [ ] 타워 언락 시스템
 - [ ] 업그레이드 시스템 (유닛별 3단계)
 - [ ] 덱 시스템 (전투 전 유닛 6~8개 선택)

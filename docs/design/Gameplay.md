@@ -2,7 +2,7 @@
 
 게임의 기본 규칙, 구성 요소, 자원 및 시스템을 정의하는 문서
 
-> 관련 문서: [아군 유닛](Towers.md) | [적 유닛](Enemies.md) | [적 스폰](EnemySpawn.md)
+> 관련 문서: [아군 유닛](Towers.md) | [적 유닛](Enemies.md) | [적 스폰](EnemySpawn.md) | [아이템](Items.md)
 
 ---
 
