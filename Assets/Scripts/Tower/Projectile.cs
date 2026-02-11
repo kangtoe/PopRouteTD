@@ -11,6 +11,7 @@ public class Projectile : MonoBehaviour
     private Rigidbody2D rb;
     private float timer;
     private int enemyLayerMask;
+    private bool isDeactivated;
 
     private void Awake()
     {
@@ -24,6 +25,7 @@ public class Projectile : MonoBehaviour
         damage = attackDamage;
         splashRadius = splash;
         timer = lifetime;
+        isDeactivated = false;
 
         rb.rotation = transform.eulerAngles.z;
         rb.linearVelocity = transform.up * speed;
@@ -42,6 +44,7 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (isDeactivated) return;
         if (((1 << other.gameObject.layer) & enemyLayerMask) == 0) return;
 
         if (splashRadius > 0f)
@@ -65,6 +68,9 @@ public class Projectile : MonoBehaviour
 
     private void Deactivate()
     {
+        if (isDeactivated) return;
+        isDeactivated = true;
+
         rb.linearVelocity = Vector2.zero;
         ProjectilePool.Instance.Return(gameObject);
     }
