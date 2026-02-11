@@ -270,6 +270,106 @@ public class PrefabCreator
         return AssetDatabase.LoadAssetAtPath<Sprite>(texPath);
     }
 
+    // ── 감속 이펙트 ──
+
+    [MenuItem("PopRouteTD/이펙트 프리팹 생성/감속 파티클")]
+    public static void CreateSlowEffectPrefab()
+    {
+        EnsureFolder("Assets/Prefabs/Effects");
+
+        var path = "Assets/Prefabs/Effects/SlowEffect.prefab";
+        if (AssetDatabase.LoadAssetAtPath<GameObject>(path) != null)
+        {
+            Debug.Log("[PopRouteTD] SlowEffect 프리팹이 이미 존재합니다. 삭제 후 다시 시도하세요.");
+            return;
+        }
+
+        var obj = new GameObject("SlowEffect");
+        var ps = obj.AddComponent<ParticleSystem>();
+
+        // 생성 직후 자동 재생 방지
+        ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+        // ── Main Module ──
+        var main = ps.main;
+        main.duration = 1f;
+        main.loop = true;
+        main.playOnAwake = false;
+        main.startLifetime = new ParticleSystem.MinMaxCurve(0.4f, 0.7f);
+        main.startSpeed = new ParticleSystem.MinMaxCurve(0.3f, 0.6f);
+        main.startSize = new ParticleSystem.MinMaxCurve(0.03f, 0.08f);
+        main.startColor = new Color(0.6f, 0.9f, 1f, 0.8f); // 하늘색
+        main.maxParticles = 20;
+        main.simulationSpace = ParticleSystemSimulationSpace.World;
+        main.scalingMode = ParticleSystemScalingMode.Hierarchy;
+
+        // ── Emission ──
+        var emission = ps.emission;
+        emission.rateOverTime = 15f;
+
+        // ── Shape: 풍선 크기(0.5) 안쪽 원형 ──
+        var shape = ps.shape;
+        shape.shapeType = ParticleSystemShapeType.Circle;
+        shape.radius = 0.15f;
+
+        // ── Velocity over Lifetime: 아래로 살짝 흘러내림 ──
+        var vel = ps.velocityOverLifetime;
+        vel.enabled = true;
+        vel.space = ParticleSystemSimulationSpace.Local;
+        vel.x = new ParticleSystem.MinMaxCurve(-0.2f, 0.2f);
+        vel.y = new ParticleSystem.MinMaxCurve(-0.3f, -0.05f);
+        vel.z = new ParticleSystem.MinMaxCurve(0f, 0f);
+
+        // ── Color over Lifetime: 하늘색 → 페이드아웃 ──
+        var col = ps.colorOverLifetime;
+        col.enabled = true;
+        var gradient = new Gradient();
+        gradient.SetKeys(
+            new[]
+            {
+                new GradientColorKey(new Color(0.6f, 0.9f, 1f), 0f),
+                new GradientColorKey(Color.white, 1f)
+            },
+            new[]
+            {
+                new GradientAlphaKey(0.8f, 0f),
+                new GradientAlphaKey(0.4f, 0.6f),
+                new GradientAlphaKey(0f, 1f)
+            }
+        );
+        col.color = new ParticleSystem.MinMaxGradient(gradient);
+
+        // ── Size over Lifetime: 점점 작아짐 ──
+        var sol = ps.sizeOverLifetime;
+        sol.enabled = true;
+        sol.size = new ParticleSystem.MinMaxCurve(1f, AnimationCurve.Linear(0f, 1f, 1f, 0.3f));
+
+        // ── Renderer: 2D 스프라이트 호환 ──
+        var renderer = obj.GetComponent<ParticleSystemRenderer>();
+        renderer.renderMode = ParticleSystemRenderMode.Billboard;
+        renderer.sortingLayerName = GameConstants.SortEnemy;
+        renderer.sortingOrder = -1; // 풍선 뒤에 그려짐
+
+        // Sprites-Default 머티리얼 사용
+        var spriteMat = new Material(Shader.Find("Sprites/Default"));
+        spriteMat.name = "SlowParticleMat";
+        AssetDatabase.CreateAsset(spriteMat, "Assets/Prefabs/Effects/SlowParticleMat.mat");
+        renderer.material = spriteMat;
+
+        // 불필요한 모듈 비활성화
+        var noise = ps.noise;
+        noise.enabled = false;
+        var trails = ps.trails;
+        trails.enabled = false;
+
+        PrefabUtility.SaveAsPrefabAsset(obj, path);
+        Object.DestroyImmediate(obj);
+
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        Debug.Log("[PopRouteTD] 감속 이펙트 프리팹 생성 완료: " + path);
+    }
+
     private static void EnsureFolder(string path)
     {
         var parts = path.Split('/');
