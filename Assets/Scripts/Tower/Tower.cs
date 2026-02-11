@@ -97,12 +97,8 @@ public class Tower : MonoBehaviour
     {
         if (!initialized || !isAttacker) return;
 
-        // 타겟 갱신: 죽었거나 범위 밖이면 새 타겟 탐색
-        if (currentTarget == null || !currentTarget.gameObject.activeInHierarchy
-            || Vector3.Distance(transform.position, currentTarget.transform.position) > attackRange)
-        {
-            currentTarget = TargetSelector.SelectTarget(transform.position, attackRange, Priority, enemyLayerMask);
-        }
+        // 매 프레임 우선순위에 따라 최적 타겟 재평가
+        currentTarget = TargetSelector.SelectTarget(transform.position, attackRange, Priority, enemyLayerMask);
 
         // 타겟을 향해 회전
         if (currentTarget != null)
