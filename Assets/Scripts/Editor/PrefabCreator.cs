@@ -11,6 +11,7 @@ public class PrefabCreator
     {
         EnsureFolder("Assets/Prefabs/Enemies");
         EnsureFolder("Assets/Prefabs/Towers");
+        EnsureFolder("Assets/Prefabs/Items");
 
         circleSprite = CreateCircleSprite();
         squareSprite = CreateSquareSprite();
@@ -19,6 +20,7 @@ public class PrefabCreator
         CreateBaseBalloonPrefab();
         CreateBaseTowerPrefab();
         CreateProjectilePrefab();
+        CreateEnergyItemPrefab();
 
         // 베리언트
         CreateBalloonVariants();
@@ -112,9 +114,9 @@ public class PrefabCreator
         CreateTowerVariant(basePrefab, "Tower_BasicShooter", "기본 사수", 15, 1, 1f, 3f, 10,
             true, 0, 0, new Color(0.4f, 0.4f, 0.8f));
 
-        // 에너지 생성기
+        // 에너지 생성기 (아이템당 에너지: 2, 웨이브당 아이템 수: 5)
         CreateTowerVariant(basePrefab, "Tower_EnergyGenerator", "에너지 생성기", 20, 0, 0, 0, 12,
-            false, 2, 3f, new Color(0.8f, 0.8f, 0.2f));
+            false, 2, 5f, new Color(0.8f, 0.8f, 0.2f));
     }
 
     private static void CreateTowerVariant(GameObject basePrefab, string fileName, string towerName,
@@ -161,6 +163,32 @@ public class PrefabCreator
         col.radius = 0.5f;
 
         obj.AddComponent<Projectile>();
+
+        PrefabUtility.SaveAsPrefabAsset(obj, path);
+        Object.DestroyImmediate(obj);
+    }
+
+    // ── 아이템 ──
+
+    private static void CreateEnergyItemPrefab()
+    {
+        var path = "Assets/Prefabs/Items/EnergyItem.prefab";
+        if (AssetDatabase.LoadAssetAtPath<GameObject>(path) != null) return;
+
+        var obj = new GameObject("EnergyItem");
+        obj.layer = LayerMask.NameToLayer(GameConstants.LayerItem);
+
+        var sr = obj.AddComponent<SpriteRenderer>();
+        sr.sprite = circleSprite;
+        sr.color = new Color(0.2f, 0.9f, 0.3f);
+        sr.sortingLayerName = GameConstants.SortItem;
+        obj.transform.localScale = Vector3.one * 0.3f;
+
+        var col = obj.AddComponent<CircleCollider2D>();
+        col.isTrigger = true;
+        col.radius = 0.5f;
+
+        obj.AddComponent<EnergyItem>();
 
         PrefabUtility.SaveAsPrefabAsset(obj, path);
         Object.DestroyImmediate(obj);

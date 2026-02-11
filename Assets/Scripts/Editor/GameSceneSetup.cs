@@ -53,6 +53,7 @@ public class GameSceneSetup
         var enemies = CreateEmpty("Enemies");
         var projectiles = CreateEmpty("Projectiles");
         var towers = CreateEmpty("Towers");
+        var items = CreateEmpty("Items");
 
         // Managers
         var managers = CreateEmpty("Managers");
@@ -80,6 +81,15 @@ public class GameSceneSetup
         var gmSo = new SerializedObject(gameManager);
         gmSo.FindProperty("waveManager").objectReferenceValue = waveManager;
         gmSo.ApplyModifiedPropertiesWithoutUndo();
+
+        // ItemPool - 아이템 풀
+        var itemPoolObj = CreateEmpty("ItemPool", managers.transform);
+        var itemPool = itemPoolObj.AddComponent<ItemPool>();
+        WireItemPool(itemPool, items.transform);
+
+        // ItemSpawner - 아이템 스폰
+        var itemSpawnerObj = CreateEmpty("ItemSpawner", managers.transform);
+        itemSpawnerObj.AddComponent<ItemSpawner>();
 
         // InputManager - 카메라/웨이포인트/타워 부모 연결
         var inputObj = CreateEmpty("InputManager", managers.transform);
@@ -145,6 +155,15 @@ public class GameSceneSetup
         var projPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Towers/Projectile.prefab");
         so.FindProperty("projectilePrefab").objectReferenceValue = projPrefab;
         so.FindProperty("projectileParent").objectReferenceValue = projectileParent;
+        so.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    private static void WireItemPool(ItemPool pool, Transform itemParent)
+    {
+        var so = new SerializedObject(pool);
+        var itemPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Items/EnergyItem.prefab");
+        so.FindProperty("itemPrefab").objectReferenceValue = itemPrefab;
+        so.FindProperty("itemParent").objectReferenceValue = itemParent;
         so.ApplyModifiedPropertiesWithoutUndo();
     }
 

@@ -36,10 +36,12 @@ public static class GameConstants
     // Physics Layers
     public const string LayerEnemy = "Enemy";
     public const string LayerTower = "Tower";
+    public const string LayerItem = "Item";
 
     // Sorting Layers
     public const string SortPath = "Path";
     public const string SortTower = "Tower";
+    public const string SortItem = "Item";
     public const string SortEnemy = "Enemy";
     public const string SortProjectile = "Projectile";
 

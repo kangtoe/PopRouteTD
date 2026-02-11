@@ -14,6 +14,7 @@ public class InputManager : MonoBehaviour
     private GameObject dragTowerPrefab;
     private bool isDragging;
     private int towerLayerMask;
+    private int itemLayerMask;
 
     private GameObject previewObj;
     private SpriteRenderer[] previewRenderers;
@@ -36,6 +37,7 @@ public class InputManager : MonoBehaviour
     {
         if (mainCamera == null) mainCamera = Camera.main;
         towerLayerMask = 1 << LayerMask.NameToLayer(GameConstants.LayerTower);
+        itemLayerMask = 1 << LayerMask.NameToLayer(GameConstants.LayerItem);
     }
 
     /// <summary>UI 버튼 PointerDown에서 호출 — 드래그 배치 시작</summary>
@@ -110,6 +112,18 @@ public class InputManager : MonoBehaviour
 
     private void HandleTowerClick(Vector2 worldPos)
     {
+        // 아이템 클릭 우선 체크
+        var itemHit = Physics2D.OverlapPoint(worldPos, itemLayerMask);
+        if (itemHit != null)
+        {
+            var item = itemHit.GetComponent<EnergyItem>();
+            if (item != null)
+            {
+                item.Collect();
+                return;
+            }
+        }
+
         var hit = Physics2D.OverlapPoint(worldPos, towerLayerMask);
         if (hit != null)
         {
