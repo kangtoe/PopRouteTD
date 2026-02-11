@@ -8,9 +8,7 @@ public static class TargetSelector
         if (hits.Length == 0) return null;
 
         Balloon best = null;
-        float bestValue = priority == TargetPriority.Close || priority == TargetPriority.Weak
-            ? float.MaxValue
-            : float.MinValue;
+        float bestValue = float.MinValue;
 
         foreach (var hit in hits)
         {
