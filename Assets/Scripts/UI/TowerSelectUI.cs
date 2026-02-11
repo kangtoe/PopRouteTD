@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class TowerSelectUI : MonoBehaviour
 {
+    public static TowerSelectUI Instance { get; private set; }
+
     [SerializeField] private List<GameObject> towerPrefabs;
     [SerializeField] private Transform buttonParent;
     [SerializeField] private GameObject towerButtonPrefab;
@@ -19,6 +21,12 @@ public class TowerSelectUI : MonoBehaviour
         public float timer;
     }
 
+    private void Awake()
+    {
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+        Instance = this;
+    }
+
     private void Start()
     {
         CreateButtons();
@@ -29,6 +37,11 @@ public class TowerSelectUI : MonoBehaviour
     {
         if (InputManager.Instance != null)
             InputManager.Instance.OnTowerPlaced -= OnTowerPlaced;
+    }
+
+    public bool IsOnCooldown(GameObject prefab)
+    {
+        return cooldowns.TryGetValue(prefab, out var cd) && cd.timer > 0f;
     }
 
     private void CreateButtons()
@@ -64,12 +77,14 @@ public class TowerSelectUI : MonoBehaviour
 
     private void OnTowerPlaced(GameObject prefab)
     {
-        if (!cooldowns.ContainsKey(prefab)) return;
-
-        var cd = cooldowns[prefab];
-        cd.timer = GameConstants.PlacementCooldown;
-        cd.button.interactable = false;
-        cooldowns[prefab] = cd;
+        if (GameManager.Instance.CurrentState != GameState.Prepare
+            && cooldowns.ContainsKey(prefab))
+        {
+            var cd = cooldowns[prefab];
+            cd.timer = GameConstants.PlacementCooldown;
+            cd.button.interactable = false;
+            cooldowns[prefab] = cd;
+        }
     }
 
     private void Update()
