@@ -149,11 +149,13 @@ public class GameManager : MonoBehaviour
         postSpawnTimerActive = false;
         prepareCountdownActive = false;
         waveManager.StopSpawning();
+        Time.timeScale = 1f;
         SetState(GameState.GameOver);
     }
 
     public void RestartGame()
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
