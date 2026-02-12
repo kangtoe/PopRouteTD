@@ -8,6 +8,8 @@ public class Projectile : MonoBehaviour
 
     private int damage;
     private float splashRadius;
+    private StatusEffectType effectType;
+    private float effectDuration;
     private Rigidbody2D rb;
     private float timer;
     private int enemyLayerMask;
@@ -20,10 +22,13 @@ public class Projectile : MonoBehaviour
         enemyLayerMask = 1 << LayerMask.NameToLayer(GameConstants.LayerEnemy);
     }
 
-    public void Initialize(int attackDamage, float splash = 0f)
+    public void Initialize(int attackDamage, float splash = 0f,
+        StatusEffectType statusEffect = StatusEffectType.None, float statusDuration = 0f)
     {
         damage = attackDamage;
         splashRadius = splash;
+        effectType = statusEffect;
+        effectDuration = statusDuration;
         timer = lifetime;
         isDeactivated = false;
 
@@ -54,16 +59,30 @@ public class Projectile : MonoBehaviour
             foreach (var hit in hits)
             {
                 var balloon = hit.GetComponent<Balloon>();
-                if (balloon != null) balloon.TakeDamage(damage);
+                if (balloon != null)
+                {
+                    balloon.TakeDamage(damage);
+                    ApplyStatusEffect(balloon);
+                }
             }
         }
         else
         {
             var balloon = other.GetComponent<Balloon>();
-            if (balloon != null) balloon.TakeDamage(damage);
+            if (balloon != null)
+            {
+                balloon.TakeDamage(damage);
+                ApplyStatusEffect(balloon);
+            }
         }
 
         Deactivate();
+    }
+
+    private void ApplyStatusEffect(Balloon balloon)
+    {
+        if (effectType == StatusEffectType.None) return;
+        balloon.ApplyStatusEffect(effectType, effectDuration);
     }
 
     private void Deactivate()

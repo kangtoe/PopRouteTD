@@ -11,6 +11,7 @@ public class WaypointFollower : MonoBehaviour
 
     public float Progress => totalPathLength > 0 ? distanceTraveled / totalPathLength : 0f;
     public bool IsActive { get; private set; }
+    public float SpeedMultiplier { get; set; } = 1f;
 
     public event Action OnReachedEnd;
 
@@ -77,7 +78,7 @@ public class WaypointFollower : MonoBehaviour
         }
 
         var target = waypoints[currentIndex + 1];
-        var step = speed * Time.deltaTime;
+        var step = speed * SpeedMultiplier * Time.deltaTime;
         transform.position = Vector3.MoveTowards(transform.position, target, step);
         distanceTraveled += step;
 

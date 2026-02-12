@@ -28,6 +28,14 @@ public enum GameState
     GameOver
 }
 
+public enum StatusEffectType
+{
+    None,
+    Burn,
+    Slow,
+    Stun
+}
+
 public static class GameConstants
 {
     public const int StartLives = 20;
@@ -52,6 +60,11 @@ public static class GameConstants
 
     // Tower Placement
     public const float PlacementCooldown = 3f;
+
+    // Status Effects (고정 수치)
+    public const int BurnDamagePerTick = 1;
+    public const float BurnTickInterval = 0.5f;
+    public const float SlowSpeedMultiplier = 0.5f;
 
     public static float GetBalloonSpeed(BalloonLayer layer)
     {

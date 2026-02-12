@@ -1,18 +1,20 @@
 using System;
 using UnityEngine;
 
-[RequireComponent(typeof(WaypointFollower))]
+[RequireComponent(typeof(WaypointFollower), typeof(StatusEffectHandler))]
 public class Balloon : MonoBehaviour
 {
     [Header("풍선 데이터 (프리팹에서 설정)")]
     [SerializeField] private BalloonLayer layer;
     [SerializeField] private int hp = 1;
     [SerializeField] private int energyReward = 1;
+    [SerializeField, Range(0f, 1f)] private float statusEffectResistance;
 
     private int currentHp;
     private BalloonLayer currentLayer;
     private SpriteRenderer[] spriteRenderers;
     private WaypointFollower follower;
+    private StatusEffectHandler statusEffectHandler;
     private WaypointPath path;
     private bool deactivated;
 
@@ -37,6 +39,7 @@ public class Balloon : MonoBehaviour
     {
         spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
         follower = GetComponent<WaypointFollower>();
+        statusEffectHandler = GetComponent<StatusEffectHandler>();
 
         gameObject.layer = LayerMask.NameToLayer(GameConstants.LayerEnemy);
         SetSortingLayer(GameConstants.SortEnemy);
@@ -61,6 +64,7 @@ public class Balloon : MonoBehaviour
         currentHp = hp;
 
         deactivated = false;
+        statusEffectHandler.ClearAll();
         SetColor(GameConstants.GetBalloonColor(currentLayer));
         follower.Initialize(path, GameConstants.GetBalloonSpeed(currentLayer));
         follower.OnReachedEnd += OnReachBase;
@@ -75,6 +79,7 @@ public class Balloon : MonoBehaviour
         currentHp = hp;
 
         deactivated = false;
+        statusEffectHandler.ClearAll();
         SetColor(GameConstants.GetBalloonColor(currentLayer));
         follower.InitializeAtProgress(path, GameConstants.GetBalloonSpeed(currentLayer), waypointIndex, fraction);
         follower.OnReachedEnd += OnReachBase;
@@ -115,10 +120,21 @@ public class Balloon : MonoBehaviour
         Deactivate();
     }
 
+    public void ApplyStatusEffect(StatusEffectType type, float duration)
+    {
+        if (deactivated) return;
+
+        float reducedDuration = duration * (1f - statusEffectResistance);
+        if (reducedDuration <= 0f) return;
+
+        statusEffectHandler.ApplyEffect(type, reducedDuration);
+    }
+
     private void Deactivate()
     {
         if (deactivated) return;
         deactivated = true;
+        statusEffectHandler.ClearAll();
         follower.OnReachedEnd -= OnReachBase;
         BalloonSpawner.Instance.Return(gameObject, layer);
     }

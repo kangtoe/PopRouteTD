@@ -15,6 +15,10 @@ public class Tower : MonoBehaviour
     [SerializeField] private float splashRadius;
     [SerializeField] private float rotationSpeed = 360f;
 
+    [Header("상태이상 (프리팹에서 설정)")]
+    [SerializeField] private StatusEffectType statusEffectType = StatusEffectType.None;
+    [SerializeField] private float effectDuration;
+
     [SerializeField] private Transform firePoint;
     [SerializeField] private SpriteRenderer rangeIndicator;
 
@@ -141,7 +145,8 @@ public class Tower : MonoBehaviour
         projObj.transform.position = spawnPos;
         projObj.transform.rotation = transform.rotation;
         var projectile = projObj.GetComponent<Projectile>();
-        projectile.Initialize((int)attackDamage, splashRadius);
+        projectile.Initialize((int)attackDamage, splashRadius,
+            statusEffectType, effectDuration);
     }
 
     private void SetSortingLayer(string layerName)

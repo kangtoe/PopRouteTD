@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4662537852633080126}
   - component: {fileID: 2033661592106507403}
   - component: {fileID: 1425262051550988063}
+  - component: {fileID: 8374649942179888899}
   m_Layer: 7
   m_Name: Balloon
   m_TagString: Untagged
@@ -157,3 +158,19 @@ MonoBehaviour:
   layer: 0
   hp: 1
   energyReward: 1
+  statusEffectResistance: 0
+--- !u!114 &8374649942179888899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8127152185616255251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba5622330c471854fb9547443cf5298a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatusEffectHandler
+  burnEffectPrefab: {fileID: 3704268398773397896, guid: 0e38994e1c8fcb047b07b060d8fb55f5, type: 3}
+  slowEffectPrefab: {fileID: 3704268398773397896, guid: 3be471f1362a82c4d89c2b6b76edb520, type: 3}
+  stunEffectPrefab: {fileID: 3704268398773397896, guid: f113477e3be6be3419cb1031eee8f2bb, type: 3}
