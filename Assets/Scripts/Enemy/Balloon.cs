@@ -4,8 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(WaypointFollower), typeof(StatusEffectHandler))]
 public class Balloon : MonoBehaviour
 {
-    [Header("풍선 데이터 (프리팹에서 설정)")]
-    [SerializeField] private BalloonLayer layer;
+    [Header("풍선 데이터")]
     [SerializeField] private int hp = 1;
     [SerializeField] private int energyReward = 1;
     [SerializeField, Range(0f, 1f)] private float statusEffectResistance;
@@ -20,20 +19,10 @@ public class Balloon : MonoBehaviour
 
     public BalloonLayer CurrentLayer => currentLayer;
     public int CurrentHp => currentHp;
-    public BalloonLayer Layer => layer;
     public WaypointFollower Follower => follower;
-
-    /// <summary>런타임 프리팹 생성 시 데이터 설정</summary>
-    public void SetupData(BalloonLayer balloonLayer, int balloonHp = 1, int reward = 1)
-    {
-        layer = balloonLayer;
-        hp = balloonHp;
-        energyReward = reward;
-    }
 
     public static event Action<Balloon> OnBalloonDestroyed;
     public static event Action<Balloon> OnBalloonReachedBase;
-    public static event Action<BalloonLayer, Vector3, int, float, WaypointPath> OnLayerDestroyed;
 
     private void Awake()
     {
@@ -57,31 +46,16 @@ public class Balloon : MonoBehaviour
             sr.color = color;
     }
 
-    public void Initialize(WaypointPath waypointPath)
+    public void Initialize(BalloonLayer startLayer, WaypointPath waypointPath)
     {
         path = waypointPath;
-        currentLayer = layer;
+        currentLayer = startLayer;
         currentHp = hp;
 
         deactivated = false;
         statusEffectHandler.ClearAll();
         SetColor(GameConstants.GetBalloonColor(currentLayer));
         follower.Initialize(path, GameConstants.GetBalloonSpeed(currentLayer));
-        follower.OnReachedEnd += OnReachBase;
-
-        gameObject.SetActive(true);
-    }
-
-    public void InitializeAtProgress(WaypointPath waypointPath, int waypointIndex, float fraction)
-    {
-        path = waypointPath;
-        currentLayer = layer;
-        currentHp = hp;
-
-        deactivated = false;
-        statusEffectHandler.ClearAll();
-        SetColor(GameConstants.GetBalloonColor(currentLayer));
-        follower.InitializeAtProgress(path, GameConstants.GetBalloonSpeed(currentLayer), waypointIndex, fraction);
         follower.OnReachedEnd += OnReachBase;
 
         gameObject.SetActive(true);
@@ -100,17 +74,21 @@ public class Balloon : MonoBehaviour
     private void DestroyLayer()
     {
         ResourceManager.Instance.AddEnergy(energyReward);
+        OnBalloonDestroyed?.Invoke(this);
 
         BalloonLayer lowerLayer = currentLayer - 1;
         if (lowerLayer >= BalloonLayer.Red)
         {
-            int wpIndex = follower.CurrentWaypointIndex;
-            float fraction = follower.FractionToNextWaypoint;
-            OnLayerDestroyed?.Invoke(lowerLayer, transform.position, wpIndex, fraction, path);
+            // in-place 레이어 다운그레이드 (상태이상 유지)
+            currentLayer = lowerLayer;
+            currentHp = hp;
+            SetColor(GameConstants.GetBalloonColor(currentLayer));
+            follower.SetSpeed(GameConstants.GetBalloonSpeed(currentLayer));
         }
-
-        OnBalloonDestroyed?.Invoke(this);
-        Deactivate();
+        else
+        {
+            Deactivate();
+        }
     }
 
     private void OnReachBase()
@@ -136,6 +114,6 @@ public class Balloon : MonoBehaviour
         deactivated = true;
         statusEffectHandler.ClearAll();
         follower.OnReachedEnd -= OnReachBase;
-        BalloonSpawner.Instance.Return(gameObject, layer);
+        BalloonSpawner.Instance.Return(gameObject);
     }
 }

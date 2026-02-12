@@ -5,6 +5,29 @@ using UnityEngine.UI;
 
 public class GameSceneSetup
 {
+    [MenuItem("PopRouteTD/풍선 스포너 단일 프리팹 전환")]
+    public static void MigrateBalloonSpawner()
+    {
+        var spawner = Object.FindAnyObjectByType<BalloonSpawner>();
+        if (spawner == null)
+        {
+            Debug.LogError("[PopRouteTD] 씬에 BalloonSpawner가 없습니다.");
+            return;
+        }
+
+        var so = new SerializedObject(spawner);
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Enemies/Balloon.prefab");
+        if (prefab == null)
+        {
+            Debug.LogError("[PopRouteTD] Balloon.prefab이 없습니다. 'PopRouteTD/프리팹 에셋 생성'을 먼저 실행하세요.");
+            return;
+        }
+
+        so.FindProperty("balloonPrefab").objectReferenceValue = prefab;
+        so.ApplyModifiedProperties();
+        Debug.Log("[PopRouteTD] BalloonSpawner 단일 프리팹 전환 완료!");
+    }
+
     [MenuItem("PopRouteTD/씬 자동 구성")]
     public static void SetupGameScene()
     {
@@ -121,6 +144,7 @@ public class GameSceneSetup
         }
 
         CreateHUD(canvas.transform);
+        CreateSpeedControlUI(canvas.transform);
         CreateTowerSelectUI(canvas.transform);
         CreateGameOverUI(canvas.transform);
 
@@ -131,20 +155,8 @@ public class GameSceneSetup
     {
         var so = new SerializedObject(spawner);
 
-        // 풍선 프리팹 배열
-        var balloonPrefabs = new GameObject[7];
-        string[] layerNames = { "Red", "Orange", "Yellow", "Green", "Blue", "Indigo", "Purple" };
-        for (int i = 0; i < 7; i++)
-        {
-            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>($"Assets/Prefabs/Enemies/Balloon_{layerNames[i]}.prefab");
-            balloonPrefabs[i] = prefab;
-        }
-
-        var prefabsProp = so.FindProperty("balloonPrefabsByLayer");
-        prefabsProp.arraySize = 7;
-        for (int i = 0; i < 7; i++)
-            prefabsProp.GetArrayElementAtIndex(i).objectReferenceValue = balloonPrefabs[i];
-
+        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Enemies/Balloon.prefab");
+        so.FindProperty("balloonPrefab").objectReferenceValue = prefab;
         so.FindProperty("enemyParent").objectReferenceValue = enemyParent;
         so.ApplyModifiedPropertiesWithoutUndo();
     }
@@ -209,6 +221,68 @@ public class GameSceneSetup
         so.FindProperty("waveText").objectReferenceValue = waveText.GetComponent<Text>();
         so.FindProperty("stateText").objectReferenceValue = stateText.GetComponent<Text>();
         so.FindProperty("startWaveButton").objectReferenceValue = startBtnObj.GetComponent<Button>();
+        so.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    [MenuItem("PopRouteTD/배속 버튼 추가")]
+    public static void AddSpeedControlUI()
+    {
+        var canvas = Object.FindAnyObjectByType<Canvas>();
+        if (canvas == null)
+        {
+            Debug.LogError("[PopRouteTD] 씬에 Canvas가 없습니다. '씬 자동 구성'을 먼저 실행하세요.");
+            return;
+        }
+        CreateSpeedControlUI(canvas.transform);
+        Debug.Log("[PopRouteTD] 배속 버튼 추가 완료!");
+    }
+
+    private static void CreateSpeedControlUI(Transform canvasTransform)
+    {
+        var panelObj = CreateEmpty("SpeedControlPanel", canvasTransform);
+        var speedUI = panelObj.AddComponent<SpeedControlUI>();
+        var panelRect = panelObj.AddComponent<RectTransform>();
+        panelRect.anchorMin = new Vector2(1, 1);
+        panelRect.anchorMax = new Vector2(1, 1);
+        panelRect.pivot = new Vector2(1, 1);
+        panelRect.anchoredPosition = new Vector2(-20, -20);
+        panelRect.sizeDelta = new Vector2(200, 40);
+
+        var hlg = panelObj.AddComponent<HorizontalLayoutGroup>();
+        hlg.spacing = 5;
+        hlg.childAlignment = TextAnchor.MiddleCenter;
+        hlg.childForceExpandWidth = true;
+        hlg.childForceExpandHeight = true;
+
+        string[] labels = { "x1", "x2", "x4" };
+        var buttons = new Button[3];
+        for (int i = 0; i < 3; i++)
+        {
+            var btnObj = new GameObject(labels[i]);
+            btnObj.transform.SetParent(panelObj.transform);
+            var btnRect = btnObj.AddComponent<RectTransform>();
+            btnRect.sizeDelta = new Vector2(60, 40);
+
+            var img = btnObj.AddComponent<Image>();
+            img.color = i == 0 ? new Color(0.2f, 0.6f, 0.3f) : new Color(0.3f, 0.3f, 0.4f);
+            buttons[i] = btnObj.AddComponent<Button>();
+
+            var textObj = new GameObject("Text");
+            textObj.transform.SetParent(btnObj.transform);
+            var textRect = textObj.AddComponent<RectTransform>();
+            StretchFull(textRect);
+            var t = textObj.AddComponent<Text>();
+            t.text = labels[i];
+            t.fontSize = 18;
+            t.alignment = TextAnchor.MiddleCenter;
+            t.color = Color.white;
+        }
+
+        var so = new SerializedObject(speedUI);
+        var prop = so.FindProperty("speedButtons");
+        prop.arraySize = 3;
+        for (int i = 0; i < 3; i++)
+            prop.GetArrayElementAtIndex(i).objectReferenceValue = buttons[i];
         so.ApplyModifiedPropertiesWithoutUndo();
     }
 

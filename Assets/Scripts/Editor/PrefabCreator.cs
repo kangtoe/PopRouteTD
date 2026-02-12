@@ -23,7 +23,6 @@ public class PrefabCreator
         CreateEnergyItemPrefab();
 
         // 베리언트
-        CreateBalloonVariants();
         CreateTowerVariants();
 
         AssetDatabase.SaveAssets();
@@ -77,28 +76,6 @@ public class PrefabCreator
 
         PrefabUtility.SaveAsPrefabAsset(obj, path);
         Object.DestroyImmediate(obj);
-    }
-
-    private static void CreateBalloonVariants()
-    {
-        var basePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Enemies/Balloon.prefab");
-        if (basePrefab == null) return;
-
-        for (int i = 0; i < 7; i++)
-        {
-            var layer = (BalloonLayer)(i + 1);
-            var path = $"Assets/Prefabs/Enemies/Balloon_{layer}.prefab";
-            if (AssetDatabase.LoadAssetAtPath<GameObject>(path) != null) continue;
-
-            var instance = (GameObject)PrefabUtility.InstantiatePrefab(basePrefab);
-            instance.name = $"Balloon_{layer}";
-
-            instance.GetComponent<SpriteRenderer>().color = GameConstants.GetBalloonColor(layer);
-            instance.GetComponent<Balloon>().SetupData(layer);
-
-            PrefabUtility.SaveAsPrefabAsset(instance, path);
-            Object.DestroyImmediate(instance);
-        }
     }
 
     // ── 베이스 타워 ──

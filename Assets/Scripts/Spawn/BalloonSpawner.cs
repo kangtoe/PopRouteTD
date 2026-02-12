@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -6,8 +5,8 @@ public class BalloonSpawner : MonoBehaviour
 {
     public static BalloonSpawner Instance { get; private set; }
 
-    [Header("레이어별 풍선 프리팹 (Red=0 ~ Purple=6)")]
-    [SerializeField] private GameObject[] balloonPrefabsByLayer;
+    [Header("풍선 프리팹")]
+    [SerializeField] private GameObject balloonPrefab;
 
     [Header("부모 Transform")]
     [SerializeField] private Transform enemyParent;
@@ -15,7 +14,7 @@ public class BalloonSpawner : MonoBehaviour
     [Header("풀 크기")]
     [SerializeField] private int initialPoolSize = 30;
 
-    private readonly Dictionary<int, ObjectPool<GameObject>> balloonPools = new();
+    private ObjectPool<GameObject> balloonPool;
 
     private void Awake()
     {
@@ -25,71 +24,34 @@ public class BalloonSpawner : MonoBehaviour
             return;
         }
         Instance = this;
-        Balloon.OnLayerDestroyed += HandleLayerDestroyed;
-        InitializePools();
+        InitializePool();
     }
 
-    private void InitializePools()
+    private void InitializePool()
     {
-        if (balloonPrefabsByLayer == null || balloonPrefabsByLayer.Length == 0) return;
+        if (balloonPrefab == null) return;
 
-        for (int i = 0; i < balloonPrefabsByLayer.Length; i++)
-        {
-            int index = i;
-            int capacity = initialPoolSize / balloonPrefabsByLayer.Length;
-            balloonPools[i] = new ObjectPool<GameObject>(
-                createFunc: () => Instantiate(balloonPrefabsByLayer[index], enemyParent),
-                actionOnGet: obj => obj.SetActive(true),
-                actionOnRelease: obj => obj.SetActive(false),
-                actionOnDestroy: Destroy,
-                defaultCapacity: capacity
-            );
-        }
-    }
-
-    private void OnDestroy()
-    {
-        Balloon.OnLayerDestroyed -= HandleLayerDestroyed;
+        balloonPool = new ObjectPool<GameObject>(
+            createFunc: () => Instantiate(balloonPrefab, enemyParent),
+            actionOnGet: obj => obj.SetActive(true),
+            actionOnRelease: obj => obj.SetActive(false),
+            actionOnDestroy: Destroy,
+            defaultCapacity: initialPoolSize
+        );
     }
 
     public GameObject SpawnBalloon(BalloonLayer layer, WaypointPath path)
     {
-        var obj = GetFromPool(layer);
+        var obj = balloonPool.Get();
         if (obj == null) return null;
         var balloon = obj.GetComponent<Balloon>();
-        balloon.Initialize(path);
+        balloon.Initialize(layer, path);
         GameManager.Instance.RegisterEnemy();
         return obj;
     }
 
-    public GameObject SpawnBalloonAtProgress(BalloonLayer layer, WaypointPath path, int waypointIndex, float fraction)
+    public void Return(GameObject obj)
     {
-        var obj = GetFromPool(layer);
-        if (obj == null) return null;
-        var balloon = obj.GetComponent<Balloon>();
-        balloon.InitializeAtProgress(path, waypointIndex, fraction);
-        GameManager.Instance.RegisterEnemy();
-        return obj;
-    }
-
-    public void Return(GameObject obj, BalloonLayer balloonLayer)
-    {
-        int index = (int)balloonLayer - 1;
-        if (balloonPools.TryGetValue(index, out var pool))
-            pool.Release(obj);
-    }
-
-    private void HandleLayerDestroyed(BalloonLayer childLayer, Vector3 position, int waypointIndex, float fraction, WaypointPath path)
-    {
-        SpawnBalloonAtProgress(childLayer, path, waypointIndex, fraction);
-    }
-
-    private GameObject GetFromPool(BalloonLayer layer)
-    {
-        int index = (int)layer - 1;
-        if (index < 0 || index >= balloonPrefabsByLayer.Length) return null;
-        if (!balloonPools.TryGetValue(index, out var pool)) return null;
-
-        return pool.Get();
+        balloonPool.Release(obj);
     }
 }

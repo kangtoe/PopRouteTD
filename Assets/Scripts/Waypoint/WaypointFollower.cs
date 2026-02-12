@@ -15,6 +15,11 @@ public class WaypointFollower : MonoBehaviour
 
     public event Action OnReachedEnd;
 
+    public void SetSpeed(float newSpeed)
+    {
+        speed = newSpeed;
+    }
+
     public void Initialize(WaypointPath path, float moveSpeed)
     {
         waypoints = path.GetWaypoints();
