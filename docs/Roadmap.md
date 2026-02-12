@@ -2,7 +2,7 @@
 
 개발 항목별 구현 사항 정의
 
-> 관련 문서: [게임플레이](design/Gameplay.md) | [아군 유닛](design/Towers.md) | [적 유닛](design/Enemies.md) | [적 스폰](design/EnemySpawn.md) | [아이템](design/Items.md)
+> 관련 문서: [게임플레이](design/Gameplay.md) | [아군 유닛](design/Towers.md) | [적 유닛](design/Enemies.md) | [적 스폰](design/EnemySpawn.md) | [아이템](design/Items.md) | [상태이상](design/StatusEffects.md)
 
 ---
 
@@ -42,6 +42,8 @@
 - [x] 타겟팅 우선순위 (First / Close / Weak / Strong)
 - [x] 공격 주기, 공격력, 공격 거리 적용
 - [x] 발사체 물리 기반 직선 발사 (충돌 적중)
+- [x] 상태이상 시스템 (화상 / 감속 / 정지)
+- [x] 상태이상 저항 (지속시간 단축, 1.0이면 면역)
 
 ---
 
