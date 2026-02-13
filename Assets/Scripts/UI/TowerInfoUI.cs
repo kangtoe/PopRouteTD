@@ -17,6 +17,11 @@ public class TowerInfoUI : MonoBehaviour
     [SerializeField] private Button sellButton;
     [SerializeField] private Text sellButtonText;
 
+    [Header("Upgrade")]
+    [SerializeField] private UpgradeButtonUI mainUpgradeButton;
+    [SerializeField] private UpgradeButtonUI subAButton;
+    [SerializeField] private UpgradeButtonUI subBButton;
+
     private Tower selectedTower;
     private Image[] priorityImages;
     private static readonly Color normalColor = Color.white;
@@ -41,6 +46,13 @@ public class TowerInfoUI : MonoBehaviour
         strongButton.onClick.AddListener(() => OnPriorityClicked(TargetPriority.Strong));
         sellButton.onClick.AddListener(OnSellClicked);
 
+        if (mainUpgradeButton != null)
+            mainUpgradeButton.Button.onClick.AddListener(OnUpgradeClicked);
+        if (subAButton != null)
+            subAButton.Button.onClick.AddListener(() => OnSubClicked(UpgradeTrack.A));
+        if (subBButton != null)
+            subBButton.Button.onClick.AddListener(() => OnSubClicked(UpgradeTrack.B));
+
         panel.SetActive(false);
     }
 
@@ -60,8 +72,36 @@ public class TowerInfoUI : MonoBehaviour
         selectedTower = tower;
         panel.SetActive(true);
 
-        towerNameText.text = tower.TowerName;
+        UpdateDisplay();
+        selectedTower.ShowRange(true);
+    }
 
+    public void Hide()
+    {
+        if (selectedTower != null)
+        {
+            selectedTower.ShowRange(false);
+            selectedTower = null;
+        }
+        panel.SetActive(false);
+    }
+
+    public void RefreshAfterUpgrade()
+    {
+        if (selectedTower != null)
+            UpdateDisplay();
+    }
+
+    private void UpdateDisplay()
+    {
+        var tower = selectedTower;
+
+        // 타워 이름 + 주 모듈 레벨
+        towerNameText.text = tower.CanUpgradeMain || tower.MainLevel > 1
+            ? $"{tower.TowerName} Lv.{tower.MainLevel}"
+            : tower.TowerName;
+
+        // 스탯
         if (tower.IsAttacker)
         {
             var stats = $"ATK {tower.AttackDamage}  SPD {tower.AttackInterval:0.#}s  RNG {tower.AttackRange:0.#}";
@@ -75,19 +115,80 @@ public class TowerInfoUI : MonoBehaviour
             SetPriorityButtonsVisible(false);
         }
 
+        // 판매
         sellButtonText.text = $"Sell (+{tower.SellRefund})";
-        selectedTower.ShowRange(true);
+
+        // 업그레이드 버튼
+        UpdateMainButton();
+        UpdateSubButtons();
+
+        // 우선순위 하이라이트
         UpdatePriorityHighlight();
+
+        // 사거리 표시 갱신
+        tower.ShowRange(true);
     }
 
-    public void Hide()
+    private void UpdateMainButton()
     {
-        if (selectedTower != null)
+        if (mainUpgradeButton == null) return;
+
+        if (!selectedTower.CanUpgradeMain)
         {
-            selectedTower.ShowRange(false);
-            selectedTower = null;
+            mainUpgradeButton.SetMax();
+            return;
         }
-        panel.SetActive(false);
+
+        var nextInfo = selectedTower.GetNextMainInfo();
+        if (nextInfo != null)
+            mainUpgradeButton.SetAvailable("Upgrade", nextInfo.cost, nextInfo.description);
+    }
+
+    private void UpdateSubButtons()
+    {
+        if (subAButton == null || subBButton == null) return;
+
+        var subA = selectedTower.GetSubAInfo();
+        var subB = selectedTower.GetSubBInfo();
+        bool hasUpgradeData = subA != null && subB != null;
+
+        subAButton.gameObject.SetActive(hasUpgradeData);
+        subBButton.gameObject.SetActive(hasUpgradeData);
+        if (!hasUpgradeData) return;
+
+        var selected = selectedTower.SelectedSub;
+
+        if (selected == UpgradeTrack.None)
+        {
+            subAButton.SetAvailable($"A: {subA.levelName}", subA.cost, subA.description);
+            subBButton.SetAvailable($"B: {subB.levelName}", subB.cost, subB.description);
+        }
+        else if (selected == UpgradeTrack.A)
+        {
+            subAButton.SetSelected($"A: {subA.levelName}", subA.description);
+            subBButton.SetLocked($"B: {subB.levelName}", subB.description);
+        }
+        else
+        {
+            subAButton.SetLocked($"A: {subA.levelName}", subA.description);
+            subBButton.SetSelected($"B: {subB.levelName}", subB.description);
+        }
+    }
+
+    private void OnUpgradeClicked()
+    {
+        if (selectedTower == null) return;
+
+        if (selectedTower.UpgradeMain())
+            UpdateDisplay();
+    }
+
+    private void OnSubClicked(UpgradeTrack sub)
+    {
+        if (selectedTower == null) return;
+
+        if (selectedTower.SelectSub(sub))
+            UpdateDisplay();
     }
 
     private void OnPriorityClicked(TargetPriority priority)

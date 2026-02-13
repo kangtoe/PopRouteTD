@@ -28,12 +28,14 @@ public class TowerSelectUI : MonoBehaviour
 
     private void Start()
     {
+        if (Instance != this) return;
         CreateButtons();
         InputManager.Instance.OnTowerPlaced += OnTowerPlaced;
     }
 
     private void OnDestroy()
     {
+        if (Instance == this) Instance = null;
         if (InputManager.Instance != null)
             InputManager.Instance.OnTowerPlaced -= OnTowerPlaced;
     }

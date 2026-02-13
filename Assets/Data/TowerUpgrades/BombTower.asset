@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83ae5a5b1bcb8784c8baabf9e5bf3fb2, type: 3}
+  m_Name: BombTower
+  m_EditorClassIdentifier: Assembly-CSharp::TowerUpgradeData
+  towerName: BombTower
+  main1:
+    levelName: Bomb Shooter
+    description: Splash area attack
+    cost: 0
+    attackDamage: 1
+    attackInterval: 1.5
+    attackRange: 3
+    splashRadius: 1
+    pierceCount: 0
+    statusEffects: []
+  main2:
+    levelName: Bomb Shooter
+    description: ATK, SPD, RNG, splash up
+    cost: 100
+    attackDamage: 1
+    attackInterval: -0.1
+    attackRange: 0.5
+    splashRadius: 0.2
+    pierceCount: 0
+    statusEffects: []
+  main3:
+    levelName: Bomb Shooter
+    description: Further stat boost
+    cost: 250
+    attackDamage: 1
+    attackInterval: -0.1
+    attackRange: 0.5
+    splashRadius: 0.3
+    pierceCount: 0
+    statusEffects: []
+  main4:
+    levelName: Bomb Shooter
+    description: Max performance
+    cost: 600
+    attackDamage: 1
+    attackInterval: -0.1
+    attackRange: 0.5
+    splashRadius: 0.3
+    pierceCount: 0
+    statusEffects: []
+  subA:
+    levelName: Wide Area
+    description: Greatly expands splash radius
+    cost: 250
+    attackDamage: 0
+    attackInterval: 0
+    attackRange: 0
+    splashRadius: 1
+    pierceCount: 0
+    statusEffects: []
+  subB:
+    levelName: Incendiary
+    description: Grants burn effect
+    cost: 250
+    attackDamage: 0
+    attackInterval: 0
+    attackRange: 0
+    splashRadius: 0
+    pierceCount: 0
+    statusEffects:
+    - type: 1
+      duration: 3

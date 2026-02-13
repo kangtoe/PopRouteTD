@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83ae5a5b1bcb8784c8baabf9e5bf3fb2, type: 3}
+  m_Name: SlowTower
+  m_EditorClassIdentifier: Assembly-CSharp::TowerUpgradeData
+  towerName: SlowTower
+  main1:
+    levelName: Slow Shooter
+    description: Attacks apply slow effect
+    cost: 0
+    attackDamage: 1
+    attackInterval: 1.5
+    attackRange: 3.5
+    splashRadius: 0
+    pierceCount: 0
+    statusEffects:
+    - type: 2
+      duration: 1
+  main2:
+    levelName: Slow Shooter
+    description: Slow duration, RNG up
+    cost: 80
+    attackDamage: 0
+    attackInterval: -0.1
+    attackRange: 0.5
+    splashRadius: 0
+    pierceCount: 0
+    statusEffects:
+    - type: 2
+      duration: 0.5
+  main3:
+    levelName: Slow Shooter
+    description: Further stat boost
+    cost: 200
+    attackDamage: 0
+    attackInterval: -0.1
+    attackRange: 0.5
+    splashRadius: 0
+    pierceCount: 0
+    statusEffects:
+    - type: 2
+      duration: 0.5
+  main4:
+    levelName: Slow Shooter
+    description: Max performance
+    cost: 500
+    attackDamage: 0
+    attackInterval: -0.1
+    attackRange: 0.5
+    splashRadius: 0
+    pierceCount: 0
+    statusEffects:
+    - type: 2
+      duration: 0.5
+  subA:
+    levelName: Frostbite
+    description: Adds burn effect
+    cost: 200
+    attackDamage: 0
+    attackInterval: 0
+    attackRange: 0
+    splashRadius: 0
+    pierceCount: 0
+    statusEffects:
+    - type: 1
+      duration: 2
+  subB:
+    levelName: Freeze
+    description: Greatly extends slow duration
+    cost: 200
+    attackDamage: 0
+    attackInterval: 0
+    attackRange: 0
+    splashRadius: 0
+    pierceCount: 0
+    statusEffects:
+    - type: 2
+      duration: 1.5

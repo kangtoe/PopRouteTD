@@ -58,8 +58,9 @@ public static class GameConstants
     public const float PrepareDuration = 20f;
     public const int EarlyStartBonusMax = 50;
 
-    // Tower Placement
+    // Tower
     public const float PlacementCooldown = 3f;
+    public const float SellRefundRate = 0.5f;
 
     // Status Effects (고정 수치)
     public const int BurnDamagePerTick = 1;

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &3096495154957703868
+--- !u!1001 &2016661538505283078
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,23 +10,31 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 199296597658658468, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
       propertyPath: m_Name
-      value: Tower_EnergyGenerator
+      value: Tower_Basic
       objectReference: {fileID: 0}
-    - target: {fileID: 839426675806266128, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
-      propertyPath: m_IsActive
-      value: 0
+    - target: {fileID: 666786044444829572, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_Color.b
+      value: 0.1176471
+      objectReference: {fileID: 0}
+    - target: {fileID: 666786044444829572, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_Color.g
+      value: 0.4117647
+      objectReference: {fileID: 0}
+    - target: {fileID: 666786044444829572, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_Color.r
+      value: 0.8235295
       objectReference: {fileID: 0}
     - target: {fileID: 1398050108313427364, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
       propertyPath: m_Color.b
-      value: 0.2
+      value: 0.1176471
       objectReference: {fileID: 0}
     - target: {fileID: 1398050108313427364, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
       propertyPath: m_Color.g
-      value: 0.8
+      value: 0.4117647
       objectReference: {fileID: 0}
     - target: {fileID: 1398050108313427364, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
       propertyPath: m_Color.r
-      value: 0.8
+      value: 0.8235295
       objectReference: {fileID: 0}
     - target: {fileID: 3704506102190823329, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -70,58 +78,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3882555714896509503, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
       propertyPath: cost
-      value: 20
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 3882555714896509503, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
       propertyPath: towerName
-      value: "\uC5D0\uB108\uC9C0 \uC0DD\uC131\uAE30"
-      objectReference: {fileID: 0}
-    - target: {fileID: 3882555714896509503, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
-      propertyPath: isAttacker
-      value: 0
+      value: "\uAE30\uBCF8 \uC0AC\uC218"
       objectReference: {fileID: 0}
     - target: {fileID: 3882555714896509503, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
       propertyPath: sellRefund
-      value: 12
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3882555714896509503, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
-      propertyPath: attackRange
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3882555714896509503, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
-      propertyPath: energyPerTick
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3882555714896509503, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
-      propertyPath: attackInterval
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3882555714896509503, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
-      propertyPath: energyTickInterval
-      value: 3
+      propertyPath: attackDamage
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 199296597658658468, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1950085589512119048}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
---- !u!1 &2899472484784651288 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 199296597658658468, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
-  m_PrefabInstance: {fileID: 3096495154957703868}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1950085589512119048
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2899472484784651288}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4c8a67495519864c86c8f54f2b1308c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TowerEnergyGenerator

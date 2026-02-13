@@ -1,0 +1,115 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &1696375608771302631
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 199296597658658468, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_Name
+      value: Tower_BombShooter
+      objectReference: {fileID: 0}
+    - target: {fileID: 666786044444829572, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_Color.b
+      value: 0.3019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 666786044444829572, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_Color.g
+      value: 0.3019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 666786044444829572, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_Color.r
+      value: 0.7137255
+      objectReference: {fileID: 0}
+    - target: {fileID: 1398050108313427364, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_Color.b
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1398050108313427364, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_Color.g
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1398050108313427364, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_Color.r
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3704506102190823329, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3704506102190823329, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3704506102190823329, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3704506102190823329, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3704506102190823329, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3704506102190823329, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3704506102190823329, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3704506102190823329, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3704506102190823329, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3704506102190823329, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3882555714896509503, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: cost
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 3882555714896509503, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: towerName
+      value: "\uD3ED\uD0C4 \uC0AC\uC218"
+      objectReference: {fileID: 0}
+    - target: {fileID: 3882555714896509503, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: sellRefund
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 3882555714896509503, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: attackRange
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3882555714896509503, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: upgradeData
+      value: 
+      objectReference: {fileID: 11400000, guid: 9f8cfcf93d25f0246a3460ab77078969, type: 2}
+    - target: {fileID: 3882555714896509503, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: attackDamage
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3882555714896509503, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: splashRadius
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3882555714896509503, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
+      propertyPath: attackInterval
+      value: 2
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}

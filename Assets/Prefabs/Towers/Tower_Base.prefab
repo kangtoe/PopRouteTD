@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8052629521366227300}
   - component: {fileID: 3882555714896509503}
   m_Layer: 6
-  m_Name: Tower
+  m_Name: Tower_Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -153,7 +153,11 @@ MonoBehaviour:
   isAttacker: 1
   energyPerTick: 0
   energyTickInterval: 0
+  splashRadius: 0
   rotationSpeed: 360
+  statusEffectType: 0
+  effectDuration: 0
+  upgradeData: {fileID: 11400000, guid: 77944da33eb09ea448398008255bc74d, type: 2}
   firePoint: {fileID: 7872394565938853117}
   rangeIndicator: {fileID: 5513876059348121777}
 --- !u!1 &839426675806266128

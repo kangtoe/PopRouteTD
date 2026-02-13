@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83ae5a5b1bcb8784c8baabf9e5bf3fb2, type: 3}
+  m_Name: PierceTower
+  m_EditorClassIdentifier: Assembly-CSharp::TowerUpgradeData
+  towerName: PierceTower
+  main1:
+    levelName: Pierce Shooter
+    description: Piercing projectile hits multiple targets
+    cost: 0
+    attackDamage: 2
+    attackInterval: 1.2
+    attackRange: 4
+    splashRadius: 0
+    pierceCount: 2
+    statusEffects: []
+  main2:
+    levelName: Pierce Shooter
+    description: ATK, SPD, pierce up
+    cost: 120
+    attackDamage: 1
+    attackInterval: -0.1
+    attackRange: 0.5
+    splashRadius: 0
+    pierceCount: 1
+    statusEffects: []
+  main3:
+    levelName: Pierce Shooter
+    description: Further stat boost
+    cost: 300
+    attackDamage: 1
+    attackInterval: -0.2
+    attackRange: 0.5
+    splashRadius: 0
+    pierceCount: 1
+    statusEffects: []
+  main4:
+    levelName: Pierce Shooter
+    description: Max performance
+    cost: 700
+    attackDamage: 1
+    attackInterval: -0.2
+    attackRange: 0.5
+    splashRadius: 0
+    pierceCount: 1
+    statusEffects: []
+  subA:
+    levelName: Rapid Fire
+    description: Greatly increases attack speed
+    cost: 300
+    attackDamage: 0
+    attackInterval: -0.3
+    attackRange: 0
+    splashRadius: 0
+    pierceCount: 1
+    statusEffects: []
+  subB:
+    levelName: Impact
+    description: Grants stun effect
+    cost: 300
+    attackDamage: 2
+    attackInterval: 0
+    attackRange: 0
+    splashRadius: 0
+    pierceCount: 0
+    statusEffects:
+    - type: 3
+      duration: 0.5
