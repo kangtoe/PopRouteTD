@@ -21,6 +21,11 @@ public class Tower : MonoBehaviour
 
     [Header("업그레이드")]
     [SerializeField] private TowerUpgradeData upgradeData;
+    [SerializeField] private GameObject mainVisual2;
+    [SerializeField] private GameObject mainVisual3;
+    [SerializeField] private GameObject mainVisual4;
+    [SerializeField] private GameObject subVisualA;
+    [SerializeField] private GameObject subVisualB;
 
     [SerializeField] private Transform firePoint;
     [SerializeField] private SpriteRenderer rangeIndicator;
@@ -114,7 +119,7 @@ public class Tower : MonoBehaviour
         mainLevel++;
 
         RecalculateStats();
-        ActivateVisualPart($"Main_{mainLevel}");
+        ActivateVisual(GetMainVisual(mainLevel));
         return true;
     }
 
@@ -133,7 +138,7 @@ public class Tower : MonoBehaviour
         selectedSub = sub;
 
         RecalculateStats();
-        ActivateVisualPart(sub == UpgradeTrack.A ? "Sub_a" : "Sub_b");
+        ActivateVisual(sub == UpgradeTrack.A ? subVisualA : subVisualB);
         return true;
     }
 
@@ -248,10 +253,20 @@ public class Tower : MonoBehaviour
             durations[(int)e.type] += e.duration;
     }
 
-    private void ActivateVisualPart(string partName)
+    private GameObject GetMainVisual(int level) => level switch
     {
-        var part = transform.Find(partName);
-        if (part != null) part.gameObject.SetActive(true);
+        2 => mainVisual2,
+        3 => mainVisual3,
+        4 => mainVisual4,
+        _ => null
+    };
+
+    private void ActivateVisual(GameObject visual)
+    {
+        if (visual == null) return;
+        visual.SetActive(true);
+        foreach (var sr in visual.GetComponentsInChildren<SpriteRenderer>())
+            sr.sortingLayerName = GameConstants.SortTower;
     }
 
     #endregion
