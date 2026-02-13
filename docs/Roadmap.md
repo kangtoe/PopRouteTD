@@ -2,7 +2,7 @@
 
 개발 항목별 구현 사항 정의
 
-> 관련 문서: [게임플레이](design/Gameplay.md) | [아군 유닛](design/Towers.md) | [적 유닛](design/Enemies.md) | [적 스폰](design/EnemySpawn.md) | [아이템](design/Items.md) | [상태이상](design/StatusEffects.md)
+> 관련 문서: [게임플레이](design/Gameplay.md) | [타워 목록](design/Towers.md) | [적 유닛](design/Enemies.md) | [적 스폰](design/EnemySpawn.md) | [아이템](design/Items.md) | [상태이상](design/StatusEffects.md) | [업그레이드](design/TowerUpgrade.md)
 
 ---
 
@@ -29,21 +29,28 @@
 
 ### 적 유닛
 - [x] 풍선 레이어 시스템 (7단계: 빨강~보라)
+- [x] 단일 프리팹 + 레이어 전이 (레이어별 색상/속성 자동 적용)
 - [x] 레이어 파괴 시 하위 풍선 출현
 - [x] 기지 도달 시 생명 감소 (레이어 값 = 감소량)
 - [x] 이동속도 레이어별 차등 (1.0~4.0)
 
 ### 타워 (아군 유닛)
-- [x] 기본 사수: 단일 타겟 원거리 공격
-- [x] 에너지 생성기: 주기적 에너지 생산
+- [x] Basic Shooter: 단일 타겟 원거리 공격
+- [x] Bomb Shooter: 스플래시 범위 공격
+- [x] Energy Generator: 주기적 에너지 생산
+- [x] Pierce Shooter: 관통 발사체 공격 (프리팹 생성 완료, 관통 로직 미구현)
+- [x] Slow Shooter: 감속 상태이상 부여 (프리팹 생성 완료)
+- [x] Rapid Shooter: 빠른 연사속도 공격 (프리팹 생성 완료)
 
 ### 전투 시스템
 - [x] 발사 라인 기반 사격 (회전 후 전방 레이캐스트 감지 시 발사)
 - [x] 타겟팅 우선순위 (First / Close / Weak / Strong)
 - [x] 공격 주기, 공격력, 공격 거리 적용
 - [x] 발사체 물리 기반 직선 발사 (충돌 적중)
+- [x] 스플래시(광역) 데미지 시스템
 - [x] 상태이상 시스템 (화상 / 감속 / 정지)
 - [x] 상태이상 저항 (지속시간 단축, 1.0이면 면역)
+- [ ] 관통(pierce) 발사체 로직 (Projectile.cs에 pierceCount 적용)
 
 ---
 
@@ -73,6 +80,20 @@
 - [x] 게임 오버 화면
 - [x] 준비 단계 카운트다운 타이머 + 조기 시작 보너스 표시
 - [x] 타워 선택 시 정보 표시 (타겟팅 변경, 판매)
+- [x] 게임 배속 조절 UI (1x / 2x / 4x)
+- [x] 타워 배치 쿨다운 표시 (Radial Fill + 숫자)
+---
+
+## 업그레이드 시스템
+
+> [기획 문서](design/TowerUpgrade.md)
+
+- [x] TowerUpgradeData SO 구조 (main1~4, subA/subB)
+- [x] Tower.cs 업그레이드 로직 (UpgradeMain, SelectSub, RecalculateStats)
+- [x] TowerUpgradeDataGenerator (5개 타워 SO 데이터 자동 생성)
+- [x] 업그레이드 UI (TowerInfoUI + UpgradeButtonUI, 씬 배치)
+- [ ] 업그레이드 외관 변화 (부속물 프리팹 제작)
+- [ ] 업그레이드 밸런스 테스트
 
 ---
 
@@ -88,21 +109,19 @@
 ## 연출
 
 - [x] 풍선 레이어별 비주얼 구분
+- [x] 상태이상 이펙트 (감속 파티클)
 - [ ] 레이어 파괴 이펙트
 - [ ] 타워 공격 이펙트
 - [ ] 기지 도달 연출
-
 
 ---
 
 ## 확장 콘텐츠
 
-- [ ] 범위 공격자 타워
-- [ ] 슬로우어 타워
 - [ ] 철갑 풍선
 - [ ] 골드 시스템 (적 처치 시 획득, 업그레이드/언락 용도)
 - [ ] 아이템 시스템 (적 처치 시 일정 확률, 제너레이터 생산 등)
 - [ ] 타워 언락 시스템
-- [ ] 업그레이드 시스템 (유닛별 3단계)
 - [ ] 덱 시스템 (전투 전 유닛 6~8개 선택)
 - [x] 웨이브 조기 시작 보너스
+- [x] 에너지 아이템 시스템
