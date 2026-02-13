@@ -33,7 +33,7 @@ public class BalloonSpawner : MonoBehaviour
 
         balloonPool = new ObjectPool<GameObject>(
             createFunc: () => Instantiate(balloonPrefab, enemyParent),
-            actionOnGet: obj => obj.SetActive(true),
+            actionOnGet: null,
             actionOnRelease: obj => obj.SetActive(false),
             actionOnDestroy: Destroy,
             defaultCapacity: initialPoolSize

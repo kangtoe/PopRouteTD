@@ -44,7 +44,7 @@ public class PrefabCreator
         }
 
         CreateTowerVariant(basePrefab, "Tower_BombShooter", "폭탄 사수", 30, 2, 2f, 3.5f, 18,
-            true, 0, 0, new Color(0.8f, 0.3f, 0.3f), splashRadius: 1.2f);
+            new Color(0.8f, 0.3f, 0.3f), splashRadius: 1.2f);
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -110,21 +110,16 @@ public class PrefabCreator
 
         // 기본 사수
         CreateTowerVariant(basePrefab, "Tower_BasicShooter", "기본 사수", 15, 1, 1f, 3f, 10,
-            true, 0, 0, new Color(0.4f, 0.4f, 0.8f));
+            new Color(0.4f, 0.4f, 0.8f));
 
         // 폭탄 타워 (광역 공격)
         CreateTowerVariant(basePrefab, "Tower_BombShooter", "폭탄 사수", 30, 2, 2f, 3.5f, 18,
-            true, 0, 0, new Color(0.8f, 0.3f, 0.3f), splashRadius: 1.2f);
-
-        // 에너지 생성기 (아이템당 에너지: 2, 웨이브당 아이템 수: 5)
-        CreateTowerVariant(basePrefab, "Tower_EnergyGenerator", "에너지 생성기", 20, 0, 0, 0, 12,
-            false, 2, 5f, new Color(0.8f, 0.8f, 0.2f));
+            new Color(0.8f, 0.3f, 0.3f), splashRadius: 1.2f);
     }
 
     private static void CreateTowerVariant(GameObject basePrefab, string fileName, string towerName,
         int cost, float attackDamage, float attackInterval, float attackRange, int sellRefund,
-        bool isAttacker, float energyPerTick, float energyTickInterval, Color color,
-        float splashRadius = 0f)
+        Color color, float splashRadius = 0f)
     {
         var path = $"Assets/Prefabs/Towers/{fileName}.prefab";
         if (AssetDatabase.LoadAssetAtPath<GameObject>(path) != null) return;
@@ -134,9 +129,7 @@ public class PrefabCreator
 
         instance.GetComponent<SpriteRenderer>().color = color;
         instance.GetComponent<Tower>().SetupData(towerName, cost, attackDamage, attackInterval,
-            attackRange, sellRefund, isAttacker, energyPerTick, energyTickInterval, splash: splashRadius);
-
-        if (!isAttacker) instance.AddComponent<TowerEnergyGenerator>();
+            attackRange, sellRefund, splash: splashRadius);
 
         PrefabUtility.SaveAsPrefabAsset(instance, path);
         Object.DestroyImmediate(instance);

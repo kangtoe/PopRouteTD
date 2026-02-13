@@ -9,10 +9,8 @@ public class Tower : MonoBehaviour
     [SerializeField] private float attackInterval = 1f;
     [SerializeField] private float attackRange = 3f;
     [SerializeField] private int sellRefund;
-    [SerializeField] private bool isAttacker = true;
-    [SerializeField] private float energyPerTick;
-    [SerializeField] private float energyTickInterval;
     [SerializeField] private float splashRadius;
+    [SerializeField] private int pierceCount;
     [SerializeField] private float rotationSpeed = 360f;
 
     [Header("상태이상 (프리팹에서 설정)")]
@@ -45,7 +43,6 @@ public class Tower : MonoBehaviour
     public float AttackInterval => attackInterval;
     public float AttackRange => attackRange;
     public int SellRefund => Mathf.RoundToInt((cost + totalUpgradeCost) * GameConstants.SellRefundRate);
-    public bool IsAttacker => isAttacker;
     public float SplashRadius => splashRadius;
     public SpriteRenderer RangeIndicator => rangeIndicator;
     public TargetPriority Priority { get; private set; } = TargetPriority.First;
@@ -57,8 +54,7 @@ public class Tower : MonoBehaviour
 
     /// <summary>런타임 프리팹 생성 시 데이터 설정</summary>
     public void SetupData(string name, int towerCost, float damage, float interval, float range, int refund,
-        bool attacker = true, float enerPerTick = 0, float enerInterval = 0, float rotSpeed = 360f,
-        float splash = 0f)
+        float rotSpeed = 360f, float splash = 0f)
     {
         towerName = name;
         cost = towerCost;
@@ -66,9 +62,6 @@ public class Tower : MonoBehaviour
         attackInterval = interval;
         attackRange = range;
         sellRefund = refund;
-        isAttacker = attacker;
-        energyPerTick = enerPerTick;
-        energyTickInterval = enerInterval;
         rotationSpeed = rotSpeed;
         splashRadius = splash;
     }
@@ -84,12 +77,6 @@ public class Tower : MonoBehaviour
 
         if (upgradeData != null)
             RecalculateStats();
-
-        if (!isAttacker)
-        {
-            var generator = GetComponent<TowerEnergyGenerator>();
-            if (generator != null) generator.Initialize(energyPerTick, energyTickInterval);
-        }
     }
 
     public void SetTargetPriority(TargetPriority priority)
@@ -187,6 +174,7 @@ public class Tower : MonoBehaviour
     private void RecalculateStats()
     {
         float dmg = 0, interval = 0, range = 0, splash = 0;
+        int pierce = 0;
 
         // 주 모듈: main1(절대값) + main2~N(증분) 합산
         for (int i = 1; i <= mainLevel; i++)
@@ -197,6 +185,7 @@ public class Tower : MonoBehaviour
             interval += level.attackInterval;
             range += level.attackRange;
             splash += level.splashRadius;
+            pierce += level.pierceCount;
         }
 
         // 서브 모듈 보너스
@@ -209,6 +198,7 @@ public class Tower : MonoBehaviour
                 interval += sub.attackInterval;
                 range += sub.attackRange;
                 splash += sub.splashRadius;
+                pierce += sub.pierceCount;
             }
         }
 
@@ -216,6 +206,7 @@ public class Tower : MonoBehaviour
         attackInterval = interval;
         attackRange = range;
         splashRadius = splash;
+        pierceCount = pierce;
 
         // 상태이상: 타입별 duration 합산
         RecalculateStatusEffects();
@@ -287,7 +278,7 @@ public class Tower : MonoBehaviour
 
     private void Update()
     {
-        if (!initialized || !isAttacker) return;
+        if (!initialized) return;
 
         // 매 프레임 우선순위에 따라 최적 타겟 재평가
         currentTarget = TargetSelector.SelectTarget(transform.position, attackRange, Priority, enemyLayerMask);
@@ -298,13 +289,17 @@ public class Tower : MonoBehaviour
             LookAt(currentTarget.transform.position);
         }
 
-        // 발사 라인에 적이 있으면 공격
-        attackTimer -= Time.deltaTime;
-        if (attackTimer <= 0f && HasEnemyInFireLine())
+        // 타겟이 있고 조준이 완료되면 공격
+        if (currentTarget != null)
         {
-            Attack();
-            attackTimer = attackInterval;
+            if (attackTimer <= 0f && HasEnemyInFireLine())
+            {
+                Attack();
+                attackTimer = attackInterval;
+            }
         }
+
+        attackTimer = Mathf.Max(attackTimer - Time.deltaTime, 0f);
     }
 
     private void LookAt(Vector3 targetPos)
@@ -334,7 +329,7 @@ public class Tower : MonoBehaviour
         projObj.transform.rotation = transform.rotation;
         var projectile = projObj.GetComponent<Projectile>();
         projectile.Initialize((int)attackDamage, splashRadius,
-            statusEffectType, effectDuration);
+            statusEffectType, effectDuration, pierceCount);
     }
 
     private void SetSortingLayer(string layerName)
@@ -348,11 +343,5 @@ public class Tower : MonoBehaviour
         foreach (var sr in GetComponentsInChildren<SpriteRenderer>())
             if (sr != rangeIndicator)
                 sr.color = color;
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = new Color(1f, 0f, 0f, 0.2f);
-        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 }

@@ -102,18 +102,10 @@ public class TowerInfoUI : MonoBehaviour
             : tower.TowerName;
 
         // 스탯
-        if (tower.IsAttacker)
-        {
-            var stats = $"ATK {tower.AttackDamage}  SPD {tower.AttackInterval:0.#}s  RNG {tower.AttackRange:0.#}";
-            if (tower.SplashRadius > 0f) stats += $"  SPLASH {tower.SplashRadius:0.#}";
-            towerStatsText.text = stats;
-            SetPriorityButtonsVisible(true);
-        }
-        else
-        {
-            towerStatsText.text = "Energy Generator";
-            SetPriorityButtonsVisible(false);
-        }
+        var stats = $"ATK {tower.AttackDamage}  SPD {tower.AttackInterval:0.#}s  RNG {tower.AttackRange:0.#}";
+        if (tower.SplashRadius > 0f) stats += $"  SPLASH {tower.SplashRadius:0.#}";
+        towerStatsText.text = stats;
+        SetPriorityButtonsVisible(true);
 
         // 판매
         sellButtonText.text = $"Sell (+{tower.SellRefund})";
