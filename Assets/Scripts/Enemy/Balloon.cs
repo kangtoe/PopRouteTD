@@ -71,6 +71,38 @@ public class Balloon : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 관통 탄환용: layerCount만큼 레이어를 한 번에 벗긴다.
+    /// 반환값은 실제 소비된 레이어 수.
+    /// </summary>
+    public int TakeLayerDamage(int layerCount)
+    {
+        if (deactivated) return 0;
+
+        int consumed = Mathf.Min(layerCount, (int)currentLayer);
+
+        for (int i = 0; i < consumed; i++)
+        {
+            ResourceManager.Instance.AddEnergy(energyReward);
+            OnBalloonDestroyed?.Invoke(this);
+        }
+
+        BalloonLayer targetLayer = (BalloonLayer)((int)currentLayer - consumed);
+        if (targetLayer >= BalloonLayer.Red)
+        {
+            currentLayer = targetLayer;
+            currentHp = hp;
+            SetColor(GameConstants.GetBalloonColor(currentLayer));
+            follower.SetSpeed(GameConstants.GetBalloonSpeed(currentLayer));
+        }
+        else
+        {
+            Deactivate();
+        }
+
+        return consumed;
+    }
+
     private void DestroyLayer()
     {
         ResourceManager.Instance.AddEnergy(energyReward);

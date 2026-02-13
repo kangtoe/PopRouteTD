@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer))]
@@ -8,12 +9,15 @@ public class Projectile : MonoBehaviour
 
     private int damage;
     private float splashRadius;
+    private int pierceCount;
+    private int remainingPierce;
     private StatusEffectType effectType;
     private float effectDuration;
     private Rigidbody2D rb;
     private float timer;
     private int enemyLayerMask;
     private bool isDeactivated;
+    private readonly HashSet<int> hitInstanceIds = new();
 
     private void Awake()
     {
@@ -23,14 +27,18 @@ public class Projectile : MonoBehaviour
     }
 
     public void Initialize(int attackDamage, float splash = 0f,
-        StatusEffectType statusEffect = StatusEffectType.None, float statusDuration = 0f)
+        StatusEffectType statusEffect = StatusEffectType.None, float statusDuration = 0f,
+        int pierce = 0)
     {
         damage = attackDamage;
         splashRadius = splash;
+        pierceCount = pierce;
+        remainingPierce = pierce;
         effectType = statusEffect;
         effectDuration = statusDuration;
         timer = lifetime;
         isDeactivated = false;
+        hitInstanceIds.Clear();
 
         rb.rotation = transform.eulerAngles.z;
         rb.linearVelocity = transform.up * speed;
@@ -65,6 +73,26 @@ public class Projectile : MonoBehaviour
                     ApplyStatusEffect(balloon);
                 }
             }
+        }
+        else if (pierceCount > 0)
+        {
+            int instanceId = other.gameObject.GetInstanceID();
+            if (hitInstanceIds.Contains(instanceId)) return;
+
+            var balloon = other.GetComponent<Balloon>();
+            if (balloon == null) return;
+
+            int consumed = balloon.TakeLayerDamage(remainingPierce);
+            remainingPierce -= consumed;
+            hitInstanceIds.Add(instanceId);
+            ApplyStatusEffect(balloon);
+
+            if (remainingPierce <= 0)
+            {
+                Deactivate();
+                return;
+            }
+            return;
         }
         else
         {
