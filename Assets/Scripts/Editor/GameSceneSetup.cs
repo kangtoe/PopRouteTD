@@ -5,29 +5,6 @@ using UnityEngine.UI;
 
 public class GameSceneSetup
 {
-    [MenuItem("PopRouteTD/풍선 스포너 단일 프리팹 전환")]
-    public static void MigrateBalloonSpawner()
-    {
-        var spawner = Object.FindAnyObjectByType<BalloonSpawner>();
-        if (spawner == null)
-        {
-            Debug.LogError("[PopRouteTD] 씬에 BalloonSpawner가 없습니다.");
-            return;
-        }
-
-        var so = new SerializedObject(spawner);
-        var prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Enemies/Balloon.prefab");
-        if (prefab == null)
-        {
-            Debug.LogError("[PopRouteTD] Balloon.prefab이 없습니다. 'PopRouteTD/프리팹 에셋 생성'을 먼저 실행하세요.");
-            return;
-        }
-
-        so.FindProperty("balloonPrefab").objectReferenceValue = prefab;
-        so.ApplyModifiedProperties();
-        Debug.Log("[PopRouteTD] BalloonSpawner 단일 프리팹 전환 완료!");
-    }
-
     [MenuItem("PopRouteTD/씬 자동 구성")]
     public static void SetupGameScene()
     {
