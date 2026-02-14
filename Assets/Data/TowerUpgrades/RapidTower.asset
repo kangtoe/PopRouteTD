@@ -16,60 +16,66 @@ MonoBehaviour:
   main1:
     levelName: Rapid Shooter
     description: Fast fire rate single-target attack
-    cost: 0
-    attackDamage: 1
-    attackInterval: 0.4
-    attackRange: 3
-    splashRadius: 0
-    pierceCount: 0
+    cost: 20
+    stats:
+      attackDamage: 1
+      attackInterval: 0.4
+      attackRange: 3
+      splashRadius: 0
+      pierceCount: 0
     statusEffects: []
   main2:
     levelName: Rapid Shooter
     description: SPD, RNG up
     cost: 80
-    attackDamage: 0
-    attackInterval: -0.05
-    attackRange: 0.5
-    splashRadius: 0
-    pierceCount: 0
+    stats:
+      attackDamage: 0
+      attackInterval: -0.05
+      attackRange: 0.5
+      splashRadius: 0
+      pierceCount: 0
     statusEffects: []
   main3:
     levelName: Rapid Shooter
     description: Further stat boost
     cost: 200
-    attackDamage: 1
-    attackInterval: -0.05
-    attackRange: 0.5
-    splashRadius: 0
-    pierceCount: 0
+    stats:
+      attackDamage: 1
+      attackInterval: -0.05
+      attackRange: 0.5
+      splashRadius: 0
+      pierceCount: 0
     statusEffects: []
   main4:
     levelName: Rapid Shooter
     description: Max performance
     cost: 500
-    attackDamage: 1
-    attackInterval: -0.05
-    attackRange: 0.5
-    splashRadius: 0
-    pierceCount: 0
+    stats:
+      attackDamage: 1
+      attackInterval: -0.05
+      attackRange: 0.5
+      splashRadius: 0
+      pierceCount: 0
     statusEffects: []
   subA:
     levelName: Enhance
     description: Greatly increases ATK
     cost: 200
-    attackDamage: 2
-    attackInterval: 0
-    attackRange: 0
-    splashRadius: 0
-    pierceCount: 0
+    stats:
+      attackDamage: 2
+      attackInterval: 0
+      attackRange: 0
+      splashRadius: 0
+      pierceCount: 0
     statusEffects: []
   subB:
     levelName: Spread
     description: Converts to splash area attack
     cost: 200
-    attackDamage: 0
-    attackInterval: 0
-    attackRange: 0
-    splashRadius: 1
-    pierceCount: 0
+    stats:
+      attackDamage: 0
+      attackInterval: 0
+      attackRange: 0
+      splashRadius: 1
+      pierceCount: 0
     statusEffects: []

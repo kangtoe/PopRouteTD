@@ -2,20 +2,10 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
-    [Header("타워 데이터 (프리팹에서 설정)")]
-    [SerializeField] private string towerName;
-    [SerializeField] private int cost;
-    [SerializeField] private float attackDamage;
-    [SerializeField] private float attackInterval = 1f;
-    [SerializeField] private float attackRange = 3f;
-    [SerializeField] private int sellRefund;
-    [SerializeField] private float splashRadius;
-    [SerializeField] private int pierceCount;
-    [SerializeField] private float rotationSpeed = 360f;
+    private readonly float rotationSpeed = 360f;
 
-    [Header("상태이상 (프리팹에서 설정)")]
-    [SerializeField] private StatusEffectType statusEffectType = StatusEffectType.None;
-    [SerializeField] private float effectDuration;
+    private StatusEffectType statusEffectType;
+    private float effectDuration;
 
     [Header("업그레이드")]
     [SerializeField] private TowerUpgradeData upgradeData;
@@ -28,6 +18,7 @@ public class Tower : MonoBehaviour
     [SerializeField] private Transform firePoint;
     [SerializeField] private SpriteRenderer rangeIndicator;
 
+    private TowerStats currentStats = new();
     private float attackTimer;
     private int enemyLayerMask;
     private bool initialized;
@@ -37,13 +28,13 @@ public class Tower : MonoBehaviour
     private UpgradeTrack selectedSub = UpgradeTrack.None;
     private int totalUpgradeCost;
 
-    public string TowerName => towerName;
-    public int Cost => cost;
-    public float AttackDamage => attackDamage;
-    public float AttackInterval => attackInterval;
-    public float AttackRange => attackRange;
-    public int SellRefund => Mathf.RoundToInt((cost + totalUpgradeCost) * GameConstants.SellRefundRate);
-    public float SplashRadius => splashRadius;
+    public string TowerName => upgradeData != null ? upgradeData.towerName : "";
+    public int Cost => upgradeData != null ? upgradeData.main1.cost : 0;
+    public float AttackDamage => currentStats.attackDamage;
+    public float AttackInterval => currentStats.attackInterval;
+    public float AttackRange => currentStats.attackRange;
+    public int SellRefund => Mathf.RoundToInt((Cost + totalUpgradeCost) * GameConstants.SellRefundRate);
+    public float SplashRadius => currentStats.splashRadius;
     public SpriteRenderer RangeIndicator => rangeIndicator;
     public TargetPriority Priority { get; private set; } = TargetPriority.First;
 
@@ -51,20 +42,6 @@ public class Tower : MonoBehaviour
     public UpgradeTrack SelectedSub => selectedSub;
     public bool CanUpgradeMain => upgradeData != null && mainLevel < 4;
     public bool CanSelectSub => upgradeData != null && selectedSub == UpgradeTrack.None;
-
-    /// <summary>런타임 프리팹 생성 시 데이터 설정</summary>
-    public void SetupData(string name, int towerCost, float damage, float interval, float range, int refund,
-        float rotSpeed = 360f, float splash = 0f)
-    {
-        towerName = name;
-        cost = towerCost;
-        attackDamage = damage;
-        attackInterval = interval;
-        attackRange = range;
-        sellRefund = refund;
-        rotationSpeed = rotSpeed;
-        splashRadius = splash;
-    }
 
     public void Initialize()
     {
@@ -173,42 +150,21 @@ public class Tower : MonoBehaviour
 
     private void RecalculateStats()
     {
-        float dmg = 0, interval = 0, range = 0, splash = 0;
-        int pierce = 0;
+        var stats = new TowerStats();
 
-        // 주 모듈: main1(절대값) + main2~N(증분) 합산
         for (int i = 1; i <= mainLevel; i++)
         {
             var level = GetMainLevel(i);
-            if (level == null) continue;
-            dmg += level.attackDamage;
-            interval += level.attackInterval;
-            range += level.attackRange;
-            splash += level.splashRadius;
-            pierce += level.pierceCount;
+            if (level != null) stats.Add(level.stats);
         }
 
-        // 서브 모듈 보너스
         if (selectedSub != UpgradeTrack.None)
         {
             var sub = GetSubData(selectedSub);
-            if (sub != null)
-            {
-                dmg += sub.attackDamage;
-                interval += sub.attackInterval;
-                range += sub.attackRange;
-                splash += sub.splashRadius;
-                pierce += sub.pierceCount;
-            }
+            if (sub != null) stats.Add(sub.stats);
         }
 
-        attackDamage = dmg;
-        attackInterval = interval;
-        attackRange = range;
-        splashRadius = splash;
-        pierceCount = pierce;
-
-        // 상태이상: 타입별 duration 합산
+        currentStats = stats;
         RecalculateStatusEffects();
     }
 
@@ -267,7 +223,10 @@ public class Tower : MonoBehaviour
         if (rangeIndicator != null)
         {
             rangeIndicator.gameObject.SetActive(show);
-            float diameter = attackRange * 2f;
+            float range = currentStats.attackRange;
+            if (range <= 0f && upgradeData != null)
+                range = upgradeData.main1.stats.attackRange;
+            float diameter = range * 2f;
             Vector3 parentScale = rangeIndicator.transform.parent.lossyScale;
             rangeIndicator.transform.localScale = new Vector3(
                 diameter / parentScale.x,
@@ -281,7 +240,7 @@ public class Tower : MonoBehaviour
         if (!initialized) return;
 
         // 매 프레임 우선순위에 따라 최적 타겟 재평가
-        currentTarget = TargetSelector.SelectTarget(transform.position, attackRange, Priority, enemyLayerMask);
+        currentTarget = TargetSelector.SelectTarget(transform.position, currentStats.attackRange, Priority, enemyLayerMask);
 
         // 타겟을 향해 회전
         if (currentTarget != null)
@@ -289,13 +248,13 @@ public class Tower : MonoBehaviour
             LookAt(currentTarget.transform.position);
         }
 
-        // 타겟이 있고 조준이 완료되면 공격
+        // 타겟이 있고 발사 라인에 적이 있으면 공격
         if (currentTarget != null)
         {
             if (attackTimer <= 0f && HasEnemyInFireLine())
             {
                 Attack();
-                attackTimer = attackInterval;
+                attackTimer = currentStats.attackInterval;
             }
         }
 
@@ -314,7 +273,7 @@ public class Tower : MonoBehaviour
     private bool HasEnemyInFireLine()
     {
         Vector2 origin = firePoint != null ? (Vector2)firePoint.position : (Vector2)transform.position;
-        RaycastHit2D hit = Physics2D.Raycast(origin, transform.up, attackRange, enemyLayerMask);
+        RaycastHit2D hit = Physics2D.Raycast(origin, transform.up, currentStats.attackRange, enemyLayerMask);
         return hit.collider != null;
     }
 
@@ -328,8 +287,8 @@ public class Tower : MonoBehaviour
         projObj.transform.position = spawnPos;
         projObj.transform.rotation = transform.rotation;
         var projectile = projObj.GetComponent<Projectile>();
-        projectile.Initialize((int)attackDamage, splashRadius,
-            statusEffectType, effectDuration, pierceCount);
+        projectile.Initialize((int)currentStats.attackDamage, currentStats.splashRadius,
+            statusEffectType, effectDuration, currentStats.pierceCount);
     }
 
     private void SetSortingLayer(string layerName)
@@ -338,10 +297,4 @@ public class Tower : MonoBehaviour
             sr.sortingLayerName = layerName;
     }
 
-    private void SetColor(Color color)
-    {
-        foreach (var sr in GetComponentsInChildren<SpriteRenderer>())
-            if (sr != rangeIndicator)
-                sr.color = color;
-    }
 }

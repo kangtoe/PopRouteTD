@@ -43,8 +43,7 @@ public class PrefabCreator
             basePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Towers/Tower.prefab");
         }
 
-        CreateTowerVariant(basePrefab, "Tower_BombShooter", "폭탄 사수", 30, 2, 2f, 3.5f, 18,
-            new Color(0.8f, 0.3f, 0.3f), splashRadius: 1.2f);
+        CreateTowerVariant(basePrefab, "Tower_BombShooter", "BombTower", new Color(0.8f, 0.3f, 0.3f));
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -108,28 +107,27 @@ public class PrefabCreator
         var basePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Towers/Tower.prefab");
         if (basePrefab == null) return;
 
-        // 기본 사수
-        CreateTowerVariant(basePrefab, "Tower_BasicShooter", "기본 사수", 15, 1, 1f, 3f, 10,
-            new Color(0.4f, 0.4f, 0.8f));
-
-        // 폭탄 타워 (광역 공격)
-        CreateTowerVariant(basePrefab, "Tower_BombShooter", "폭탄 사수", 30, 2, 2f, 3.5f, 18,
-            new Color(0.8f, 0.3f, 0.3f), splashRadius: 1.2f);
+        CreateTowerVariant(basePrefab, "Tower_BasicShooter", "BasicTower", new Color(0.4f, 0.4f, 0.8f));
+        CreateTowerVariant(basePrefab, "Tower_BombShooter", "BombTower", new Color(0.8f, 0.3f, 0.3f));
     }
 
-    private static void CreateTowerVariant(GameObject basePrefab, string fileName, string towerName,
-        int cost, float attackDamage, float attackInterval, float attackRange, int sellRefund,
-        Color color, float splashRadius = 0f)
+    private static void CreateTowerVariant(GameObject basePrefab, string fileName,
+        string upgradeDataName, Color color)
     {
         var path = $"Assets/Prefabs/Towers/{fileName}.prefab";
         if (AssetDatabase.LoadAssetAtPath<GameObject>(path) != null) return;
+
+        var upgradeData = AssetDatabase.LoadAssetAtPath<TowerUpgradeData>(
+            $"Assets/Data/TowerUpgrades/{upgradeDataName}.asset");
 
         var instance = (GameObject)PrefabUtility.InstantiatePrefab(basePrefab);
         instance.name = fileName;
 
         instance.GetComponent<SpriteRenderer>().color = color;
-        instance.GetComponent<Tower>().SetupData(towerName, cost, attackDamage, attackInterval,
-            attackRange, sellRefund, splash: splashRadius);
+
+        var so = new SerializedObject(instance.GetComponent<Tower>());
+        so.FindProperty("upgradeData").objectReferenceValue = upgradeData;
+        so.ApplyModifiedPropertiesWithoutUndo();
 
         PrefabUtility.SaveAsPrefabAsset(instance, path);
         Object.DestroyImmediate(instance);

@@ -16,62 +16,68 @@ MonoBehaviour:
   main1:
     levelName: Basic Shooter
     description: Single-target ranged attack
-    cost: 0
-    attackDamage: 1
-    attackInterval: 1
-    attackRange: 3
-    splashRadius: 0
-    pierceCount: 0
+    cost: 15
+    stats:
+      attackDamage: 1
+      attackInterval: 1
+      attackRange: 3
+      splashRadius: 0
+      pierceCount: 0
     statusEffects: []
   main2:
     levelName: Basic Shooter
     description: ATK, SPD, RNG up
     cost: 80
-    attackDamage: 1
-    attackInterval: -0.1
-    attackRange: 0.5
-    splashRadius: 0
-    pierceCount: 0
+    stats:
+      attackDamage: 1
+      attackInterval: -0.1
+      attackRange: 0.5
+      splashRadius: 0
+      pierceCount: 0
     statusEffects: []
   main3:
     levelName: Basic Shooter
     description: Further stat boost
     cost: 200
-    attackDamage: 1
-    attackInterval: -0.1
-    attackRange: 0.5
-    splashRadius: 0
-    pierceCount: 0
+    stats:
+      attackDamage: 1
+      attackInterval: -0.1
+      attackRange: 0.5
+      splashRadius: 0
+      pierceCount: 0
     statusEffects: []
   main4:
     levelName: Basic Shooter
     description: Max performance
     cost: 500
-    attackDamage: 2
-    attackInterval: -0.1
-    attackRange: 0.5
-    splashRadius: 0
-    pierceCount: 0
+    stats:
+      attackDamage: 2
+      attackInterval: -0.1
+      attackRange: 0.5
+      splashRadius: 0
+      pierceCount: 0
     statusEffects: []
   subA:
     levelName: Elite
     description: Balanced stat bonus
     cost: 200
-    attackDamage: 1
-    attackInterval: -0.1
-    attackRange: 0.5
-    splashRadius: 0
-    pierceCount: 0
+    stats:
+      attackDamage: 1
+      attackInterval: -0.1
+      attackRange: 0.5
+      splashRadius: 0
+      pierceCount: 0
     statusEffects: []
   subB:
     levelName: Frost
     description: Grants slow effect
     cost: 200
-    attackDamage: 0
-    attackInterval: 0
-    attackRange: 0
-    splashRadius: 0
-    pierceCount: 0
+    stats:
+      attackDamage: 0
+      attackInterval: 0
+      attackRange: 0
+      splashRadius: 0
+      pierceCount: 0
     statusEffects:
     - type: 2
       duration: 1.5

@@ -29,7 +29,7 @@ public static class TowerUpgradeDataGenerator
         var so = ScriptableObject.CreateInstance<TowerUpgradeData>();
         so.towerName = "BasicTower";
 
-        so.main1 = Level("Basic Shooter", 0, "Single-target ranged attack",
+        so.main1 = Level("Basic Shooter", 15, "Single-target ranged attack",
             dmg: 1, interval: 1.0f, range: 3.0f);
         so.main2 = Level("Basic Shooter", 80, "ATK, SPD, RNG up",
             dmg: 1, interval: -0.1f, range: 0.5f);
@@ -54,7 +54,7 @@ public static class TowerUpgradeDataGenerator
         var so = ScriptableObject.CreateInstance<TowerUpgradeData>();
         so.towerName = "BombTower";
 
-        so.main1 = Level("Bomb Shooter", 0, "Splash area attack",
+        so.main1 = Level("Bomb Shooter", 30, "Splash area attack",
             dmg: 1, interval: 1.5f, range: 3.0f, splash: 1.0f);
         so.main2 = Level("Bomb Shooter", 100, "ATK, SPD, RNG, splash up",
             dmg: 1, interval: -0.1f, range: 0.5f, splash: 0.2f);
@@ -79,7 +79,7 @@ public static class TowerUpgradeDataGenerator
         var so = ScriptableObject.CreateInstance<TowerUpgradeData>();
         so.towerName = "PierceTower";
 
-        so.main1 = Level("Pierce Shooter", 0, "Piercing projectile hits multiple targets",
+        so.main1 = Level("Pierce Shooter", 25, "Piercing projectile hits multiple targets",
             dmg: 2, interval: 1.2f, range: 4.0f, pierce: 2);
         so.main2 = Level("Pierce Shooter", 120, "ATK, SPD, pierce up",
             dmg: 1, interval: -0.1f, range: 0.5f, pierce: 1);
@@ -105,7 +105,7 @@ public static class TowerUpgradeDataGenerator
         var so = ScriptableObject.CreateInstance<TowerUpgradeData>();
         so.towerName = "SlowTower";
 
-        so.main1 = Level("Slow Shooter", 0, "Attacks apply slow effect",
+        so.main1 = Level("Slow Shooter", 20, "Attacks apply slow effect",
             dmg: 1, interval: 1.5f, range: 3.5f,
             effects: new[] { Effect(StatusEffectType.Slow, 1.0f) });
         so.main2 = Level("Slow Shooter", 80, "Slow duration, RNG up",
@@ -134,7 +134,7 @@ public static class TowerUpgradeDataGenerator
         var so = ScriptableObject.CreateInstance<TowerUpgradeData>();
         so.towerName = "RapidTower";
 
-        so.main1 = Level("Rapid Shooter", 0, "Fast fire rate single-target attack",
+        so.main1 = Level("Rapid Shooter", 20, "Fast fire rate single-target attack",
             dmg: 1, interval: 0.4f, range: 3.0f);
         so.main2 = Level("Rapid Shooter", 80, "SPD, RNG up",
             interval: -0.05f, range: 0.5f);
@@ -169,11 +169,14 @@ public static class TowerUpgradeDataGenerator
             levelName = name,
             description = desc,
             cost = cost,
-            attackDamage = dmg,
-            attackInterval = interval,
-            attackRange = range,
-            splashRadius = splash,
-            pierceCount = pierce,
+            stats = new TowerStats
+            {
+                attackDamage = dmg,
+                attackInterval = interval,
+                attackRange = range,
+                splashRadius = splash,
+                pierceCount = pierce,
+            },
             statusEffects = effects ?? new StatusEffectEntry[0],
         };
     }

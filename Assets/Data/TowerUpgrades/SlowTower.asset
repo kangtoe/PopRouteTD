@@ -16,12 +16,13 @@ MonoBehaviour:
   main1:
     levelName: Slow Shooter
     description: Attacks apply slow effect
-    cost: 0
-    attackDamage: 1
-    attackInterval: 1.5
-    attackRange: 3.5
-    splashRadius: 0
-    pierceCount: 0
+    cost: 20
+    stats:
+      attackDamage: 1
+      attackInterval: 1.5
+      attackRange: 3.5
+      splashRadius: 0
+      pierceCount: 0
     statusEffects:
     - type: 2
       duration: 1
@@ -29,11 +30,12 @@ MonoBehaviour:
     levelName: Slow Shooter
     description: Slow duration, RNG up
     cost: 80
-    attackDamage: 0
-    attackInterval: -0.1
-    attackRange: 0.5
-    splashRadius: 0
-    pierceCount: 0
+    stats:
+      attackDamage: 0
+      attackInterval: -0.1
+      attackRange: 0.5
+      splashRadius: 0
+      pierceCount: 0
     statusEffects:
     - type: 2
       duration: 0.5
@@ -41,11 +43,12 @@ MonoBehaviour:
     levelName: Slow Shooter
     description: Further stat boost
     cost: 200
-    attackDamage: 0
-    attackInterval: -0.1
-    attackRange: 0.5
-    splashRadius: 0
-    pierceCount: 0
+    stats:
+      attackDamage: 0
+      attackInterval: -0.1
+      attackRange: 0.5
+      splashRadius: 0
+      pierceCount: 0
     statusEffects:
     - type: 2
       duration: 0.5
@@ -53,11 +56,12 @@ MonoBehaviour:
     levelName: Slow Shooter
     description: Max performance
     cost: 500
-    attackDamage: 0
-    attackInterval: -0.1
-    attackRange: 0.5
-    splashRadius: 0
-    pierceCount: 0
+    stats:
+      attackDamage: 0
+      attackInterval: -0.1
+      attackRange: 0.5
+      splashRadius: 0
+      pierceCount: 0
     statusEffects:
     - type: 2
       duration: 0.5
@@ -65,11 +69,12 @@ MonoBehaviour:
     levelName: Frostbite
     description: Adds burn effect
     cost: 200
-    attackDamage: 0
-    attackInterval: 0
-    attackRange: 0
-    splashRadius: 0
-    pierceCount: 0
+    stats:
+      attackDamage: 0
+      attackInterval: 0
+      attackRange: 0
+      splashRadius: 0
+      pierceCount: 0
     statusEffects:
     - type: 1
       duration: 2
@@ -77,11 +82,12 @@ MonoBehaviour:
     levelName: Freeze
     description: Greatly extends slow duration
     cost: 200
-    attackDamage: 0
-    attackInterval: 0
-    attackRange: 0
-    splashRadius: 0
-    pierceCount: 0
+    stats:
+      attackDamage: 0
+      attackInterval: 0
+      attackRange: 0
+      splashRadius: 0
+      pierceCount: 0
     statusEffects:
     - type: 2
       duration: 1.5
