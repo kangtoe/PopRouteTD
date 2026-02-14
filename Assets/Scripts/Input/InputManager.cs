@@ -44,6 +44,11 @@ public class InputManager : MonoBehaviour
     public void BeginDrag(GameObject towerPrefab)
     {
         if (TowerSelectUI.Instance != null && TowerSelectUI.Instance.IsOnCooldown(towerPrefab)) return;
+
+        // 비용 부족 시 드래그 시작 차단
+        var towerComp = towerPrefab.GetComponent<Tower>();
+        if (towerComp != null && ResourceManager.Instance.Energy < towerComp.Cost) return;
+
         if (mainCamera == null) mainCamera = Camera.main;
 
         // 드래그 시작 시 타워 정보 패널 닫기
