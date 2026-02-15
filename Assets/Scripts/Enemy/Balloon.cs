@@ -8,30 +8,50 @@ public class Balloon : MonoBehaviour
     [SerializeField] private int hp = 1;
     [SerializeField] private int energyReward = 1;
     [SerializeField, Range(0f, 1f)] private float statusEffectResistance;
+    [SerializeField] private int shieldHp = GameConstants.DefaultShieldHp;
+
+    [Header("변형 외관")]
+    [SerializeField] private GameObject shieldVisual;
+    [SerializeField] private GameObject enhancedVisual;
+    [SerializeField] private GameObject enhancedShieldVisual;
 
     private int currentHp;
+    private int currentShieldHp;
     private BalloonLayer currentLayer;
+    private EnemyVariant currentVariant;
     private SpriteRenderer[] spriteRenderers;
+    private SpriteRenderer bodySpriteRenderer;
+    private SpriteRenderer[] enhancedSpriteRenderers;
     private WaypointFollower follower;
     private StatusEffectHandler statusEffectHandler;
     private WaypointPath path;
     private bool deactivated;
 
     public BalloonLayer CurrentLayer => currentLayer;
+    public EnemyVariant CurrentVariant => currentVariant;
     public int CurrentHp => currentHp;
     public WaypointFollower Follower => follower;
+
+    private bool IsEnhanced => currentVariant is EnemyVariant.Enhanced or EnemyVariant.EnhancedShielded;
+    private bool HasShield => currentShieldHp > 0;
 
     public static event Action<Balloon> OnBalloonDestroyed;
     public static event Action<Balloon> OnBalloonReachedBase;
 
     private void Awake()
     {
-        spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+        spriteRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+        bodySpriteRenderer = GetComponent<SpriteRenderer>();
+        enhancedSpriteRenderers = enhancedVisual
+            ? enhancedVisual.GetComponentsInChildren<SpriteRenderer>(true)
+            : System.Array.Empty<SpriteRenderer>();
         follower = GetComponent<WaypointFollower>();
         statusEffectHandler = GetComponent<StatusEffectHandler>();
 
         gameObject.layer = LayerMask.NameToLayer(GameConstants.LayerEnemy);
         SetSortingLayer(GameConstants.SortEnemy);
+        SetSortingOrder(shieldVisual, -1);
+        SetSortingOrder(enhancedShieldVisual, -1);
     }
 
     private void SetSortingLayer(string layerName)
@@ -40,30 +60,83 @@ public class Balloon : MonoBehaviour
             sr.sortingLayerName = layerName;
     }
 
+    private static void SetSortingOrder(GameObject visual, int order)
+    {
+        if (!visual) return;
+        foreach (var sr in visual.GetComponentsInChildren<SpriteRenderer>(true))
+            sr.sortingOrder = order;
+    }
+
     private void SetColor(Color color)
     {
-        foreach (var sr in spriteRenderers)
+        bodySpriteRenderer.color = color;
+        foreach (var sr in enhancedSpriteRenderers)
             sr.color = color;
     }
 
-    public void Initialize(BalloonLayer startLayer, WaypointPath waypointPath)
+    private void ApplyVariantVisual()
+    {
+        bool hasShield = currentVariant is EnemyVariant.Shielded or EnemyVariant.EnhancedShielded;
+        bool isEnhanced = currentVariant is EnemyVariant.Enhanced or EnemyVariant.EnhancedShielded;
+
+        if (shieldVisual) shieldVisual.SetActive(hasShield);
+        if (enhancedVisual) enhancedVisual.SetActive(isEnhanced);
+        if (enhancedShieldVisual) enhancedShieldVisual.SetActive(currentVariant == EnemyVariant.EnhancedShielded);
+    }
+
+    public void Initialize(BalloonLayer startLayer, WaypointPath waypointPath,
+        EnemyVariant variant = EnemyVariant.Normal)
     {
         path = waypointPath;
         currentLayer = startLayer;
-        currentHp = hp;
+        currentVariant = variant;
+        currentHp = GetLayerHp();
+        currentShieldHp = IsShieldVariant(variant) ? shieldHp : 0;
 
         deactivated = false;
         statusEffectHandler.ClearAll();
         SetColor(GameConstants.GetBalloonColor(currentLayer));
-        follower.Initialize(path, GameConstants.GetBalloonSpeed(currentLayer));
+        ApplyVariantVisual();
+
+        float speed = GameConstants.GetBalloonSpeed(currentLayer);
+        if (IsEnhanced) speed *= GameConstants.EnhancedSpeedMultiplier;
+        follower.Initialize(path, speed);
         follower.OnReachedEnd += OnReachBase;
 
         gameObject.SetActive(true);
     }
 
+    private int GetLayerHp()
+    {
+        return IsEnhanced ? hp * GameConstants.EnhancedHpMultiplier : hp;
+    }
+
+    private int GetReward()
+    {
+        return IsEnhanced ? energyReward * GameConstants.EnhancedRewardMultiplier : energyReward;
+    }
+
+    private static bool IsShieldVariant(EnemyVariant variant)
+    {
+        return variant is EnemyVariant.Shielded or EnemyVariant.EnhancedShielded;
+    }
+
     public void TakeDamage(int damage)
     {
         if (deactivated) return;
+
+        if (HasShield)
+        {
+            currentShieldHp -= damage;
+            if (currentShieldHp <= 0)
+            {
+                int overflow = -currentShieldHp;
+                BreakShield();
+                if (overflow > 0) TakeDamage(overflow);
+            }
+            return;
+        }
+
         currentHp -= damage;
         if (currentHp <= 0)
         {
@@ -79,11 +152,21 @@ public class Balloon : MonoBehaviour
     {
         if (deactivated) return 0;
 
+        int shieldConsumed = 0;
+        if (HasShield)
+        {
+            BreakShield();
+            shieldConsumed = 1;
+            layerCount--;
+            if (layerCount <= 0) return shieldConsumed;
+        }
+
         int consumed = Mathf.Min(layerCount, (int)currentLayer);
+        int reward = GetReward();
 
         for (int i = 0; i < consumed; i++)
         {
-            ResourceManager.Instance.AddEnergy(energyReward);
+            ResourceManager.Instance.AddEnergy(reward);
             OnBalloonDestroyed?.Invoke(this);
         }
 
@@ -91,36 +174,54 @@ public class Balloon : MonoBehaviour
         if (targetLayer >= BalloonLayer.Red)
         {
             currentLayer = targetLayer;
-            currentHp = hp;
+            currentHp = GetLayerHp();
             SetColor(GameConstants.GetBalloonColor(currentLayer));
-            follower.SetSpeed(GameConstants.GetBalloonSpeed(currentLayer));
+            ApplyLayerSpeed();
         }
         else
         {
             Deactivate();
         }
 
-        return consumed;
+        return shieldConsumed + consumed;
     }
 
     private void DestroyLayer()
     {
-        ResourceManager.Instance.AddEnergy(energyReward);
+        ResourceManager.Instance.AddEnergy(GetReward());
         OnBalloonDestroyed?.Invoke(this);
 
         BalloonLayer lowerLayer = currentLayer - 1;
         if (lowerLayer >= BalloonLayer.Red)
         {
-            // in-place 레이어 다운그레이드 (상태이상 유지)
             currentLayer = lowerLayer;
-            currentHp = hp;
+            currentHp = GetLayerHp();
             SetColor(GameConstants.GetBalloonColor(currentLayer));
-            follower.SetSpeed(GameConstants.GetBalloonSpeed(currentLayer));
+            ApplyLayerSpeed();
         }
         else
         {
             Deactivate();
         }
+    }
+
+    private void BreakShield()
+    {
+        currentShieldHp = 0;
+
+        if (currentVariant == EnemyVariant.Shielded)
+            currentVariant = EnemyVariant.Normal;
+        else if (currentVariant == EnemyVariant.EnhancedShielded)
+            currentVariant = EnemyVariant.Enhanced;
+
+        ApplyVariantVisual();
+    }
+
+    private void ApplyLayerSpeed()
+    {
+        float speed = GameConstants.GetBalloonSpeed(currentLayer);
+        if (IsEnhanced) speed *= GameConstants.EnhancedSpeedMultiplier;
+        follower.SetSpeed(speed);
     }
 
     private void OnReachBase()
@@ -145,6 +246,9 @@ public class Balloon : MonoBehaviour
         if (deactivated) return;
         deactivated = true;
         statusEffectHandler.ClearAll();
+        if (shieldVisual) shieldVisual.SetActive(false);
+        if (enhancedVisual) enhancedVisual.SetActive(false);
+        if (enhancedShieldVisual) enhancedShieldVisual.SetActive(false);
         follower.OnReachedEnd -= OnReachBase;
         BalloonSpawner.Instance.Return(gameObject);
     }

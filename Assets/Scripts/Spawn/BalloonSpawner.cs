@@ -14,6 +14,11 @@ public class BalloonSpawner : MonoBehaviour
     [Header("풀 크기")]
     [SerializeField] private int initialPoolSize = 30;
 
+    [Header("디버그")]
+    [SerializeField] private bool useDebugOverride;
+    [SerializeField] private BalloonLayer debugLayer = BalloonLayer.Red;
+    [SerializeField] private EnemyVariant debugVariant = EnemyVariant.Normal;
+
     private ObjectPool<GameObject> balloonPool;
 
     private void Awake()
@@ -40,12 +45,19 @@ public class BalloonSpawner : MonoBehaviour
         );
     }
 
-    public GameObject SpawnBalloon(BalloonLayer layer, WaypointPath path)
+    public GameObject SpawnBalloon(BalloonLayer layer, WaypointPath path,
+        EnemyVariant variant = EnemyVariant.Normal)
     {
+        if (useDebugOverride)
+        {
+            layer = debugLayer;
+            variant = debugVariant;
+        }
+
         var obj = balloonPool.Get();
         if (obj == null) return null;
         var balloon = obj.GetComponent<Balloon>();
-        balloon.Initialize(layer, path);
+        balloon.Initialize(layer, path, variant);
         GameManager.Instance.RegisterEnemy();
         return obj;
     }

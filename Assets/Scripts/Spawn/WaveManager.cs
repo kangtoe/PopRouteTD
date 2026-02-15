@@ -39,7 +39,7 @@ public class WaveManager : MonoBehaviour
         {
             for (int i = 0; i < group.count; i++)
             {
-                BalloonSpawner.Instance.SpawnBalloon(group.layer, waypointPath);
+                BalloonSpawner.Instance.SpawnBalloon(group.layer, waypointPath, group.variant);
                 yield return new WaitForSeconds(group.interval);
             }
         }
@@ -86,12 +86,15 @@ public class WaveManager : MonoBehaviour
     private struct SpawnEntry
     {
         public BalloonLayer layer;
+        public EnemyVariant variant;
         public int count;
         public float interval;
 
-        public SpawnEntry(BalloonLayer layer, int count, float interval)
+        public SpawnEntry(BalloonLayer layer, int count, float interval,
+            EnemyVariant variant = EnemyVariant.Normal)
         {
             this.layer = layer;
+            this.variant = variant;
             this.count = count;
             this.interval = interval;
         }

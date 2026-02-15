@@ -28,6 +28,14 @@ public enum GameState
     GameOver
 }
 
+public enum EnemyVariant
+{
+    Normal,
+    Shielded,
+    Enhanced,
+    EnhancedShielded
+}
+
 public enum StatusEffectType
 {
     None,
@@ -61,6 +69,14 @@ public static class GameConstants
     // Tower
     public const float PlacementCooldown = 3f;
     public const float SellRefundRate = 0.5f;
+
+    // Enhanced 배율
+    public const int EnhancedHpMultiplier = 2;
+    public const float EnhancedSpeedMultiplier = 1.2f;
+    public const int EnhancedRewardMultiplier = 2;
+
+    // Shield
+    public const int DefaultShieldHp = 3;
 
     // Status Effects (고정 수치)
     public const int BurnDamagePerTick = 1;
