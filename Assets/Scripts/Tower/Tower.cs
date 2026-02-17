@@ -15,6 +15,7 @@ public class Tower : MonoBehaviour
     [SerializeField] private GameObject subVisualA;
     [SerializeField] private GameObject subVisualB;
 
+    [SerializeField] private Transform body;
     [SerializeField] private Transform firePoint;
     [SerializeField] private SpriteRenderer rangeIndicator;
 
@@ -265,15 +266,15 @@ public class Tower : MonoBehaviour
     {
         Vector2 dir = (targetPos - transform.position).normalized;
         float targetAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
-        float currentAngle = transform.eulerAngles.z;
+        float currentAngle = body.eulerAngles.z;
         float newAngle = Mathf.MoveTowardsAngle(currentAngle, targetAngle, rotationSpeed * Time.deltaTime);
-        transform.rotation = Quaternion.Euler(0, 0, newAngle);
+        body.rotation = Quaternion.Euler(0, 0, newAngle);
     }
 
     private bool HasEnemyInFireLine()
     {
         Vector2 origin = firePoint != null ? (Vector2)firePoint.position : (Vector2)transform.position;
-        RaycastHit2D hit = Physics2D.Raycast(origin, transform.up, currentStats.attackRange, enemyLayerMask);
+        RaycastHit2D hit = Physics2D.Raycast(origin, body.up, currentStats.attackRange, enemyLayerMask);
         return hit.collider != null;
     }
 
@@ -285,7 +286,7 @@ public class Tower : MonoBehaviour
 
         Vector3 spawnPos = firePoint != null ? firePoint.position : transform.position;
         projObj.transform.position = spawnPos;
-        projObj.transform.rotation = transform.rotation;
+        projObj.transform.rotation = body.rotation;
         var projectile = projObj.GetComponent<Projectile>();
         projectile.Initialize((int)currentStats.attackDamage, currentStats.splashRadius,
             statusEffectType, effectDuration, currentStats.pierceCount);
@@ -293,8 +294,14 @@ public class Tower : MonoBehaviour
 
     private void SetSortingLayer(string layerName)
     {
-        foreach (var sr in GetComponentsInChildren<SpriteRenderer>())
+        if (body == null) return;
+
+        foreach (var sr in body.GetComponentsInChildren<SpriteRenderer>())
             sr.sortingLayerName = layerName;
+
+        var bodySr = body.GetComponent<SpriteRenderer>();
+        if (bodySr != null)
+            bodySr.sortingOrder = -1;
     }
 
 }
