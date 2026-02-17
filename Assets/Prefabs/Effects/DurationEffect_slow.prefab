@@ -58,7 +58,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2350969617010716532, guid: 254bc4730b5a65a45b75d33b66cb5eac, type: 3}
       propertyPath: m_Name
-      value: SlowEffect Variant
+      value: DurationEffect_slow
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
