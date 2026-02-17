@@ -1,0 +1,411 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd176654fe75bc84588b86dac13ca874, type: 3}
+  m_Name: WaveTable
+  m_EditorClassIdentifier: Assembly-CSharp::WaveTable
+  waves:
+  - groups:
+    - layer: 1
+      variant: 0
+      count: 20
+      interval: 0.8
+  - groups:
+    - layer: 1
+      variant: 0
+      count: 35
+      interval: 0.5
+  - groups:
+    - layer: 1
+      variant: 0
+      count: 25
+      interval: 0.76
+    - layer: 2
+      variant: 0
+      count: 5
+      interval: 0.76
+  - groups:
+    - layer: 1
+      variant: 0
+      count: 35
+      interval: 0.74
+    - layer: 2
+      variant: 0
+      count: 18
+      interval: 0.74
+  - groups:
+    - layer: 1
+      variant: 0
+      count: 5
+      interval: 0.72
+    - layer: 2
+      variant: 0
+      count: 27
+      interval: 0.72
+  - groups:
+    - layer: 1
+      variant: 0
+      count: 15
+      interval: 0.7
+    - layer: 2
+      variant: 0
+      count: 15
+      interval: 0.7
+    - layer: 3
+      variant: 0
+      count: 4
+      interval: 0.7
+  - groups:
+    - layer: 1
+      variant: 0
+      count: 20
+      interval: 0.68
+    - layer: 2
+      variant: 0
+      count: 20
+      interval: 0.68
+    - layer: 3
+      variant: 0
+      count: 5
+      interval: 0.68
+  - groups:
+    - layer: 1
+      variant: 0
+      count: 10
+      interval: 0.66
+    - layer: 2
+      variant: 0
+      count: 20
+      interval: 0.66
+    - layer: 3
+      variant: 0
+      count: 14
+      interval: 0.66
+  - groups:
+    - layer: 3
+      variant: 0
+      count: 30
+      interval: 0.64
+  - groups:
+    - layer: 2
+      variant: 0
+      count: 102
+      interval: 0.62
+  - groups:
+    - layer: 1
+      variant: 0
+      count: 10
+      interval: 0.6
+    - layer: 2
+      variant: 0
+      count: 10
+      interval: 0.6
+    - layer: 3
+      variant: 0
+      count: 12
+      interval: 0.6
+    - layer: 4
+      variant: 0
+      count: 3
+      interval: 0.6
+  - groups:
+    - layer: 2
+      variant: 0
+      count: 15
+      interval: 0.58000004
+    - layer: 3
+      variant: 0
+      count: 10
+      interval: 0.58000004
+    - layer: 4
+      variant: 0
+      count: 5
+      interval: 0.58000004
+  - groups:
+    - layer: 2
+      variant: 0
+      count: 50
+      interval: 0.56
+    - layer: 3
+      variant: 0
+      count: 23
+      interval: 0.56
+  - groups:
+    - layer: 1
+      variant: 0
+      count: 49
+      interval: 0.54
+    - layer: 2
+      variant: 0
+      count: 15
+      interval: 0.54
+    - layer: 3
+      variant: 0
+      count: 10
+      interval: 0.54
+    - layer: 4
+      variant: 0
+      count: 9
+      interval: 0.54
+  - groups:
+    - layer: 1
+      variant: 0
+      count: 20
+      interval: 0.52000004
+    - layer: 2
+      variant: 0
+      count: 15
+      interval: 0.52000004
+    - layer: 3
+      variant: 0
+      count: 12
+      interval: 0.52000004
+    - layer: 4
+      variant: 0
+      count: 10
+      interval: 0.52000004
+    - layer: 5
+      variant: 0
+      count: 5
+      interval: 0.52000004
+  - groups:
+    - layer: 3
+      variant: 0
+      count: 40
+      interval: 0.5
+    - layer: 4
+      variant: 0
+      count: 8
+      interval: 0.5
+  - groups:
+    - layer: 4
+      variant: 2
+      count: 12
+      interval: 0.66
+  - groups:
+    - layer: 3
+      variant: 0
+      count: 80
+      interval: 0.46
+  - groups:
+    - layer: 3
+      variant: 0
+      count: 10
+      interval: 0.44000003
+    - layer: 4
+      variant: 0
+      count: 4
+      interval: 0.44000003
+    - layer: 4
+      variant: 2
+      count: 5
+      interval: 0.44000003
+    - layer: 5
+      variant: 0
+      count: 15
+      interval: 0.44000003
+  - groups:
+    - layer: 1
+      variant: 1
+      count: 8
+      interval: 1
+  - groups:
+    - layer: 4
+      variant: 0
+      count: 40
+      interval: 0.40000004
+    - layer: 5
+      variant: 0
+      count: 14
+      interval: 0.40000004
+  - groups:
+    - layer: 6
+      variant: 0
+      count: 16
+      interval: 0.38000003
+  - groups:
+    - layer: 6
+      variant: 0
+      count: 7
+      interval: 0.5
+    - layer: 7
+      variant: 0
+      count: 7
+      interval: 0.5
+  - groups:
+    - layer: 2
+      variant: 0
+      count: 20
+      interval: 0.34000003
+    - layer: 3
+      variant: 1
+      count: 1
+      interval: 0.34000003
+  - groups:
+    - layer: 4
+      variant: 2
+      count: 25
+      interval: 0.32000002
+    - layer: 7
+      variant: 0
+      count: 10
+      interval: 0.32000002
+  - groups:
+    - layer: 5
+      variant: 0
+      count: 23
+      interval: 0.3
+    - layer: 6
+      variant: 0
+      count: 4
+      interval: 0.3
+  - groups:
+    - layer: 1
+      variant: 0
+      count: 100
+      interval: 0.28000003
+    - layer: 2
+      variant: 0
+      count: 60
+      interval: 0.28000003
+    - layer: 3
+      variant: 0
+      count: 45
+      interval: 0.28000003
+    - layer: 4
+      variant: 0
+      count: 45
+      interval: 0.28000003
+  - groups:
+    - layer: 7
+      variant: 1
+      count: 6
+      interval: 1
+  - groups:
+    - layer: 4
+      variant: 0
+      count: 50
+      interval: 0.24000002
+    - layer: 4
+      variant: 2
+      count: 15
+      interval: 0.24000002
+  - groups:
+    - layer: 7
+      variant: 1
+      count: 9
+      interval: 1
+  - groups:
+    - layer: 6
+      variant: 0
+      count: 24
+      interval: 0.4
+    - layer: 6
+      variant: 2
+      count: 2
+      interval: 0.4
+  - groups:
+    - layer: 6
+      variant: 0
+      count: 35
+      interval: 0.2
+    - layer: 7
+      variant: 0
+      count: 10
+      interval: 0.2
+  - groups:
+    - layer: 1
+      variant: 1
+      count: 20
+      interval: 0.2
+    - layer: 4
+      variant: 1
+      count: 13
+      interval: 0.2
+  - groups:
+    - layer: 4
+      variant: 0
+      count: 160
+      interval: 0.2
+    - layer: 6
+      variant: 0
+      count: 6
+      interval: 0.2
+  - groups:
+    - layer: 5
+      variant: 0
+      count: 35
+      interval: 0.2
+    - layer: 6
+      variant: 0
+      count: 55
+      interval: 0.2
+    - layer: 7
+      variant: 0
+      count: 5
+      interval: 0.2
+  - groups:
+    - layer: 5
+      variant: 0
+      count: 140
+      interval: 0.2
+    - layer: 3
+      variant: 3
+      count: 20
+      interval: 0.2
+  - groups:
+    - layer: 6
+      variant: 0
+      count: 60
+      interval: 0.2
+    - layer: 6
+      variant: 1
+      count: 7
+      interval: 0.2
+    - layer: 7
+      variant: 1
+      count: 15
+      interval: 0.2
+  - groups:
+    - layer: 5
+      variant: 0
+      count: 42
+      interval: 0.2
+    - layer: 6
+      variant: 0
+      count: 27
+      interval: 0.2
+    - layer: 7
+      variant: 1
+      count: 14
+      interval: 0.2
+    - layer: 7
+      variant: 2
+      count: 2
+      interval: 0.2
+  - groups:
+    - layer: 6
+      variant: 0
+      count: 40
+      interval: 0.2
+    - layer: 7
+      variant: 0
+      count: 18
+      interval: 0.2
+    - layer: 7
+      variant: 2
+      count: 2
+      interval: 0.2
+  - groups:
+    - layer: 7
+      variant: 3
+      count: 10
+      interval: 1
