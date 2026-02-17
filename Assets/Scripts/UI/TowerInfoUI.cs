@@ -158,23 +158,15 @@ public class TowerInfoUI : MonoBehaviour
         subBButton.gameObject.SetActive(hasUpgradeData);
         if (!hasUpgradeData) return;
 
-        var selected = selectedTower.SelectedSub;
-
-        if (selected == UpgradeTrack.None)
-        {
-            subAButton.SetAvailable($"A: {subA.levelName}", subA.cost, subA.description);
-            subBButton.SetAvailable($"B: {subB.levelName}", subB.cost, subB.description);
-        }
-        else if (selected == UpgradeTrack.A)
-        {
+        if (selectedTower.HasSubA)
             subAButton.SetSelected($"A: {subA.levelName}", subA.description);
-            subBButton.SetLocked($"B: {subB.levelName}", subB.description);
-        }
         else
-        {
-            subAButton.SetLocked($"A: {subA.levelName}", subA.description);
+            subAButton.SetAvailable($"A: {subA.levelName}", subA.cost, subA.description);
+
+        if (selectedTower.HasSubB)
             subBButton.SetSelected($"B: {subB.levelName}", subB.description);
-        }
+        else
+            subBButton.SetAvailable($"B: {subB.levelName}", subB.cost, subB.description);
     }
 
     private void OnUpgradeClicked()

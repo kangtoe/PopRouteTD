@@ -26,7 +26,8 @@ public class Tower : MonoBehaviour
     private Balloon currentTarget;
 
     private int mainLevel = 1;
-    private UpgradeTrack selectedSub = UpgradeTrack.None;
+    private bool hasSubA;
+    private bool hasSubB;
     private int totalUpgradeCost;
 
     public string TowerName => upgradeData != null ? upgradeData.towerName : "";
@@ -40,9 +41,9 @@ public class Tower : MonoBehaviour
     public TargetPriority Priority { get; private set; } = TargetPriority.First;
 
     public int MainLevel => mainLevel;
-    public UpgradeTrack SelectedSub => selectedSub;
+    public bool HasSubA => hasSubA;
+    public bool HasSubB => hasSubB;
     public bool CanUpgradeMain => upgradeData != null && mainLevel < 4;
-    public bool CanSelectSub => upgradeData != null && selectedSub == UpgradeTrack.None;
 
     public void Initialize()
     {
@@ -90,8 +91,9 @@ public class Tower : MonoBehaviour
 
     public bool SelectSub(UpgradeTrack sub)
     {
-        if (!CanSelectSub) return false;
-        if (sub == UpgradeTrack.None) return false;
+        if (upgradeData == null || sub == UpgradeTrack.None) return false;
+        if (sub == UpgradeTrack.A && hasSubA) return false;
+        if (sub == UpgradeTrack.B && hasSubB) return false;
 
         var subData = GetSubData(sub);
         if (subData == null) return false;
@@ -100,7 +102,8 @@ public class Tower : MonoBehaviour
             return false;
 
         totalUpgradeCost += subData.cost;
-        selectedSub = sub;
+        if (sub == UpgradeTrack.A) hasSubA = true;
+        else hasSubB = true;
 
         RecalculateStats();
         ActivateVisual(sub == UpgradeTrack.A ? subVisualA : subVisualB);
@@ -159,9 +162,14 @@ public class Tower : MonoBehaviour
             if (level != null) stats.Add(level.stats);
         }
 
-        if (selectedSub != UpgradeTrack.None)
+        if (hasSubA)
         {
-            var sub = GetSubData(selectedSub);
+            var sub = GetSubData(UpgradeTrack.A);
+            if (sub != null) stats.Add(sub.stats);
+        }
+        if (hasSubB)
+        {
+            var sub = GetSubData(UpgradeTrack.B);
             if (sub != null) stats.Add(sub.stats);
         }
 
@@ -177,8 +185,10 @@ public class Tower : MonoBehaviour
         for (int i = 1; i <= mainLevel; i++)
             AccumulateEffects(GetMainLevel(i), durations);
 
-        if (selectedSub != UpgradeTrack.None)
-            AccumulateEffects(GetSubData(selectedSub), durations);
+        if (hasSubA)
+            AccumulateEffects(GetSubData(UpgradeTrack.A), durations);
+        if (hasSubB)
+            AccumulateEffects(GetSubData(UpgradeTrack.B), durations);
 
         // Projectile 호환: 첫 번째 유효 효과 사용
         statusEffectType = StatusEffectType.None;
