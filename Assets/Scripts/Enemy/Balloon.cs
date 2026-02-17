@@ -11,17 +11,23 @@ public class Balloon : MonoBehaviour
     [SerializeField] private int shieldHp = GameConstants.DefaultShieldHp;
 
     [Header("변형 외관")]
-    [SerializeField] private GameObject shieldVisual;
+    [SerializeField] private GameObject bodyOutline;
     [SerializeField] private GameObject enhancedVisual;
-    [SerializeField] private GameObject enhancedShieldVisual;
+    [SerializeField] private GameObject enhancedOutline;
+    [SerializeField] private GameObject shieldVisual;
+    [SerializeField] private SpriteRenderer[] colorExcludes;
 
     private int currentHp;
     private int currentShieldHp;
     private BalloonLayer currentLayer;
     private EnemyVariant currentVariant;
+    private const int SortingGap = 100;
+    private const int SortingRange = SortingGap * 10000;
+    private static int nextSortingIndex;
+    private static int NextSortingOrder => nextSortingIndex-- % SortingRange;
+
     private SpriteRenderer[] spriteRenderers;
-    private SpriteRenderer bodySpriteRenderer;
-    private SpriteRenderer[] enhancedSpriteRenderers;
+    private SpriteRenderer bodyRenderer;
     private WaypointFollower follower;
     private StatusEffectHandler statusEffectHandler;
     private WaypointPath path;
@@ -41,23 +47,31 @@ public class Balloon : MonoBehaviour
     private void Awake()
     {
         spriteRenderers = GetComponentsInChildren<SpriteRenderer>(true);
-        bodySpriteRenderer = GetComponent<SpriteRenderer>();
-        enhancedSpriteRenderers = enhancedVisual
-            ? enhancedVisual.GetComponentsInChildren<SpriteRenderer>(true)
-            : System.Array.Empty<SpriteRenderer>();
+        bodyRenderer = GetComponent<SpriteRenderer>();
         follower = GetComponent<WaypointFollower>();
         statusEffectHandler = GetComponent<StatusEffectHandler>();
 
         gameObject.layer = LayerMask.NameToLayer(GameConstants.LayerEnemy);
         SetSortingLayer(GameConstants.SortEnemy);
-        SetSortingOrder(shieldVisual, -1);
-        SetSortingOrder(enhancedShieldVisual, -1);
     }
 
     private void SetSortingLayer(string layerName)
     {
         foreach (var sr in spriteRenderers)
             sr.sortingLayerName = layerName;
+    }
+
+    private void ApplySortingOrder()
+    {   
+        SetSortingOrder(shieldVisual, NextSortingOrder);    
+        SetSortingOrder(enhancedVisual, NextSortingOrder);
+        
+        bodyRenderer.sortingOrder = NextSortingOrder;
+
+        SetSortingOrder(enhancedOutline, NextSortingOrder);
+        SetSortingOrder(bodyOutline, NextSortingOrder);
+
+        nextSortingIndex += SortingGap;
     }
 
     private static void SetSortingOrder(GameObject visual, int order)
@@ -69,9 +83,11 @@ public class Balloon : MonoBehaviour
 
     private void SetColor(Color color)
     {
-        bodySpriteRenderer.color = color;
-        foreach (var sr in enhancedSpriteRenderers)
-            sr.color = color;
+        foreach (var sr in spriteRenderers)
+        {
+            if (System.Array.IndexOf(colorExcludes, sr) < 0)
+                sr.color = color;
+        }
     }
 
     private void ApplyVariantVisual()
@@ -81,7 +97,6 @@ public class Balloon : MonoBehaviour
 
         if (shieldVisual) shieldVisual.SetActive(hasShield);
         if (enhancedVisual) enhancedVisual.SetActive(isEnhanced);
-        if (enhancedShieldVisual) enhancedShieldVisual.SetActive(currentVariant == EnemyVariant.EnhancedShielded);
     }
 
     public void Initialize(BalloonLayer startLayer, WaypointPath waypointPath,
@@ -95,6 +110,7 @@ public class Balloon : MonoBehaviour
 
         deactivated = false;
         statusEffectHandler.ClearAll();
+        ApplySortingOrder();
         SetColor(GameConstants.GetBalloonColor(currentLayer));
         ApplyVariantVisual();
 
@@ -248,7 +264,6 @@ public class Balloon : MonoBehaviour
         statusEffectHandler.ClearAll();
         if (shieldVisual) shieldVisual.SetActive(false);
         if (enhancedVisual) enhancedVisual.SetActive(false);
-        if (enhancedShieldVisual) enhancedShieldVisual.SetActive(false);
         follower.OnReachedEnd -= OnReachBase;
         BalloonSpawner.Instance.Return(gameObject);
     }
