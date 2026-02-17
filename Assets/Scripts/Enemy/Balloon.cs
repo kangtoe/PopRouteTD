@@ -6,7 +6,6 @@ public class Balloon : MonoBehaviour
 {
     [Header("풍선 데이터")]
     [SerializeField] private int hp = 1;
-    [SerializeField] private int energyReward = 1;
     [SerializeField, Range(0f, 1f)] private float statusEffectResistance;
     [SerializeField] private int shieldHp = GameConstants.DefaultShieldHp;
 
@@ -124,12 +123,13 @@ public class Balloon : MonoBehaviour
 
     private int GetLayerHp()
     {
-        return IsEnhanced ? hp * GameConstants.EnhancedHpMultiplier : hp;
+        return IsEnhanced ? hp * GameConstants.EnhancedMultiplier : hp;
     }
 
     private int GetReward()
     {
-        return IsEnhanced ? energyReward * GameConstants.EnhancedRewardMultiplier : energyReward;
+        int baseReward = GameConstants.BaseLayerReward + (int)currentLayer;
+        return IsEnhanced ? baseReward * GameConstants.EnhancedMultiplier : baseReward;
     }
 
     private static bool IsShieldVariant(EnemyVariant variant)
@@ -178,18 +178,16 @@ public class Balloon : MonoBehaviour
         }
 
         int consumed = Mathf.Min(layerCount, (int)currentLayer);
-        int reward = GetReward();
 
         for (int i = 0; i < consumed; i++)
         {
-            ResourceManager.Instance.AddEnergy(reward);
+            ResourceManager.Instance.AddEnergy(GetReward());
             OnBalloonDestroyed?.Invoke(this);
+            currentLayer--;
         }
 
-        BalloonLayer targetLayer = (BalloonLayer)((int)currentLayer - consumed);
-        if (targetLayer >= BalloonLayer.Red)
+        if (currentLayer >= BalloonLayer.Red)
         {
-            currentLayer = targetLayer;
             currentHp = GetLayerHp();
             SetColor(GameConstants.GetBalloonColor(currentLayer));
             ApplyLayerSpeed();
@@ -223,6 +221,7 @@ public class Balloon : MonoBehaviour
 
     private void BreakShield()
     {
+        ResourceManager.Instance.AddEnergy(shieldHp);
         currentShieldHp = 0;
 
         if (currentVariant == EnemyVariant.Shielded)

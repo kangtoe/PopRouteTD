@@ -70,13 +70,15 @@ public static class GameConstants
     public const float PlacementCooldown = 3f;
     public const float SellRefundRate = 0.5f;
 
+    // 보상
+    public const int BaseLayerReward = 0;
+
     // Enhanced 배율
-    public const int EnhancedHpMultiplier = 2;
+    public const int EnhancedMultiplier = 2;
     public const float EnhancedSpeedMultiplier = 1.2f;
-    public const int EnhancedRewardMultiplier = 2;
 
     // Shield
-    public const int DefaultShieldHp = 3;
+    public const int DefaultShieldHp = 5;
 
     // Status Effects (고정 수치)
     public const int BurnDamagePerTick = 1;
