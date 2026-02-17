@@ -39,6 +39,7 @@ public class TowerInfoUI : MonoBehaviour
 
         InputManager.Instance.OnTowerClicked += Show;
         InputManager.Instance.OnEmptyClicked += Hide;
+        ResourceManager.Instance.OnEnergyChanged += OnEnergyChanged;
 
         firstButton.onClick.AddListener(() => OnPriorityClicked(TargetPriority.First));
         closeButton.onClick.AddListener(() => OnPriorityClicked(TargetPriority.Close));
@@ -63,6 +64,8 @@ public class TowerInfoUI : MonoBehaviour
             InputManager.Instance.OnTowerClicked -= Show;
             InputManager.Instance.OnEmptyClicked -= Hide;
         }
+        if (ResourceManager.Instance != null)
+            ResourceManager.Instance.OnEnergyChanged -= OnEnergyChanged;
     }
 
     private void Show(Tower tower)
@@ -119,6 +122,13 @@ public class TowerInfoUI : MonoBehaviour
 
         // 사거리 표시 갱신
         tower.ShowRange(true);
+    }
+
+    private void OnEnergyChanged(int _)
+    {
+        if (selectedTower == null || !panel.activeSelf) return;
+        UpdateMainButton();
+        UpdateSubButtons();
     }
 
     private void UpdateMainButton()
