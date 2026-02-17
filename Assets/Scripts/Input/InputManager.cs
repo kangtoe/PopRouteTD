@@ -145,7 +145,7 @@ public class InputManager : MonoBehaviour
     {
         if (IsOnPath(pos)) return false;
 
-        var overlap = Physics2D.OverlapCircle(pos, towerRadius * 2f, towerLayerMask);
+        var overlap = Physics2D.OverlapCircle(pos, towerRadius, towerLayerMask);
         if (overlap != null) return false;
 
         return true;
