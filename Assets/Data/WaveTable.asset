@@ -17,12 +17,12 @@ MonoBehaviour:
     - layer: 1
       variant: 0
       count: 20
-      interval: 0.8
+      interval: 1
   - groups:
     - layer: 1
       variant: 0
       count: 35
-      interval: 0.5
+      interval: 0.75
   - groups:
     - layer: 1
       variant: 0
@@ -93,12 +93,12 @@ MonoBehaviour:
     - layer: 3
       variant: 0
       count: 30
-      interval: 0.64
+      interval: 0.8
   - groups:
     - layer: 2
       variant: 0
-      count: 102
-      interval: 0.62
+      count: 65
+      interval: 0.5
   - groups:
     - layer: 1
       variant: 0
@@ -189,7 +189,7 @@ MonoBehaviour:
     - layer: 4
       variant: 2
       count: 12
-      interval: 0.66
+      interval: 1
   - groups:
     - layer: 3
       variant: 0
@@ -215,17 +215,17 @@ MonoBehaviour:
   - groups:
     - layer: 1
       variant: 1
-      count: 8
+      count: 20
       interval: 1
   - groups:
     - layer: 4
       variant: 0
       count: 40
-      interval: 0.40000004
+      interval: 0.75
     - layer: 5
       variant: 0
       count: 14
-      interval: 0.40000004
+      interval: 0.75
   - groups:
     - layer: 6
       variant: 0
@@ -243,21 +243,21 @@ MonoBehaviour:
   - groups:
     - layer: 2
       variant: 0
-      count: 20
+      count: 40
       interval: 0.34000003
     - layer: 3
       variant: 1
-      count: 1
+      count: 5
       interval: 0.34000003
   - groups:
     - layer: 4
       variant: 2
       count: 25
-      interval: 0.32000002
+      interval: 0.5
     - layer: 7
       variant: 0
       count: 10
-      interval: 0.32000002
+      interval: 0.5
   - groups:
     - layer: 5
       variant: 0
@@ -271,23 +271,23 @@ MonoBehaviour:
     - layer: 1
       variant: 0
       count: 100
-      interval: 0.28000003
+      interval: 0.2
     - layer: 2
       variant: 0
       count: 60
-      interval: 0.28000003
+      interval: 0.2
     - layer: 3
       variant: 0
       count: 45
-      interval: 0.28000003
+      interval: 0.2
     - layer: 4
       variant: 0
       count: 45
-      interval: 0.28000003
+      interval: 0.2
   - groups:
     - layer: 7
       variant: 1
-      count: 6
+      count: 12
       interval: 1
   - groups:
     - layer: 4
@@ -301,8 +301,8 @@ MonoBehaviour:
   - groups:
     - layer: 7
       variant: 1
-      count: 9
-      interval: 1
+      count: 12
+      interval: 0.8
   - groups:
     - layer: 6
       variant: 0
@@ -316,7 +316,7 @@ MonoBehaviour:
     - layer: 6
       variant: 0
       count: 35
-      interval: 0.2
+      interval: 0.5
     - layer: 7
       variant: 0
       count: 10
@@ -328,8 +328,8 @@ MonoBehaviour:
       interval: 0.2
     - layer: 4
       variant: 1
-      count: 13
-      interval: 0.2
+      count: 12
+      interval: 0.75
   - groups:
     - layer: 4
       variant: 0
@@ -355,12 +355,12 @@ MonoBehaviour:
   - groups:
     - layer: 5
       variant: 0
-      count: 140
-      interval: 0.2
+      count: 120
+      interval: 0.25
     - layer: 3
       variant: 3
       count: 20
-      interval: 0.2
+      interval: 0.25
   - groups:
     - layer: 6
       variant: 0
@@ -369,11 +369,11 @@ MonoBehaviour:
     - layer: 6
       variant: 1
       count: 7
-      interval: 0.2
+      interval: 0.5
     - layer: 7
       variant: 1
       count: 15
-      interval: 0.2
+      interval: 0.5
   - groups:
     - layer: 5
       variant: 0
@@ -407,5 +407,5 @@ MonoBehaviour:
   - groups:
     - layer: 7
       variant: 3
-      count: 10
-      interval: 1
+      count: 30
+      interval: 0.75
