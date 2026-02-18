@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class GameHUD : MonoBehaviour
 {
-    [SerializeField] private Text energyText;
+    [SerializeField] private Text goldText;
     [SerializeField] private Text livesText;
     [SerializeField] private Text waveText;
     [SerializeField] private Text stateText;
@@ -15,7 +15,7 @@ public class GameHUD : MonoBehaviour
 
     private void Start()
     {
-        ResourceManager.Instance.OnEnergyChanged += UpdateEnergy;
+        ResourceManager.Instance.OnGoldChanged += UpdateGold;
         ResourceManager.Instance.OnLivesChanged += UpdateLives;
         GameManager.Instance.OnWaveChanged += UpdateWave;
         GameManager.Instance.OnStateChanged += UpdateState;
@@ -23,7 +23,7 @@ public class GameHUD : MonoBehaviour
 
         startWaveButton.onClick.AddListener(OnStartWaveClicked);
 
-        UpdateEnergy(ResourceManager.Instance.Energy);
+        UpdateGold(ResourceManager.Instance.Gold);
         UpdateLives(ResourceManager.Instance.Lives);
         UpdateWave(0);
         UpdateState(GameState.Prepare);
@@ -37,7 +37,7 @@ public class GameHUD : MonoBehaviour
     {
         if (ResourceManager.Instance != null)
         {
-            ResourceManager.Instance.OnEnergyChanged -= UpdateEnergy;
+            ResourceManager.Instance.OnGoldChanged -= UpdateGold;
             ResourceManager.Instance.OnLivesChanged -= UpdateLives;
         }
         if (GameManager.Instance != null)
@@ -48,9 +48,9 @@ public class GameHUD : MonoBehaviour
         }
     }
 
-    private void UpdateEnergy(int value)
+    private void UpdateGold(int value)
     {
-        if (energyText != null) energyText.text = $"Energy: {value}";
+        if (goldText != null) goldText.text = $"Gold: {value}";
     }
 
     private void UpdateLives(int value)

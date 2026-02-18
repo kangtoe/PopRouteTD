@@ -49,7 +49,7 @@ public class InputManager : MonoBehaviour
 
         // 비용 부족 시 드래그 시작 차단
         var towerComp = towerPrefab.GetComponent<Tower>();
-        if (towerComp != null && ResourceManager.Instance.Energy < towerComp.Cost) return;
+        if (towerComp != null && ResourceManager.Instance.Gold < towerComp.Cost) return;
 
         if (mainCamera == null) mainCamera = Camera.main;
 
@@ -126,7 +126,7 @@ public class InputManager : MonoBehaviour
         var itemHit = Physics2D.OverlapPoint(worldPos, itemLayerMask);
         if (itemHit != null)
         {
-            var item = itemHit.GetComponent<EnergyItem>();
+            var item = itemHit.GetComponent<GoldItem>();
             if (item != null)
             {
                 item.Collect();
@@ -183,7 +183,7 @@ public class InputManager : MonoBehaviour
     {
         var tower = dragTowerPrefab.GetComponent<Tower>();
         if (tower == null) return false;
-        if (!ResourceManager.Instance.SpendEnergy(tower.Cost)) return false;
+        if (!ResourceManager.Instance.SpendGold(tower.Cost)) return false;
 
         var parent = towerParent != null ? towerParent : transform;
         var towerObj = Instantiate(dragTowerPrefab, (Vector3)pos, Quaternion.identity, parent);

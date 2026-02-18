@@ -1,15 +1,15 @@
 using UnityEngine;
 
-public class TowerEnergyGenerator : MonoBehaviour
+public class TowerGoldGenerator : MonoBehaviour
 {
-    private int energyPerItem;
+    private int goldPerItem;
     private int itemCount;
     private bool initialized;
     private bool waveActive;
 
-    public void Initialize(float energyPerTick, float interval)
+    public void Initialize(float goldPerTick, float interval)
     {
-        energyPerItem = (int)energyPerTick;
+        goldPerItem = (int)goldPerTick;
         itemCount = (int)interval;
         initialized = true;
 
@@ -50,7 +50,7 @@ public class TowerEnergyGenerator : MonoBehaviour
         {
             Vector2 offset = Random.insideUnitCircle * 0.5f;
             Vector3 pos = transform.position + (Vector3)offset;
-            ItemSpawner.Instance.SpawnItem(pos, energyPerItem);
+            ItemSpawner.Instance.SpawnItem(pos, goldPerItem);
         }
     }
 }

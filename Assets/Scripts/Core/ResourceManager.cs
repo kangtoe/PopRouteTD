@@ -5,10 +5,10 @@ public class ResourceManager : MonoBehaviour
 {
     public static ResourceManager Instance { get; private set; }
 
-    public int Energy { get; private set; }
+    public int Gold { get; private set; }
     public int Lives { get; private set; }
 
-    public event Action<int> OnEnergyChanged;
+    public event Action<int> OnGoldChanged;
     public event Action<int> OnLivesChanged;
     public event Action OnLivesZero;
 
@@ -22,26 +22,26 @@ public class ResourceManager : MonoBehaviour
         Instance = this;
     }
 
-    public void Initialize(int startEnergy, int startLives)
+    public void Initialize(int startGold, int startLives)
     {
-        Energy = startEnergy;
+        Gold = startGold;
         Lives = startLives;
-        OnEnergyChanged?.Invoke(Energy);
+        OnGoldChanged?.Invoke(Gold);
         OnLivesChanged?.Invoke(Lives);
     }
 
-    public bool SpendEnergy(int amount)
+    public bool SpendGold(int amount)
     {
-        if (Energy < amount) return false;
-        Energy -= amount;
-        OnEnergyChanged?.Invoke(Energy);
+        if (Gold < amount) return false;
+        Gold -= amount;
+        OnGoldChanged?.Invoke(Gold);
         return true;
     }
 
-    public void AddEnergy(int amount)
+    public void AddGold(int amount)
     {
-        Energy += amount;
-        OnEnergyChanged?.Invoke(Energy);
+        Gold += amount;
+        OnGoldChanged?.Invoke(Gold);
     }
 
     public void LoseLife(int amount)

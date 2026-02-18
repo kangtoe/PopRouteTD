@@ -41,7 +41,7 @@ public class TowerInfoUI : MonoBehaviour
         InputManager.Instance.OnEmptyClicked += Hide;
         InputManager.Instance.OnDragStarted += ShowPreview;
         InputManager.Instance.OnDragEnded += HidePreview;
-        ResourceManager.Instance.OnEnergyChanged += OnEnergyChanged;
+        ResourceManager.Instance.OnGoldChanged += OnGoldChanged;
 
         firstButton.onClick.AddListener(() => OnPriorityClicked(TargetPriority.First));
         closeButton.onClick.AddListener(() => OnPriorityClicked(TargetPriority.Close));
@@ -69,7 +69,7 @@ public class TowerInfoUI : MonoBehaviour
             InputManager.Instance.OnDragEnded -= HidePreview;
         }
         if (ResourceManager.Instance != null)
-            ResourceManager.Instance.OnEnergyChanged -= OnEnergyChanged;
+            ResourceManager.Instance.OnGoldChanged -= OnGoldChanged;
     }
 
     private void Show(Tower tower)
@@ -147,7 +147,7 @@ public class TowerInfoUI : MonoBehaviour
         tower.ShowRange(true);
     }
 
-    private void OnEnergyChanged(int _)
+    private void OnGoldChanged(int _)
     {
         if (isPreview || selectedTower == null || !panel.activeSelf) return;
         UpdateMainButton();

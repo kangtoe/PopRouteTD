@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class EnergyItem : MonoBehaviour
+public class GoldItem : MonoBehaviour
 {
-    [SerializeField] private int energyAmount = 2;
+    [SerializeField] private int goldAmount = 2;
 
     private SpriteRenderer spriteRenderer;
 
@@ -14,16 +14,16 @@ public class EnergyItem : MonoBehaviour
             spriteRenderer.sortingLayerName = GameConstants.SortItem;
     }
 
-    public void Initialize(int energy, Vector3 position)
+    public void Initialize(int gold, Vector3 position)
     {
-        energyAmount = energy;
+        goldAmount = gold;
         transform.position = position;
         gameObject.SetActive(true);
     }
 
     public void Collect()
     {
-        ResourceManager.Instance.AddEnergy(energyAmount);
+        ResourceManager.Instance.AddGold(goldAmount);
         ItemPool.Instance.Return(gameObject);
     }
 }

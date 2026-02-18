@@ -29,11 +29,11 @@ public class ItemPool : MonoBehaviour
         );
     }
 
-    public GameObject Spawn(Vector3 position, int energyAmount)
+    public GameObject Spawn(Vector3 position, int goldAmount)
     {
         var obj = pool.Get();
-        var item = obj.GetComponent<EnergyItem>();
-        item.Initialize(energyAmount, position);
+        var item = obj.GetComponent<GoldItem>();
+        item.Initialize(goldAmount, position);
         return obj;
     }
 

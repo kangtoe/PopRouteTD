@@ -181,7 +181,7 @@ public class Enemy : MonoBehaviour
 
         for (int i = 0; i < consumed; i++)
         {
-            ResourceManager.Instance.AddEnergy(GetReward());
+            ResourceManager.Instance.AddGold(GetReward());
             OnEnemyDestroyed?.Invoke(this);
             currentLayer--;
         }
@@ -203,7 +203,7 @@ public class Enemy : MonoBehaviour
     /// <summary>현재 레이어 하나를 벗긴다.</summary>
     private void PopLayer(bool giveReward = true)
     {
-        if (giveReward) ResourceManager.Instance.AddEnergy(GetReward());
+        if (giveReward) ResourceManager.Instance.AddGold(GetReward());
         OnEnemyDestroyed?.Invoke(this);
 
         EnemyLayer lowerLayer = currentLayer - 1;
@@ -222,7 +222,7 @@ public class Enemy : MonoBehaviour
 
     private void BreakShield(bool giveReward = true)
     {
-        if (giveReward) ResourceManager.Instance.AddEnergy(shieldHp);
+        if (giveReward) ResourceManager.Instance.AddGold(shieldHp);
         currentShieldHp = 0;
 
         if (currentVariant == EnemyVariant.Shielded)
@@ -256,7 +256,7 @@ public class Enemy : MonoBehaviour
 
         while (currentLayer >= EnemyLayer.Red)
         {
-            if (giveReward) ResourceManager.Instance.AddEnergy(GetReward());
+            if (giveReward) ResourceManager.Instance.AddGold(GetReward());
             OnEnemyDestroyed?.Invoke(this);
             currentLayer--;
         }

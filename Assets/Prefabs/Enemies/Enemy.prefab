@@ -1078,7 +1078,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   hp: 1
-  energyReward: 1
+  goldReward: 1
   statusEffectResistance: 0
   shieldHp: 3
   bodyOutline: {fileID: 4455335329506907487}

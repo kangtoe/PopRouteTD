@@ -19,7 +19,7 @@ public class UpgradeButtonUI : MonoBehaviour
     {
         buttonText.text = $"{label} ({cost})";
         SetDescription(desc);
-        button.interactable = ResourceManager.Instance.Energy >= cost;
+        button.interactable = ResourceManager.Instance.Gold >= cost;
         buttonImage.color = normalColor;
     }
 

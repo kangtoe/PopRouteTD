@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        ResourceManager.Instance.Initialize(GameConstants.StartEnergy, GameConstants.StartLives);
+        ResourceManager.Instance.Initialize(GameConstants.StartGold, GameConstants.StartLives);
         ResourceManager.Instance.OnLivesZero += HandleGameOver;
 
         Enemy.OnEnemyDestroyed += OnEnemyRemoved;
@@ -92,7 +92,7 @@ public class GameManager : MonoBehaviour
                 (prepareTimer / GameConstants.PrepareDuration) * GameConstants.EarlyStartBonusMax);
             if (bonus > 0)
             {
-                ResourceManager.Instance.AddEnergy(bonus);
+                ResourceManager.Instance.AddGold(bonus);
             }
         }
         prepareCountdownActive = false;
@@ -129,7 +129,7 @@ public class GameManager : MonoBehaviour
         if (activeEnemyCount <= 0 && waveManager.IsSpawningComplete && CurrentState == GameState.Wave)
         {
             postSpawnTimerActive = false;
-            ResourceManager.Instance.AddEnergy(GameConstants.GetWaveClearReward(CurrentWave));
+            ResourceManager.Instance.AddGold(GameConstants.GetWaveClearReward(CurrentWave));
             TransitionToPrepare();
             return true;
         }

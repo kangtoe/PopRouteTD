@@ -51,17 +51,17 @@ public class WaveTableEditor : Editor
 
         string summary = BuildSummary(groups);
         int totalCount = GetTotalCount(groups);
-        CalcWaveStats(groups, out int totalDmg, out int totalEnergy, out float totalTime);
+        CalcWaveStats(groups, out int totalDmg, out int totalGold, out float totalTime);
         int clearReward = GameConstants.GetWaveClearReward(index + 1);
-        int waveTotal = totalEnergy + clearReward;
+        int waveTotal = totalGold + clearReward;
 
-        int cumEnergy = GameConstants.StartEnergy + waveTotal;
+        int cumGold = GameConstants.StartGold + waveTotal;
         for (int i = 0; i < index; i++)
         {
             var prevGroups = wavesProp.GetArrayElementAtIndex(i)
                 .FindPropertyRelative("groups");
-            CalcWaveStats(prevGroups, out _, out int prevEnergy, out _);
-            cumEnergy += prevEnergy + GameConstants.GetWaveClearReward(i + 1);
+            CalcWaveStats(prevGroups, out _, out int prevGold, out _);
+            cumGold += prevGold + GameConstants.GetWaveClearReward(i + 1);
         }
 
         // 왼쪽: 웨이브 정보
@@ -69,7 +69,7 @@ public class WaveTableEditor : Editor
         bool expanded = EditorGUI.Foldout(headerRect, wasExpanded,
             $"Wave {index + 1}  {summary}", true);
 
-        // 오른쪽: 피해량/에너지 (고정폭 폰트, 5자리 정렬)
+        // 오른쪽: 피해량/골드 (고정폭 폰트, 5자리 정렬)
         if (statsStyle == null)
         {
             statsStyle = new GUIStyle(EditorStyles.label)
@@ -83,8 +83,8 @@ public class WaveTableEditor : Editor
         var statsRect = new Rect(
             headerRect.xMax - statsWidth, headerRect.y, statsWidth, line);
         EditorGUI.LabelField(statsRect,
-            string.Format("{0,3}체  |  DMG {1,5}  |  {2,5:F1}s  |  DPS {3,5:F1}  |  EN {4,5} + {5,3}  ({6,6})",
-                totalCount, totalDmg, totalTime, dps, totalEnergy, clearReward, cumEnergy),
+            string.Format("{0,3}체  |  DMG {1,5}  |  {2,5:F1}s  |  DPS {3,5:F1}  |  GD {4,5} + {5,3}  ({6,6})",
+                totalCount, totalDmg, totalTime, dps, totalGold, clearReward, cumGold),
             statsStyle);
 
         if (expanded != wasExpanded)
@@ -162,10 +162,10 @@ public class WaveTableEditor : Editor
     }
 
     private static void CalcWaveStats(SerializedProperty groups,
-        out int totalDmg, out int totalEnergy, out float totalTime)
+        out int totalDmg, out int totalGold, out float totalTime)
     {
         totalDmg = 0;
-        totalEnergy = 0;
+        totalGold = 0;
         totalTime = 0f;
         for (int i = 0; i < groups.arraySize; i++)
         {
@@ -183,16 +183,16 @@ public class WaveTableEditor : Editor
             int hpPerLayer = isEnhanced ? GameConstants.EnhancedMultiplier : 1;
             int dmg = layer * hpPerLayer + (hasShield ? GameConstants.DefaultShieldHp : 0);
 
-            int energy = hasShield ? GameConstants.DefaultShieldHp : 0;
+            int gold = hasShield ? GameConstants.DefaultShieldHp : 0;
             for (int l = layer; l >= 1; l--)
             {
                 int reward = GameConstants.BaseLayerReward;
                 if (isEnhanced) reward *= GameConstants.EnhancedMultiplier;
-                energy += reward;
+                gold += reward;
             }
 
             totalDmg += dmg * count;
-            totalEnergy += energy * count;
+            totalGold += gold * count;
             totalTime += count * interval;
         }
     }

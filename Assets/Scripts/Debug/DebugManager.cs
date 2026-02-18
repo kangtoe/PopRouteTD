@@ -11,7 +11,7 @@ public class DebugManager : MonoBehaviour
     private EnemyLayer selectedLayer = EnemyLayer.Red;
     private EnemyVariant selectedVariant = EnemyVariant.Normal;
     private string jumpWaveInput = "1";
-    private string energyInput = GameConstants.StartEnergy.ToString();
+    private string goldInput = GameConstants.StartGold.ToString();
 
     private readonly string[] layerNames = Enum.GetNames(typeof(EnemyLayer));
     private readonly string[] variantNames = Enum.GetNames(typeof(EnemyVariant));
@@ -75,25 +75,25 @@ public class DebugManager : MonoBehaviour
         GUILayout.Space(4);
 
         GUILayout.BeginHorizontal();
-        energyInput = GUILayout.TextField(energyInput, GUILayout.Width(50));
-        if (GUILayout.Button("Set E"))
+        goldInput = GUILayout.TextField(goldInput, GUILayout.Width(50));
+        if (GUILayout.Button("Set G"))
         {
-            if (int.TryParse(energyInput, out int energy) && energy >= 0)
+            if (int.TryParse(goldInput, out int gold) && gold >= 0)
             {
-                int diff = energy - ResourceManager.Instance.Energy;
-                ResourceManager.Instance.AddEnergy(diff);
+                int diff = gold - ResourceManager.Instance.Gold;
+                ResourceManager.Instance.AddGold(diff);
             }
         }
         GUILayout.EndHorizontal();
 
         GUILayout.Space(4);
 
-        int cumulative = CalcCumulativeEnergy(GameManager.Instance.CurrentWave);
+        int cumulative = CalcCumulativeGold(GameManager.Instance.CurrentWave);
         GUILayout.BeginHorizontal();
-        GUILayout.Label($"~W{GameManager.Instance.CurrentWave}: {cumulative}E");
+        GUILayout.Label($"~W{GameManager.Instance.CurrentWave}: {cumulative}G");
         if (GUILayout.Button("Auto"))
         {
-            energyInput = cumulative.ToString();
+            goldInput = cumulative.ToString();
         }
         GUILayout.EndHorizontal();
 
@@ -107,9 +107,9 @@ public class DebugManager : MonoBehaviour
         GUILayout.EndArea();
     }
 
-    private int CalcCumulativeEnergy(int upToWave)
+    private int CalcCumulativeGold(int upToWave)
     {
-        int total = GameConstants.StartEnergy;
+        int total = GameConstants.StartGold;
         if (waveTable == null) return total;
 
         for (int w = 1; w <= upToWave; w++)

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8713177632022974625}
   - component: {fileID: 4307330721131478162}
   m_Layer: 12
-  m_Name: EnergyItem
+  m_Name: GoldItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -140,5 +140,5 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 691e0b26d19bbb74bb15baf21731b9ab, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnergyItem
-  energyAmount: 2
+  m_EditorClassIdentifier: Assembly-CSharp::GoldItem
+  goldAmount: 2

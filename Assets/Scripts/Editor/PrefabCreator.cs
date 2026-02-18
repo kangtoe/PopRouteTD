@@ -20,7 +20,7 @@ public class PrefabCreator
         CreateBaseEnemyPrefab();
         CreateBaseTowerPrefab();
         CreateProjectilePrefab();
-        CreateEnergyItemPrefab();
+        CreateGoldItemPrefab();
 
         // 베리언트
         CreateTowerVariants();
@@ -164,12 +164,12 @@ public class PrefabCreator
 
     // ── 아이템 ──
 
-    private static void CreateEnergyItemPrefab()
+    private static void CreateGoldItemPrefab()
     {
-        var path = "Assets/Prefabs/Items/EnergyItem.prefab";
+        var path = "Assets/Prefabs/Items/GoldItem.prefab";
         if (AssetDatabase.LoadAssetAtPath<GameObject>(path) != null) return;
 
-        var obj = new GameObject("EnergyItem");
+        var obj = new GameObject("GoldItem");
         obj.layer = LayerMask.NameToLayer(GameConstants.LayerItem);
 
         var sr = obj.AddComponent<SpriteRenderer>();
@@ -182,7 +182,7 @@ public class PrefabCreator
         col.isTrigger = true;
         col.radius = 0.5f;
 
-        obj.AddComponent<EnergyItem>();
+        obj.AddComponent<GoldItem>();
 
         PrefabUtility.SaveAsPrefabAsset(obj, path);
         Object.DestroyImmediate(obj);

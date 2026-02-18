@@ -47,7 +47,7 @@ public enum StatusEffectType
 public static class GameConstants
 {
     public const int StartLives = 20;
-    public const int StartEnergy = 200;
+    public const int StartGold = 200;
 
     // Physics Layers
     public const string LayerEnemy = "Enemy";

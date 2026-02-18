@@ -66,7 +66,7 @@ public class Tower : MonoBehaviour
 
     public void Sell()
     {
-        ResourceManager.Instance.AddEnergy(SellRefund);
+        ResourceManager.Instance.AddGold(SellRefund);
         Destroy(gameObject);
     }
 
@@ -79,7 +79,7 @@ public class Tower : MonoBehaviour
         var nextData = GetMainLevel(mainLevel + 1);
         if (nextData == null) return false;
 
-        if (!ResourceManager.Instance.SpendEnergy(nextData.cost))
+        if (!ResourceManager.Instance.SpendGold(nextData.cost))
             return false;
 
         totalUpgradeCost += nextData.cost;
@@ -99,7 +99,7 @@ public class Tower : MonoBehaviour
         var subData = GetSubData(sub);
         if (subData == null) return false;
 
-        if (!ResourceManager.Instance.SpendEnergy(subData.cost))
+        if (!ResourceManager.Instance.SpendGold(subData.cost))
             return false;
 
         totalUpgradeCost += subData.cost;

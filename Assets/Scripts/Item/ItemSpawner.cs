@@ -6,7 +6,7 @@ public class ItemSpawner : MonoBehaviour
 
     [Header("드롭 설정")]
     [SerializeField, Range(0f, 1f)] private float dropChance = 0.1f;
-    [SerializeField] private int dropEnergy = 5;
+    [SerializeField] private int dropGold = 5;
 
     private void Awake()
     {
@@ -33,12 +33,12 @@ public class ItemSpawner : MonoBehaviour
         if (enemy.CurrentLayer != EnemyLayer.Red) return;
         if (Random.value > dropChance) return;
 
-        SpawnItem(enemy.transform.position, dropEnergy);
+        SpawnItem(enemy.transform.position, dropGold);
     }
 
-    public void SpawnItem(Vector3 position, int energy)
+    public void SpawnItem(Vector3 position, int gold)
     {
         if (ItemPool.Instance == null) return;
-        ItemPool.Instance.Spawn(position, energy);
+        ItemPool.Instance.Spawn(position, gold);
     }
 }
