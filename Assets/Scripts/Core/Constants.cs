@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public enum EnemyLayer
 {
     None = 0,
@@ -96,18 +94,4 @@ public static class GameConstants
         return 1.0f + ((int)layer - 1) * 0.5f;
     }
 
-    public static Color GetEnemyColor(EnemyLayer layer)
-    {
-        return layer switch
-        {
-            EnemyLayer.Red => Color.red,
-            EnemyLayer.Orange => new Color(1f, 0.5f, 0f),
-            EnemyLayer.Yellow => Color.yellow,
-            EnemyLayer.Green => Color.green,
-            EnemyLayer.Blue => Color.blue,
-            EnemyLayer.Indigo => new Color(0.29f, 0f, 0.51f),
-            EnemyLayer.Purple => new Color(0.58f, 0f, 0.83f),
-            _ => Color.white
-        };
-    }
 }

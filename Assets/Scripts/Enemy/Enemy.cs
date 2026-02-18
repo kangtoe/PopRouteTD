@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private int hp = 1;
     [SerializeField, Range(0f, 1f)] private float statusEffectResistance;
     [SerializeField] private int shieldHp = GameConstants.DefaultShieldHp;
+    [SerializeField] private EnemyLayerColors layerColors;
 
     [Header("변형 외관")]
     [SerializeField] private GameObject bodyOutline;
@@ -110,7 +111,7 @@ public class Enemy : MonoBehaviour
         deactivated = false;
         statusEffectHandler.ClearAll();
         ApplySortingOrder();
-        SetColor(GameConstants.GetEnemyColor(currentLayer));
+        SetColor(layerColors.GetColor(currentLayer));
         ApplyVariantVisual();
 
         float speed = GameConstants.GetEnemySpeed(currentLayer);
@@ -189,7 +190,7 @@ public class Enemy : MonoBehaviour
         if (currentLayer >= EnemyLayer.Red)
         {
             currentHp = GetLayerHp();
-            SetColor(GameConstants.GetEnemyColor(currentLayer));
+            SetColor(layerColors.GetColor(currentLayer));
             ApplyLayerSpeed();
         }
         else
@@ -211,7 +212,7 @@ public class Enemy : MonoBehaviour
         {
             currentLayer = lowerLayer;
             currentHp = GetLayerHp();
-            SetColor(GameConstants.GetEnemyColor(currentLayer));
+            SetColor(layerColors.GetColor(currentLayer));
             ApplyLayerSpeed();
         }
         else
