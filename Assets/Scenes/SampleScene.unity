@@ -1874,6 +1874,7 @@ Transform:
   - {fileID: 1006151805}
   - {fileID: 584382997}
   - {fileID: 1535188009}
+  - {fileID: 1089568026}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &811910365
@@ -2463,6 +2464,53 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1089568024
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1089568026}
+  - component: {fileID: 1089568025}
+  m_Layer: 0
+  m_Name: DebugManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1089568025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089568024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 711b26e0360cdcb43937abb3d0b32cc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DebugManager
+  waypointPath: {fileID: 684390280}
+  waveTable: {fileID: 11400000, guid: d7ba7076a84fd994192c76ba4565aca9, type: 2}
+  showPanel: 1
+--- !u!4 &1089568026
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089568024}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 800194130}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1126815902
 GameObject:
   m_ObjectHideFlags: 0
@@ -4337,9 +4385,6 @@ MonoBehaviour:
   balloonPrefab: {fileID: 8127152185616255251, guid: a46ae377dfb487d4c8fffbed45d34b30, type: 3}
   enemyParent: {fileID: 1177949246}
   initialPoolSize: 30
-  useDebugOverride: 0
-  debugLayer: 1
-  debugVariant: 0
 --- !u!1 &1877318946
 GameObject:
   m_ObjectHideFlags: 0
@@ -4464,7 +4509,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   waveManager: {fileID: 1006151806}
-  debugStartWave: 0
 --- !u!1 &2015415551
 GameObject:
   m_ObjectHideFlags: 0
