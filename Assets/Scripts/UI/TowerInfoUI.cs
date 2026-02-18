@@ -5,7 +5,6 @@ public class TowerInfoUI : MonoBehaviour
 {
     [SerializeField] private GameObject panel;
     [SerializeField] private Text towerNameText;
-    [SerializeField] private Text towerStatsText;
 
     [Header("Targeting")]
     [SerializeField] private Button firstButton;
@@ -78,6 +77,7 @@ public class TowerInfoUI : MonoBehaviour
         if (selectedTower != null) selectedTower.ShowRange(false);
 
         selectedTower = tower;
+        TowerSelectUI.Instance?.Hide();
         panel.SetActive(true);
 
         UpdateDisplay();
@@ -93,6 +93,7 @@ public class TowerInfoUI : MonoBehaviour
             selectedTower = null;
         }
         panel.SetActive(false);
+        TowerSelectUI.Instance?.Show();
     }
 
     private void ShowPreview(Tower prefabTower)
@@ -100,58 +101,18 @@ public class TowerInfoUI : MonoBehaviour
         if (selectedTower != null) selectedTower.ShowRange(false);
         selectedTower = null;
         isPreview = true;
-        panel.SetActive(true);
 
         var data = prefabTower.UpgradeData;
         if (data == null) return;
 
-        // 이름 (레벨 표시 없음)
         towerNameText.text = data.towerName;
-
-        // 기본 설명
-        towerStatsText.text = data.description;
-
-        // 타겟 지정·판매 숨기기
-        SetPriorityButtonsVisible(false);
-        sellButton.gameObject.SetActive(false);
-
-        // 업그레이드 버튼: 잠금 상태로 표시
-        UpdatePreviewUpgradeButtons(prefabTower);
-    }
-
-    private void UpdatePreviewUpgradeButtons(Tower prefabTower)
-    {
-        if (mainUpgradeButton != null)
-        {
-            var nextInfo = prefabTower.GetNextMainInfo();
-            if (nextInfo != null)
-                mainUpgradeButton.SetLocked("Upgrade", nextInfo.description);
-            else
-                mainUpgradeButton.SetMax();
-        }
-
-        if (subAButton != null && subBButton != null)
-        {
-            var subA = prefabTower.GetSubAInfo();
-            var subB = prefabTower.GetSubBInfo();
-            bool hasData = subA != null && subB != null;
-
-            subAButton.gameObject.SetActive(hasData);
-            subBButton.gameObject.SetActive(hasData);
-
-            if (hasData)
-            {
-                subAButton.SetLocked($"A: {subA.levelName}", subA.description);
-                subBButton.SetLocked($"B: {subB.levelName}", subB.description);
-            }
-        }
     }
 
     private void HidePreview()
     {
         if (!isPreview) return;
         isPreview = false;
-        panel.SetActive(false);
+        TowerSelectUI.Instance?.Show();
     }
 
     public void RefreshAfterUpgrade()
@@ -169,8 +130,6 @@ public class TowerInfoUI : MonoBehaviour
             ? $"{tower.TowerName} Lv.{tower.MainLevel}"
             : tower.TowerName;
 
-        // 기본 설명
-        towerStatsText.text = tower.UpgradeData != null ? tower.UpgradeData.description : "";
         SetPriorityButtonsVisible(true);
 
         // 판매
@@ -260,8 +219,7 @@ public class TowerInfoUI : MonoBehaviour
     {
         if (selectedTower == null) return;
         selectedTower.Sell();
-        selectedTower = null;
-        panel.SetActive(false);
+        Hide();
     }
 
     private void UpdatePriorityHighlight()

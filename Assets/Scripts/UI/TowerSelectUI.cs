@@ -7,6 +7,8 @@ public class TowerSelectUI : MonoBehaviour
 {
     public static TowerSelectUI Instance { get; private set; }
 
+    [SerializeField] private GameObject content;
+    [SerializeField] private Text nameText;
     [SerializeField] private List<GameObject> towerPrefabs;
     [SerializeField] private Transform buttonParent;
     [SerializeField] private TowerButton towerButtonPrefab;
@@ -31,6 +33,7 @@ public class TowerSelectUI : MonoBehaviour
         if (Instance != this) return;
         CreateButtons();
         InputManager.Instance.OnTowerPlaced += OnTowerPlaced;
+        Show();
     }
 
     private void OnDestroy()
@@ -39,6 +42,14 @@ public class TowerSelectUI : MonoBehaviour
         if (InputManager.Instance != null)
             InputManager.Instance.OnTowerPlaced -= OnTowerPlaced;
     }
+
+    public void Show()
+    {
+        content.SetActive(true);
+        if (nameText != null) nameText.text = "Towers";
+    }
+
+    public void Hide() => content.SetActive(false);
 
     public bool IsOnCooldown(GameObject prefab)
     {
