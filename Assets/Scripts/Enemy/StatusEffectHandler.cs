@@ -85,7 +85,7 @@ public class StatusEffectHandler : MonoBehaviour
 
         var toRemove = new List<StatusEffectType>();
 
-        foreach (var kvp in activeEffects)
+        foreach (var kvp in new List<KeyValuePair<StatusEffectType, ActiveEffect>>(activeEffects))
         {
             var effect = kvp.Value;
             effect.RemainingTime -= Time.deltaTime;
