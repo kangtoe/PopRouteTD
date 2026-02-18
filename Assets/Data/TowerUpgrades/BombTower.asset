@@ -13,54 +13,58 @@ MonoBehaviour:
   m_Name: BombTower
   m_EditorClassIdentifier: Assembly-CSharp::TowerUpgradeData
   towerName: BombTower
+  description: Splash area attack
   main1:
     levelName: Bomb Shooter
     description: Splash area attack
-    cost: 30
+    cost: 400
     stats:
       attackDamage: 1
       attackInterval: 1.5
-      attackRange: 3
-      splashRadius: 1
+      attackRange: 4
+      splashRadius: 1.2
       pierceCount: 0
     statusEffects: []
   main2:
     levelName: Bomb Shooter
-    description: ATK, SPD, RNG, splash up
-    cost: 100
+    description: Improved Shooting System - gets Extra Range, Reloads faster
+    cost: 550
     stats:
-      attackDamage: 1
-      attackInterval: -0.1
-      attackRange: 0.5
-      splashRadius: 0.2
+      attackDamage: 0
+      attackInterval: -0.5
+      attackRange: 1.2
+      splashRadius: 0
       pierceCount: 0
     statusEffects: []
   main3:
     levelName: Bomb Shooter
-    description: Further stat boost
-    cost: 250
+    description: Big One - Explosions deal more damage and have a larger blast area
+    cost: 1100
     stats:
       attackDamage: 1
-      attackInterval: -0.1
-      attackRange: 0.5
-      splashRadius: 0.3
+      attackInterval: 0
+      attackRange: 0
+      splashRadius: 0.6
       pierceCount: 0
     statusEffects: []
   main4:
     levelName: Bomb Shooter
-    description: Max performance
-    cost: 600
+    description: Explosions become so violent, Bloons are stunned for a short time
+      when they are hit
+    cost: 2400
     stats:
-      attackDamage: 1
-      attackInterval: -0.1
-      attackRange: 0.5
-      splashRadius: 0.3
+      attackDamage: 0
+      attackInterval: 0
+      attackRange: 0
+      splashRadius: 0
       pierceCount: 0
-    statusEffects: []
+    statusEffects:
+    - type: 3
+      duration: 1
   subA:
-    levelName: Wide Area
+    levelName: Cluster Bombs
     description: Greatly expands splash radius
-    cost: 250
+    cost: 1200
     stats:
       attackDamage: 0
       attackInterval: 0
@@ -69,9 +73,9 @@ MonoBehaviour:
       pierceCount: 0
     statusEffects: []
   subB:
-    levelName: Incendiary
+    levelName: Incendiary Shell
     description: Grants burn effect
-    cost: 250
+    cost: 850
     stats:
       attackDamage: 0
       attackInterval: 0

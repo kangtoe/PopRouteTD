@@ -13,67 +13,68 @@ MonoBehaviour:
   m_Name: PierceTower
   m_EditorClassIdentifier: Assembly-CSharp::TowerUpgradeData
   towerName: PierceTower
+  description: Armed with a high-powerd long range gun
   main1:
     levelName: Pierce Shooter
-    description: Piercing projectile hits multiple targets
-    cost: 25
+    description: Armed with a high-powerd long range gun
+    cost: 350
     stats:
       attackDamage: 2
-      attackInterval: 1.2
-      attackRange: 4
+      attackInterval: 1.6
+      attackRange: 10
       splashRadius: 0
-      pierceCount: 2
+      pierceCount: 0
     statusEffects: []
   main2:
     levelName: Pierce Shooter
-    description: ATK, SPD, pierce up
-    cost: 120
+    description: Use Anti-Armored Round - Can Deal More Damages to single Target
+    cost: 350
     stats:
-      attackDamage: 1
-      attackInterval: -0.1
-      attackRange: 0.5
+      attackDamage: 3
+      attackInterval: 0
+      attackRange: 0
       splashRadius: 0
-      pierceCount: 1
+      pierceCount: 0
     statusEffects: []
   main3:
     levelName: Pierce Shooter
-    description: Further stat boost
-    cost: 300
-    stats:
-      attackDamage: 1
-      attackInterval: -0.2
-      attackRange: 0.5
-      splashRadius: 0
-      pierceCount: 1
-    statusEffects: []
-  main4:
-    levelName: Pierce Shooter
-    description: Max performance
-    cost: 700
-    stats:
-      attackDamage: 1
-      attackInterval: -0.2
-      attackRange: 0.5
-      splashRadius: 0
-      pierceCount: 1
-    statusEffects: []
-  subA:
-    levelName: Rapid Fire
-    description: Greatly increases attack speed
-    cost: 300
+    description: Shots pierce to new targets up to 2 times.
+    cost: 2000
     stats:
       attackDamage: 0
-      attackInterval: -0.3
+      attackInterval: 0
       attackRange: 0
       splashRadius: 0
-      pierceCount: 1
+      pierceCount: 2
+    statusEffects: []
+  main4:
+    levelName: Full-Automatic
+    description: Greatly increases attack speed
+    cost: 2500
+    stats:
+      attackDamage: 0
+      attackInterval: -0.8
+      attackRange: 0
+      splashRadius: 0
+      pierceCount: 0
+    statusEffects: []
+  subA:
+    levelName: Deadly Shot
+    description: One Shot, One Kill.
+    cost: 3000
+    stats:
+      attackDamage: 10
+      attackInterval: 0
+      attackRange: 0
+      splashRadius: 0
+      pierceCount: 0
     statusEffects: []
   subB:
-    levelName: Impact
+    levelName: Impact!
     description: Grants stun effect
-    cost: 300
+    cost: 1200
     stats:
-      attackDamage: 2
+      attackDamage: 0
       attackInterval: 0
       attackRange: 0
       splashRadius: 0

@@ -13,62 +13,48 @@ MonoBehaviour:
   m_Name: SlowTower
   m_EditorClassIdentifier: Assembly-CSharp::TowerUpgradeData
   towerName: SlowTower
+  description: Attacks apply slow effect
   main1:
     levelName: Slow Shooter
     description: Attacks apply slow effect
-    cost: 20
+    cost: 250
     stats:
-      attackDamage: 1
-      attackInterval: 1.5
-      attackRange: 3.5
+      attackDamage: 0
+      attackInterval: 1
+      attackRange: 4.6
       splashRadius: 0
       pierceCount: 0
     statusEffects:
     - type: 2
-      duration: 1
+      duration: 12
   main2:
     levelName: Slow Shooter
-    description: Slow duration, RNG up
-    cost: 80
+    description: Can coat one more Bloon per shot
+    cost: 150
     stats:
       attackDamage: 0
-      attackInterval: -0.1
-      attackRange: 0.5
+      attackInterval: 0
+      attackRange: 0
       splashRadius: 0
       pierceCount: 0
-    statusEffects:
-    - type: 2
-      duration: 0.5
+    statusEffects: []
   main3:
     levelName: Slow Shooter
-    description: Further stat boost
-    cost: 200
+    description: Freeze - Makes slow effect last much longer
+    cost: 250
     stats:
       attackDamage: 0
-      attackInterval: -0.1
-      attackRange: 0.5
+      attackInterval: 0
+      attackRange: 0
       splashRadius: 0
       pierceCount: 0
     statusEffects:
     - type: 2
-      duration: 0.5
+      duration: 12
   main4:
     levelName: Slow Shooter
-    description: Max performance
-    cost: 500
-    stats:
-      attackDamage: 0
-      attackInterval: -0.1
-      attackRange: 0.5
-      splashRadius: 0
-      pierceCount: 0
-    statusEffects:
-    - type: 2
-      duration: 0.5
-  subA:
-    levelName: Frostbite
-    description: Adds burn effect
-    cost: 200
+    description: Frost Burn! - Slowed Bloons also pop one layer every few seconds
+    cost: 550
     stats:
       attackDamage: 0
       attackInterval: 0
@@ -77,17 +63,26 @@ MonoBehaviour:
       pierceCount: 0
     statusEffects:
     - type: 1
-      duration: 2
-  subB:
-    levelName: Freeze
-    description: Greatly extends slow duration
-    cost: 200
+      duration: 24
+  subA:
+    levelName: Bigger Cold
+    description: Can slow one additional Bloon per shot
+    cost: 300
     stats:
       attackDamage: 0
       attackInterval: 0
       attackRange: 0
       splashRadius: 0
+      pierceCount: 1
+    statusEffects: []
+  subB:
+    levelName: Ice Storm
+    description: Shoots 3x as fast!
+    cost: 2000
+    stats:
+      attackDamage: 0
+      attackInterval: -0.066
+      attackRange: 0
+      splashRadius: 0
       pierceCount: 0
-    statusEffects:
-    - type: 2
-      duration: 1.5
+    statusEffects: []

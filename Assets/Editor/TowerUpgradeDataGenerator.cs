@@ -29,18 +29,18 @@ public static class TowerUpgradeDataGenerator
         var so = ScriptableObject.CreateInstance<TowerUpgradeData>();
         so.towerName = "BasicTower";
 
-        so.main1 = Level("Basic Shooter", 15, "Single-target ranged attack",
+        so.main1 = Level("Basic Shooter", 100, "Single-target ranged attack",
             dmg: 1, interval: 1.0f, range: 3.0f);
-        so.main2 = Level("Basic Shooter", 80, "ATK, SPD, RNG up",
-            dmg: 1, interval: -0.1f, range: 0.5f);
-        so.main3 = Level("Basic Shooter", 200, "Further stat boost",
-            dmg: 1, interval: -0.1f, range: 0.5f);
-        so.main4 = Level("Basic Shooter", 500, "Max performance",
-            dmg: 2, interval: -0.1f, range: 0.5f);
+        so.main2 = Level("Basic Shooter", 110, "ATK, SPD, RNG up",
+            dmg: 1, interval: -0.05f, range: 0.5f);
+        so.main3 = Level("Basic Shooter", 130, "Further stat boost",
+            dmg: 1, interval: -0.05f, range: 0.5f);
+        so.main4 = Level("Basic Shooter", 150, "Max performance",
+            dmg: 1, interval: -0.05f, range: 0.5f);
 
-        so.subA = Level("Elite", 200, "Balanced stat bonus",
-            dmg: 1, interval: -0.1f, range: 0.5f);
-        so.subB = Level("Frost", 200, "Grants slow effect",
+        so.subA = Level("Elite", 100, "Balanced stat bonus",
+            dmg: 1, range: 0.5f);
+        so.subB = Level("Frost", 100, "Grants slow effect",
             effects: new[] { Effect(StatusEffectType.Slow, 1.5f) });
 
         Save(so, "BasicTower");
@@ -54,18 +54,18 @@ public static class TowerUpgradeDataGenerator
         var so = ScriptableObject.CreateInstance<TowerUpgradeData>();
         so.towerName = "BombTower";
 
-        so.main1 = Level("Bomb Shooter", 30, "Splash area attack",
+        so.main1 = Level("Bomb Shooter", 150, "Splash area attack",
             dmg: 1, interval: 1.5f, range: 3.0f, splash: 1.0f);
-        so.main2 = Level("Bomb Shooter", 100, "ATK, SPD, RNG, splash up",
-            dmg: 1, interval: -0.1f, range: 0.5f, splash: 0.2f);
-        so.main3 = Level("Bomb Shooter", 250, "Further stat boost",
-            dmg: 1, interval: -0.1f, range: 0.5f, splash: 0.3f);
-        so.main4 = Level("Bomb Shooter", 600, "Max performance",
-            dmg: 1, interval: -0.1f, range: 0.5f, splash: 0.3f);
+        so.main2 = Level("Bomb Shooter", 165, "ATK, SPD, RNG, splash up",
+            dmg: 1, interval: -0.05f, range: 0.5f, splash: 0.2f);
+        so.main3 = Level("Bomb Shooter", 195, "Further stat boost",
+            dmg: 1, interval: -0.05f, range: 0.5f, splash: 0.3f);
+        so.main4 = Level("Bomb Shooter", 225, "Max performance",
+            dmg: 1, interval: -0.05f, range: 0.5f, splash: 0.3f);
 
-        so.subA = Level("Wide Area", 250, "Greatly expands splash radius",
+        so.subA = Level("Wide Area", 150, "Greatly expands splash radius",
             splash: 1.0f);
-        so.subB = Level("Incendiary", 250, "Grants burn effect",
+        so.subB = Level("Incendiary", 150, "Grants burn effect",
             effects: new[] { Effect(StatusEffectType.Burn, 3.0f) });
 
         Save(so, "BombTower");
@@ -79,18 +79,18 @@ public static class TowerUpgradeDataGenerator
         var so = ScriptableObject.CreateInstance<TowerUpgradeData>();
         so.towerName = "PierceTower";
 
-        so.main1 = Level("Pierce Shooter", 25, "Piercing projectile hits multiple targets",
+        so.main1 = Level("Pierce Shooter", 200, "Piercing projectile hits multiple targets",
             dmg: 2, interval: 1.2f, range: 4.0f, pierce: 2);
-        so.main2 = Level("Pierce Shooter", 120, "ATK, SPD, pierce up",
+        so.main2 = Level("Pierce Shooter", 220, "ATK, SPD, pierce up",
             dmg: 1, interval: -0.1f, range: 0.5f, pierce: 1);
-        so.main3 = Level("Pierce Shooter", 300, "Further stat boost",
-            dmg: 1, interval: -0.2f, range: 0.5f, pierce: 1);
-        so.main4 = Level("Pierce Shooter", 700, "Max performance",
-            dmg: 1, interval: -0.2f, range: 0.5f, pierce: 1);
+        so.main3 = Level("Pierce Shooter", 260, "ATK, SPD, RNG up",
+            dmg: 1, interval: -0.1f, range: 0.5f);
+        so.main4 = Level("Pierce Shooter", 300, "Max performance",
+            dmg: 1, interval: -0.1f, range: 0.5f, pierce: 1);
 
-        so.subA = Level("Rapid Fire", 300, "Greatly increases attack speed",
-            interval: -0.3f, pierce: 1);
-        so.subB = Level("Impact", 300, "Grants stun effect",
+        so.subA = Level("Rapid Fire", 200, "Greatly increases attack speed",
+            interval: -0.15f, pierce: 1);
+        so.subB = Level("Impact", 200, "Grants stun effect",
             dmg: 2,
             effects: new[] { Effect(StatusEffectType.Stun, 0.5f) });
 
@@ -105,46 +105,46 @@ public static class TowerUpgradeDataGenerator
         var so = ScriptableObject.CreateInstance<TowerUpgradeData>();
         so.towerName = "SlowTower";
 
-        so.main1 = Level("Slow Shooter", 20, "Attacks apply slow effect",
+        so.main1 = Level("Slow Shooter", 100, "Attacks apply slow effect",
             dmg: 1, interval: 1.5f, range: 3.5f,
             effects: new[] { Effect(StatusEffectType.Slow, 1.0f) });
-        so.main2 = Level("Slow Shooter", 80, "Slow duration, RNG up",
-            interval: -0.1f, range: 0.5f,
+        so.main2 = Level("Slow Shooter", 110, "Slow duration, SPD, RNG up",
+            interval: -0.05f, range: 0.5f,
             effects: new[] { Effect(StatusEffectType.Slow, 0.5f) });
-        so.main3 = Level("Slow Shooter", 200, "Further stat boost",
-            interval: -0.1f, range: 0.5f,
+        so.main3 = Level("Slow Shooter", 130, "Further stat boost",
+            interval: -0.05f, range: 0.5f,
             effects: new[] { Effect(StatusEffectType.Slow, 0.5f) });
-        so.main4 = Level("Slow Shooter", 500, "Max performance",
-            interval: -0.1f, range: 0.5f,
+        so.main4 = Level("Slow Shooter", 150, "Max performance",
+            interval: -0.05f, range: 0.5f,
             effects: new[] { Effect(StatusEffectType.Slow, 0.5f) });
 
-        so.subA = Level("Frostbite", 200, "Adds burn effect",
+        so.subA = Level("Frostbite", 100, "Adds burn effect",
             effects: new[] { Effect(StatusEffectType.Burn, 2.0f) });
-        so.subB = Level("Freeze", 200, "Greatly extends slow duration",
+        so.subB = Level("Freeze", 100, "Greatly extends slow duration",
             effects: new[] { Effect(StatusEffectType.Slow, 1.5f) });
 
         Save(so, "SlowTower");
     }
 
     // ───────── Rapid Tower ─────────
-    // Main: fast fire rate attack
+    // Main: fast fire rate attack, shorter range
     // Sub A (Enhance): ATK bonus   Sub B (Spread): splash conversion
     private static void CreateRapidTower()
     {
         var so = ScriptableObject.CreateInstance<TowerUpgradeData>();
         so.towerName = "RapidTower";
 
-        so.main1 = Level("Rapid Shooter", 20, "Fast fire rate single-target attack",
-            dmg: 1, interval: 0.4f, range: 3.0f);
-        so.main2 = Level("Rapid Shooter", 80, "SPD, RNG up",
-            interval: -0.05f, range: 0.5f);
-        so.main3 = Level("Rapid Shooter", 200, "Further stat boost",
-            dmg: 1, interval: -0.05f, range: 0.5f);
-        so.main4 = Level("Rapid Shooter", 500, "Max performance",
-            dmg: 1, interval: -0.05f, range: 0.5f);
+        so.main1 = Level("Rapid Shooter", 200, "Fast fire rate single-target attack",
+            dmg: 1, interval: 0.5f, range: 2.5f);
+        so.main2 = Level("Rapid Shooter", 220, "ATK, SPD, RNG up",
+            dmg: 1, interval: -0.03f, range: 0.25f);
+        so.main3 = Level("Rapid Shooter", 260, "Further stat boost",
+            dmg: 1, interval: -0.03f, range: 0.25f);
+        so.main4 = Level("Rapid Shooter", 300, "Max performance",
+            dmg: 1, interval: -0.03f, range: 0.25f);
 
-        so.subA = Level("Enhance", 200, "Greatly increases ATK",
-            dmg: 2);
+        so.subA = Level("Enhance", 200, "Increases ATK",
+            dmg: 1);
         so.subB = Level("Spread", 200, "Converts to splash area attack",
             splash: 1.0f);
 
