@@ -39,6 +39,7 @@ public class Tower : MonoBehaviour
     public int SellRefund => Mathf.RoundToInt((Cost + totalUpgradeCost) * GameConstants.SellRefundRate);
     public float SplashRadius => currentStats.splashRadius;
     public TowerUpgradeData UpgradeData => upgradeData;
+    public Transform Body => body;
     public SpriteRenderer RangeIndicator => rangeIndicator;
     public TargetPriority Priority { get; private set; } = TargetPriority.First;
 

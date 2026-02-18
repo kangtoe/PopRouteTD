@@ -14,6 +14,7 @@ public class TowerSelectUI : MonoBehaviour
     [SerializeField] private TowerButton towerButtonPrefab;
 
     private readonly Dictionary<GameObject, CooldownState> cooldowns = new();
+    private readonly List<Sprite> generatedIcons = new();
 
     private struct CooldownState
     {
@@ -41,6 +42,14 @@ public class TowerSelectUI : MonoBehaviour
         if (Instance == this) Instance = null;
         if (InputManager.Instance != null)
             InputManager.Instance.OnTowerPlaced -= OnTowerPlaced;
+
+        foreach (var icon in generatedIcons)
+        {
+            if (icon == null) continue;
+            Destroy(icon.texture);
+            Destroy(icon);
+        }
+        generatedIcons.Clear();
     }
 
     public void Show()
@@ -67,6 +76,13 @@ public class TowerSelectUI : MonoBehaviour
 
             string label = $"{tower.TowerName}\n({tower.Cost})";
             if (tb.LabelText != null) tb.LabelText.text = label;
+
+            if (tb.IconImage != null)
+            {
+                var icon = TowerIconGenerator.GenerateIcon(prefab);
+                tb.IconImage.sprite = icon;
+                generatedIcons.Add(icon);
+            }
 
             if (tb.CooldownOverlay != null) tb.CooldownOverlay.fillAmount = 0f;
             if (tb.CooldownText != null) tb.CooldownText.gameObject.SetActive(false);
