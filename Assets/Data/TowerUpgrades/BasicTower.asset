@@ -13,71 +13,70 @@ MonoBehaviour:
   m_Name: BasicTower
   m_EditorClassIdentifier: Assembly-CSharp::TowerUpgradeData
   towerName: BasicTower
+  description: Single-target ranged attack
   main1:
     levelName: Basic Shooter
     description: Single-target ranged attack
-    cost: 15
+    cost: 200
     stats:
       attackDamage: 1
       attackInterval: 1
-      attackRange: 3
+      attackRange: 3.2
       splashRadius: 0
       pierceCount: 0
     statusEffects: []
   main2:
     levelName: Basic Shooter
-    description: ATK, SPD, RNG up
-    cost: 80
+    description: Long Range Shot - Makes shoot further than normal
+    cost: 100
     stats:
-      attackDamage: 1
-      attackInterval: -0.1
-      attackRange: 0.5
+      attackDamage: 0
+      attackInterval: 0
+      attackRange: 0.8
       splashRadius: 0
       pierceCount: 0
     statusEffects: []
   main3:
     levelName: Basic Shooter
-    description: Further stat boost
-    cost: 200
+    description: Quick Shots -  Shoots 15% faster.
+    cost: 100
     stats:
-      attackDamage: 1
-      attackInterval: -0.1
-      attackRange: 0.5
+      attackDamage: 0
+      attackInterval: -0.15
+      attackRange: 0
       splashRadius: 0
       pierceCount: 0
     statusEffects: []
   main4:
     levelName: Basic Shooter
-    description: Max performance
-    cost: 500
+    description: Very Quick Shots - Shoots 33% faster!
+    cost: 250
     stats:
-      attackDamage: 2
-      attackInterval: -0.1
+      attackDamage: 0
+      attackInterval: -0.15
       attackRange: 0.5
       splashRadius: 0
       pierceCount: 0
     statusEffects: []
   subA:
-    levelName: Elite
-    description: Balanced stat bonus
+    levelName: Enhanced Eyesight
+    description: Shoots even further!
     cost: 200
     stats:
-      attackDamage: 1
-      attackInterval: -0.1
-      attackRange: 0.5
+      attackDamage: 0
+      attackInterval: 0
+      attackRange: 0.8
       splashRadius: 0
       pierceCount: 0
     statusEffects: []
   subB:
-    levelName: Frost
-    description: Grants slow effect
+    levelName: Razor Sharp Shots
+    description: Can pop 2 more Bloons per shot.
     cost: 200
     stats:
       attackDamage: 0
       attackInterval: 0
       attackRange: 0
       splashRadius: 0
-      pierceCount: 0
-    statusEffects:
-    - type: 2
-      duration: 1.5
+      pierceCount: 2
+    statusEffects: []

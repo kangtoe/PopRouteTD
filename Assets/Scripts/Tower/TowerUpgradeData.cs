@@ -44,6 +44,7 @@ public class UpgradeLevel
 public class TowerUpgradeData : ScriptableObject
 {
     public string towerName;
+    [TextArea] public string description;
 
     [Header("Main Module (Lv1~Lv4)")]
     public UpgradeLevel main1;

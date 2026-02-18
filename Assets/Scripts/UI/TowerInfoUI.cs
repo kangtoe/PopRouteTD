@@ -108,11 +108,8 @@ public class TowerInfoUI : MonoBehaviour
         // 이름 (레벨 표시 없음)
         towerNameText.text = data.towerName;
 
-        // 기본 스탯
-        var s = data.main1.stats;
-        var stats = $"ATK {s.attackDamage}  SPD {s.attackInterval:0.#}s  RNG {s.attackRange:0.#}";
-        if (s.splashRadius > 0f) stats += $"  SPLASH {s.splashRadius:0.#}";
-        towerStatsText.text = stats;
+        // 기본 설명
+        towerStatsText.text = data.description;
 
         // 타겟 지정·판매 숨기기
         SetPriorityButtonsVisible(false);
@@ -172,10 +169,8 @@ public class TowerInfoUI : MonoBehaviour
             ? $"{tower.TowerName} Lv.{tower.MainLevel}"
             : tower.TowerName;
 
-        // 스탯
-        var stats = $"ATK {tower.AttackDamage}  SPD {tower.AttackInterval:0.#}s  RNG {tower.AttackRange:0.#}";
-        if (tower.SplashRadius > 0f) stats += $"  SPLASH {tower.SplashRadius:0.#}";
-        towerStatsText.text = stats;
+        // 기본 설명
+        towerStatsText.text = tower.UpgradeData != null ? tower.UpgradeData.description : "";
         SetPriorityButtonsVisible(true);
 
         // 판매
