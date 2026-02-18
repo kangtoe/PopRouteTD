@@ -10,6 +10,9 @@ public class ProjectilePool : MonoBehaviour
     [SerializeField] private int initialPoolSize = 20;
 
     private ObjectPool<GameObject> pool;
+    private float cachedProjectileSpeed;
+
+    public float ProjectileSpeed => cachedProjectileSpeed;
 
     private void Awake()
     {
@@ -19,6 +22,9 @@ public class ProjectilePool : MonoBehaviour
             return;
         }
         Instance = this;
+
+        var prefabProjectile = projectilePrefab.GetComponent<Projectile>();
+        cachedProjectileSpeed = prefabProjectile != null ? prefabProjectile.Speed : 15f;
 
         pool = new ObjectPool<GameObject>(
             createFunc: () => Instantiate(projectilePrefab, projectileParent),

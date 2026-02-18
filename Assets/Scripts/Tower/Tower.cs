@@ -24,6 +24,7 @@ public class Tower : MonoBehaviour
     private int enemyLayerMask;
     private bool initialized;
     private Enemy currentTarget;
+    private float projectileSpeed;
 
     private int mainLevel = 1;
     private bool hasSubA;
@@ -53,6 +54,7 @@ public class Tower : MonoBehaviour
 
         attackTimer = 0f;
         enemyLayerMask = 1 << LayerMask.NameToLayer(GameConstants.LayerEnemy);
+        projectileSpeed = ProjectilePool.Instance != null ? ProjectilePool.Instance.ProjectileSpeed : 15f;
         initialized = true;
 
         if (upgradeData != null)
@@ -254,16 +256,13 @@ public class Tower : MonoBehaviour
         // 매 프레임 우선순위에 따라 최적 타겟 재평가
         currentTarget = TargetSelector.SelectTarget(transform.position, currentStats.attackRange, Priority, enemyLayerMask);
 
-        // 타겟을 향해 회전
+        // 타겟을 향해 예측 위치로 회전 및 공격
         if (currentTarget != null)
         {
-            LookAt(currentTarget.transform.position);
-        }
+            Vector3 aimPos = PredictTargetPosition(currentTarget);
+            LookAt(aimPos);
 
-        // 타겟이 있고 발사 라인에 적이 있으면 공격
-        if (currentTarget != null)
-        {
-            if (attackTimer <= 0f && HasEnemyInFireLine())
+            if (attackTimer <= 0f && IsAimedAt(aimPos))
             {
                 Attack();
                 attackTimer = currentStats.attackInterval;
@@ -282,11 +281,50 @@ public class Tower : MonoBehaviour
         body.rotation = Quaternion.Euler(0, 0, newAngle);
     }
 
-    private bool HasEnemyInFireLine()
+    private bool IsAimedAt(Vector3 targetPos)
     {
-        Vector2 origin = firePoint != null ? (Vector2)firePoint.position : (Vector2)transform.position;
-        RaycastHit2D hit = Physics2D.Raycast(origin, body.up, currentStats.attackRange, enemyLayerMask);
-        return hit.collider != null;
+        Vector2 dir = ((Vector3)targetPos - transform.position).normalized;
+        float angle = Vector2.Angle(body.up, dir);
+        return angle < 5f;
+    }
+
+    private Vector3 PredictTargetPosition(Enemy target)
+    {
+        Vector3 targetPos = target.transform.position;
+        Vector3 targetVel = target.Follower.Velocity;
+
+        if (targetVel.sqrMagnitude < 0.001f)
+            return targetPos;
+
+        Vector3 relPos = targetPos - transform.position;
+        float a = Vector3.Dot(targetVel, targetVel) - projectileSpeed * projectileSpeed;
+        float b = 2f * Vector3.Dot(relPos, targetVel);
+        float c = Vector3.Dot(relPos, relPos);
+
+        float t;
+        if (Mathf.Abs(a) < 0.001f)
+        {
+            // 선형 해: bt + c = 0
+            if (Mathf.Abs(b) < 0.001f) return targetPos;
+            t = -c / b;
+            if (t < 0f) return targetPos;
+        }
+        else
+        {
+            float discriminant = b * b - 4f * a * c;
+            if (discriminant < 0f) return targetPos;
+
+            float sqrtD = Mathf.Sqrt(discriminant);
+            float t1 = (-b - sqrtD) / (2f * a);
+            float t2 = (-b + sqrtD) / (2f * a);
+
+            if (t1 > 0f && t2 > 0f) t = Mathf.Min(t1, t2);
+            else if (t1 > 0f) t = t1;
+            else if (t2 > 0f) t = t2;
+            else return targetPos;
+        }
+
+        return targetPos + targetVel * t;
     }
 
     private void Attack()

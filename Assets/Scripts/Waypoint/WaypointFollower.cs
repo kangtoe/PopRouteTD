@@ -13,6 +13,17 @@ public class WaypointFollower : MonoBehaviour
     public bool IsActive { get; private set; }
     public float SpeedMultiplier { get; set; } = 1f;
 
+    public Vector3 Velocity
+    {
+        get
+        {
+            if (!IsActive || waypoints == null || currentIndex >= waypoints.Length - 1)
+                return Vector3.zero;
+            Vector3 dir = (waypoints[currentIndex + 1] - transform.position).normalized;
+            return dir * (speed * SpeedMultiplier);
+        }
+    }
+
     public event Action OnReachedEnd;
 
     public void SetSpeed(float newSpeed)

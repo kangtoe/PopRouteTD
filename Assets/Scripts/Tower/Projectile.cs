@@ -7,6 +7,8 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float speed = 15f;
     [SerializeField] private float lifetime = 3f;
 
+    public float Speed => speed;
+
     private int damage;
     private float splashRadius;
     private int pierceCount;
