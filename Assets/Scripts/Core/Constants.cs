@@ -47,7 +47,7 @@ public enum StatusEffectType
 public static class GameConstants
 {
     public const int StartLives = 20;
-    public const int StartEnergy = 100;
+    public const int StartEnergy = 200;
 
     // Physics Layers
     public const string LayerEnemy = "Enemy";
@@ -71,14 +71,20 @@ public static class GameConstants
     public const float SellRefundRate = 0.5f;
 
     // 보상
-    public const int BaseLayerReward = 0;
+    public const int BaseLayerReward = 1;
+    public const int WaveClearRewardBase = 5;
+
+    public static int GetWaveClearReward(int waveNumber)
+    {
+        return WaveClearRewardBase * waveNumber;
+    }
 
     // Enhanced 배율
     public const int EnhancedMultiplier = 2;
     public const float EnhancedSpeedMultiplier = 1.2f;
 
     // Shield
-    public const int DefaultShieldHp = 5;
+    public const int DefaultShieldHp = 10;
 
     // Status Effects (고정 수치)
     public const int BurnDamagePerTick = 1;

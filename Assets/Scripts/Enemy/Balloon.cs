@@ -128,7 +128,7 @@ public class Balloon : MonoBehaviour
 
     private int GetReward()
     {
-        int baseReward = GameConstants.BaseLayerReward + (int)currentLayer;
+        int baseReward = GameConstants.BaseLayerReward;
         return IsEnhanced ? baseReward * GameConstants.EnhancedMultiplier : baseReward;
     }
 
@@ -156,7 +156,7 @@ public class Balloon : MonoBehaviour
         currentHp -= damage;
         if (currentHp <= 0)
         {
-            DestroyLayer();
+            PopLayer();
         }
     }
 
@@ -200,9 +200,10 @@ public class Balloon : MonoBehaviour
         return shieldConsumed + consumed;
     }
 
-    private void DestroyLayer()
+    /// <summary>현재 레이어 하나를 벗긴다.</summary>
+    private void PopLayer(bool giveReward = true)
     {
-        ResourceManager.Instance.AddEnergy(GetReward());
+        if (giveReward) ResourceManager.Instance.AddEnergy(GetReward());
         OnBalloonDestroyed?.Invoke(this);
 
         BalloonLayer lowerLayer = currentLayer - 1;
@@ -219,9 +220,9 @@ public class Balloon : MonoBehaviour
         }
     }
 
-    private void BreakShield()
+    private void BreakShield(bool giveReward = true)
     {
-        ResourceManager.Instance.AddEnergy(shieldHp);
+        if (giveReward) ResourceManager.Instance.AddEnergy(shieldHp);
         currentShieldHp = 0;
 
         if (currentVariant == EnemyVariant.Shielded)
@@ -243,6 +244,23 @@ public class Balloon : MonoBehaviour
     {
         ResourceManager.Instance.LoseLife((int)currentLayer);
         OnBalloonReachedBase?.Invoke(this);
+        Deactivate();
+    }
+
+    /// <summary>모든 레이어를 벗기고 풍선을 제거한다.</summary>
+    public void PopAll(bool giveReward = true)
+    {
+        if (deactivated) return;
+
+        if (HasShield) BreakShield(giveReward);
+
+        while (currentLayer >= BalloonLayer.Red)
+        {
+            if (giveReward) ResourceManager.Instance.AddEnergy(GetReward());
+            OnBalloonDestroyed?.Invoke(this);
+            currentLayer--;
+        }
+
         Deactivate();
     }
 

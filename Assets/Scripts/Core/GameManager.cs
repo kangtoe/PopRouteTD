@@ -129,6 +129,7 @@ public class GameManager : MonoBehaviour
         if (activeEnemyCount <= 0 && waveManager.IsSpawningComplete && CurrentState == GameState.Wave)
         {
             postSpawnTimerActive = false;
+            ResourceManager.Instance.AddEnergy(GameConstants.GetWaveClearReward(CurrentWave));
             TransitionToPrepare();
             return true;
         }
@@ -164,4 +165,25 @@ public class GameManager : MonoBehaviour
         CurrentState = newState;
         OnStateChanged?.Invoke(newState);
     }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    public void DebugClearEnemies()
+    {
+        foreach (var balloon in FindObjectsOfType<Balloon>())
+            balloon.PopAll(false);
+        activeEnemyCount = 0;
+    }
+
+    public void DebugJumpToWave(int targetWave)
+    {
+        waveManager.StopSpawning();
+        DebugClearEnemies();
+
+        postSpawnTimerActive = false;
+        prepareCountdownActive = false;
+        CurrentWave = Mathf.Max(0, targetWave - 1);
+        OnWaveChanged?.Invoke(CurrentWave);
+        TransitionToPrepare();
+    }
+#endif
 }

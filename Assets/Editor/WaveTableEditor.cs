@@ -52,14 +52,16 @@ public class WaveTableEditor : Editor
         string summary = BuildSummary(groups);
         int totalCount = GetTotalCount(groups);
         CalcWaveStats(groups, out int totalDmg, out int totalEnergy, out float totalTime);
+        int clearReward = GameConstants.GetWaveClearReward(index + 1);
+        int waveTotal = totalEnergy + clearReward;
 
-        int cumEnergy = totalEnergy;
+        int cumEnergy = GameConstants.StartEnergy + waveTotal;
         for (int i = 0; i < index; i++)
         {
             var prevGroups = wavesProp.GetArrayElementAtIndex(i)
                 .FindPropertyRelative("groups");
             CalcWaveStats(prevGroups, out _, out int prevEnergy, out _);
-            cumEnergy += prevEnergy;
+            cumEnergy += prevEnergy + GameConstants.GetWaveClearReward(i + 1);
         }
 
         // 왼쪽: 웨이브 정보
@@ -76,12 +78,13 @@ public class WaveTableEditor : Editor
                 alignment = TextAnchor.MiddleRight
             };
         }
-        float statsWidth = 400;
+        float dps = totalTime > 0 ? totalDmg / totalTime : 0f;
+        float statsWidth = 480;
         var statsRect = new Rect(
             headerRect.xMax - statsWidth, headerRect.y, statsWidth, line);
         EditorGUI.LabelField(statsRect,
-            string.Format("{0,3}체  |  DMG {1,5}  |  EN {2,5} ({3,6})  |  {4,5:F1}s",
-                totalCount, totalDmg, totalEnergy, cumEnergy, totalTime),
+            string.Format("{0,3}체  |  DMG {1,5}  |  {2,5:F1}s  |  DPS {3,5:F1}  |  EN {4,5} + {5,3}  ({6,6})",
+                totalCount, totalDmg, totalTime, dps, totalEnergy, clearReward, cumEnergy),
             statsStyle);
 
         if (expanded != wasExpanded)
@@ -183,7 +186,7 @@ public class WaveTableEditor : Editor
             int energy = hasShield ? GameConstants.DefaultShieldHp : 0;
             for (int l = layer; l >= 1; l--)
             {
-                int reward = GameConstants.BaseLayerReward + l;
+                int reward = GameConstants.BaseLayerReward;
                 if (isEnhanced) reward *= GameConstants.EnhancedMultiplier;
                 energy += reward;
             }
