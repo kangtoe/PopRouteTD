@@ -9,25 +9,59 @@ public static class TargetSelector
 
         Enemy best = null;
         float bestValue = float.MinValue;
+        int bestLayer = priority == TargetPriority.Strong ? int.MinValue : int.MaxValue;
 
         foreach (var hit in hits)
         {
             var enemy = hit.GetComponent<Enemy>();
             if (enemy == null || !enemy.gameObject.activeInHierarchy) continue;
 
-            float value = priority switch
+            switch (priority)
             {
-                TargetPriority.First => enemy.Follower.Progress,
-                TargetPriority.Close => -Vector3.Distance(towerPos, enemy.transform.position),
-                TargetPriority.Weak => -(int)enemy.CurrentLayer,
-                TargetPriority.Strong => (int)enemy.CurrentLayer,
-                _ => 0f
-            };
-
-            if (value > bestValue)
-            {
-                bestValue = value;
-                best = enemy;
+                case TargetPriority.First:
+                {
+                    float progress = enemy.Follower.Progress;
+                    if (progress > bestValue)
+                    {
+                        bestValue = progress;
+                        best = enemy;
+                    }
+                    break;
+                }
+                case TargetPriority.Close:
+                {
+                    float dist = -Vector3.Distance(towerPos, enemy.transform.position);
+                    if (dist > bestValue)
+                    {
+                        bestValue = dist;
+                        best = enemy;
+                    }
+                    break;
+                }
+                case TargetPriority.Strong:
+                {
+                    int layer = (int)enemy.CurrentLayer;
+                    float progress = enemy.Follower.Progress;
+                    if (layer > bestLayer || (layer == bestLayer && progress > bestValue))
+                    {
+                        bestLayer = layer;
+                        bestValue = progress;
+                        best = enemy;
+                    }
+                    break;
+                }
+                case TargetPriority.Weak:
+                {
+                    int layer = (int)enemy.CurrentLayer;
+                    float progress = enemy.Follower.Progress;
+                    if (layer < bestLayer || (layer == bestLayer && progress > bestValue))
+                    {
+                        bestLayer = layer;
+                        bestValue = progress;
+                        best = enemy;
+                    }
+                    break;
+                }
             }
         }
 
