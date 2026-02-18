@@ -29,7 +29,7 @@ MonoBehaviour:
       duration: 12
   main2:
     levelName: Slow Shooter
-    description: Can coat one more Bloon per shot
+    description: Can coat one more Enemy per shot
     cost: 150
     stats:
       attackDamage: 0
@@ -53,7 +53,7 @@ MonoBehaviour:
       duration: 12
   main4:
     levelName: Slow Shooter
-    description: Frost Burn! - Slowed Bloons also pop one layer every few seconds
+    description: Frost Burn! - Slowed Enemies also pop one layer every few seconds
     cost: 550
     stats:
       attackDamage: 0
@@ -66,7 +66,7 @@ MonoBehaviour:
       duration: 24
   subA:
     levelName: Bigger Cold
-    description: Can slow one additional Bloon per shot
+    description: Can slow one additional Enemy per shot
     cost: 300
     stats:
       attackDamage: 0

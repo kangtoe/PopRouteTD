@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum BalloonLayer
+public enum EnemyLayer
 {
     None = 0,
     Red = 1,
@@ -91,22 +91,22 @@ public static class GameConstants
     public const float BurnTickInterval = 0.5f;
     public const float SlowSpeedMultiplier = 0.5f;
 
-    public static float GetBalloonSpeed(BalloonLayer layer)
+    public static float GetEnemySpeed(EnemyLayer layer)
     {
         return 1.0f + ((int)layer - 1) * 0.5f;
     }
 
-    public static Color GetBalloonColor(BalloonLayer layer)
+    public static Color GetEnemyColor(EnemyLayer layer)
     {
         return layer switch
         {
-            BalloonLayer.Red => Color.red,
-            BalloonLayer.Orange => new Color(1f, 0.5f, 0f),
-            BalloonLayer.Yellow => Color.yellow,
-            BalloonLayer.Green => Color.green,
-            BalloonLayer.Blue => Color.blue,
-            BalloonLayer.Indigo => new Color(0.29f, 0f, 0.51f),
-            BalloonLayer.Purple => new Color(0.58f, 0f, 0.83f),
+            EnemyLayer.Red => Color.red,
+            EnemyLayer.Orange => new Color(1f, 0.5f, 0f),
+            EnemyLayer.Yellow => Color.yellow,
+            EnemyLayer.Green => Color.green,
+            EnemyLayer.Blue => Color.blue,
+            EnemyLayer.Indigo => new Color(0.29f, 0f, 0.51f),
+            EnemyLayer.Purple => new Color(0.58f, 0f, 0.83f),
             _ => Color.white
         };
     }

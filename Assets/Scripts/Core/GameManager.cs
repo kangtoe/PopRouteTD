@@ -36,8 +36,8 @@ public class GameManager : MonoBehaviour
         ResourceManager.Instance.Initialize(GameConstants.StartEnergy, GameConstants.StartLives);
         ResourceManager.Instance.OnLivesZero += HandleGameOver;
 
-        Balloon.OnBalloonDestroyed += OnBalloonRemoved;
-        Balloon.OnBalloonReachedBase += OnBalloonRemoved;
+        Enemy.OnEnemyDestroyed += OnEnemyRemoved;
+        Enemy.OnEnemyReachedBase += OnEnemyRemoved;
 
         CurrentWave = 0;
         SetState(GameState.Prepare);
@@ -48,8 +48,8 @@ public class GameManager : MonoBehaviour
         if (ResourceManager.Instance != null)
             ResourceManager.Instance.OnLivesZero -= HandleGameOver;
 
-        Balloon.OnBalloonDestroyed -= OnBalloonRemoved;
-        Balloon.OnBalloonReachedBase -= OnBalloonRemoved;
+        Enemy.OnEnemyDestroyed -= OnEnemyRemoved;
+        Enemy.OnEnemyReachedBase -= OnEnemyRemoved;
     }
 
     private void Update()
@@ -108,7 +108,7 @@ public class GameManager : MonoBehaviour
         activeEnemyCount++;
     }
 
-    private void OnBalloonRemoved(Balloon balloon)
+    private void OnEnemyRemoved(Enemy enemy)
     {
         activeEnemyCount--;
         TryCompleteWave();
@@ -169,8 +169,8 @@ public class GameManager : MonoBehaviour
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
     public void DebugClearEnemies()
     {
-        foreach (var balloon in FindObjectsOfType<Balloon>())
-            balloon.PopAll(false);
+        foreach (var enemy in FindObjectsOfType<Enemy>())
+            enemy.PopAll(false);
         activeEnemyCount = 0;
     }
 

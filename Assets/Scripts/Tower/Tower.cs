@@ -23,7 +23,7 @@ public class Tower : MonoBehaviour
     private float attackTimer;
     private int enemyLayerMask;
     private bool initialized;
-    private Balloon currentTarget;
+    private Enemy currentTarget;
 
     private int mainLevel = 1;
     private bool hasSubA;

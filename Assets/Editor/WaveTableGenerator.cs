@@ -97,13 +97,13 @@ public static class WaveTableGenerator
     // ── Aliases ──
     private static class L
     {
-        public const BalloonLayer Red = BalloonLayer.Red;
-        public const BalloonLayer Orange = BalloonLayer.Orange;
-        public const BalloonLayer Yellow = BalloonLayer.Yellow;
-        public const BalloonLayer Green = BalloonLayer.Green;
-        public const BalloonLayer Blue = BalloonLayer.Blue;
-        public const BalloonLayer Indigo = BalloonLayer.Indigo;
-        public const BalloonLayer Purple = BalloonLayer.Purple;
+        public const EnemyLayer Red = EnemyLayer.Red;
+        public const EnemyLayer Orange = EnemyLayer.Orange;
+        public const EnemyLayer Yellow = EnemyLayer.Yellow;
+        public const EnemyLayer Green = EnemyLayer.Green;
+        public const EnemyLayer Blue = EnemyLayer.Blue;
+        public const EnemyLayer Indigo = EnemyLayer.Indigo;
+        public const EnemyLayer Purple = EnemyLayer.Purple;
     }
 
     private static class V
@@ -116,7 +116,7 @@ public static class WaveTableGenerator
 
     // ── Helpers ──
 
-    private static SpawnGroupData G(BalloonLayer layer, int count,
+    private static SpawnGroupData G(EnemyLayer layer, int count,
         EnemyVariant variant = EnemyVariant.Normal)
     {
         return new SpawnGroupData

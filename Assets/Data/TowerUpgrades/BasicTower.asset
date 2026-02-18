@@ -71,7 +71,7 @@ MonoBehaviour:
     statusEffects: []
   subB:
     levelName: Razor Sharp Shots
-    description: Can pop 2 more Bloons per shot.
+    description: Can hit 2 more Enemies per shot.
     cost: 200
     stats:
       attackDamage: 0

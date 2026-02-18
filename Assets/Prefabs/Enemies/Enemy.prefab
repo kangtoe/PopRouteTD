@@ -933,7 +933,7 @@ GameObject:
   - component: {fileID: 1425262051550988063}
   - component: {fileID: 8374649942179888899}
   m_Layer: 7
-  m_Name: Balloon
+  m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1076,7 +1076,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c05e6cdf1b99813449b7f2b337327211, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Balloon
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy
   hp: 1
   energyReward: 1
   statusEffectResistance: 0

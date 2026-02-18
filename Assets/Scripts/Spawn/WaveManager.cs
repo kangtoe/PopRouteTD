@@ -36,7 +36,7 @@ public class WaveManager : MonoBehaviour
             {
                 for (int i = 0; i < group.count; i++)
                 {
-                    BalloonSpawner.Instance.SpawnBalloon(group.layer, waypointPath, group.variant);
+                    EnemySpawner.Instance.SpawnEnemy(group.layer, waypointPath, group.variant);
                     yield return new WaitForSeconds(group.interval);
                 }
             }

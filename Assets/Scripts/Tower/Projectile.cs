@@ -66,11 +66,11 @@ public class Projectile : MonoBehaviour
             var hits = Physics2D.OverlapCircleAll(transform.position, splashRadius, enemyLayerMask);
             foreach (var hit in hits)
             {
-                var balloon = hit.GetComponent<Balloon>();
-                if (balloon != null)
+                var enemy = hit.GetComponent<Enemy>();
+                if (enemy != null)
                 {
-                    balloon.TakeDamage(damage);
-                    ApplyStatusEffect(balloon);
+                    enemy.TakeDamage(damage);
+                    ApplyStatusEffect(enemy);
                 }
             }
         }
@@ -79,13 +79,13 @@ public class Projectile : MonoBehaviour
             int instanceId = other.gameObject.GetInstanceID();
             if (hitInstanceIds.Contains(instanceId)) return;
 
-            var balloon = other.GetComponent<Balloon>();
-            if (balloon == null) return;
+            var enemy = other.GetComponent<Enemy>();
+            if (enemy == null) return;
 
-            int consumed = balloon.TakeLayerDamage(remainingPierce);
+            int consumed = enemy.TakeLayerDamage(remainingPierce);
             remainingPierce -= consumed;
             hitInstanceIds.Add(instanceId);
-            ApplyStatusEffect(balloon);
+            ApplyStatusEffect(enemy);
 
             if (remainingPierce <= 0)
             {
@@ -96,21 +96,21 @@ public class Projectile : MonoBehaviour
         }
         else
         {
-            var balloon = other.GetComponent<Balloon>();
-            if (balloon != null)
+            var enemy = other.GetComponent<Enemy>();
+            if (enemy != null)
             {
-                balloon.TakeDamage(damage);
-                ApplyStatusEffect(balloon);
+                enemy.TakeDamage(damage);
+                ApplyStatusEffect(enemy);
             }
         }
 
         Deactivate();
     }
 
-    private void ApplyStatusEffect(Balloon balloon)
+    private void ApplyStatusEffect(Enemy enemy)
     {
         if (effectType == StatusEffectType.None) return;
-        balloon.ApplyStatusEffect(effectType, effectDuration);
+        enemy.ApplyStatusEffect(effectType, effectDuration);
     }
 
     private void Deactivate()

@@ -20,20 +20,20 @@ public class ItemSpawner : MonoBehaviour
 
     private void OnEnable()
     {
-        Balloon.OnBalloonDestroyed += OnBalloonDestroyed;
+        Enemy.OnEnemyDestroyed += OnEnemyDestroyed;
     }
 
     private void OnDisable()
     {
-        Balloon.OnBalloonDestroyed -= OnBalloonDestroyed;
+        Enemy.OnEnemyDestroyed -= OnEnemyDestroyed;
     }
 
-    private void OnBalloonDestroyed(Balloon balloon)
+    private void OnEnemyDestroyed(Enemy enemy)
     {
-        if (balloon.CurrentLayer != BalloonLayer.Red) return;
+        if (enemy.CurrentLayer != EnemyLayer.Red) return;
         if (Random.value > dropChance) return;
 
-        SpawnItem(balloon.transform.position, dropEnergy);
+        SpawnItem(enemy.transform.position, dropEnergy);
     }
 
     public void SpawnItem(Vector3 position, int energy)

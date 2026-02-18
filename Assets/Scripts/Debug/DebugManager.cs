@@ -8,12 +8,12 @@ public class DebugManager : MonoBehaviour
     [SerializeField] private WaveTable waveTable;
 
     [SerializeField] bool showPanel;
-    private BalloonLayer selectedLayer = BalloonLayer.Red;
+    private EnemyLayer selectedLayer = EnemyLayer.Red;
     private EnemyVariant selectedVariant = EnemyVariant.Normal;
     private string jumpWaveInput = "1";
     private string energyInput = GameConstants.StartEnergy.ToString();
 
-    private readonly string[] layerNames = Enum.GetNames(typeof(BalloonLayer));
+    private readonly string[] layerNames = Enum.GetNames(typeof(EnemyLayer));
     private readonly string[] variantNames = Enum.GetNames(typeof(EnemyVariant));
 
     private void Update()
@@ -36,7 +36,7 @@ public class DebugManager : MonoBehaviour
         {
             bool selected = layerIndex == i;
             if (GUILayout.Toggle(selected, layerNames[i], GUI.skin.button) && !selected)
-                selectedLayer = (BalloonLayer)i;
+                selectedLayer = (EnemyLayer)i;
         }
 
         GUILayout.Space(8);
@@ -54,8 +54,8 @@ public class DebugManager : MonoBehaviour
 
         if (GUILayout.Button("Spawn"))
         {
-            if (BalloonSpawner.Instance != null && waypointPath != null)
-                BalloonSpawner.Instance.SpawnBalloon(selectedLayer, waypointPath, selectedVariant);
+            if (EnemySpawner.Instance != null && waypointPath != null)
+                EnemySpawner.Instance.SpawnEnemy(selectedLayer, waypointPath, selectedVariant);
         }
 
         GUILayout.EndArea();
@@ -128,16 +128,16 @@ public class DebugManager : MonoBehaviour
         bool enhanced = group.variant is EnemyVariant.Enhanced or EnemyVariant.EnhancedShielded;
         bool shielded = group.variant is EnemyVariant.Shielded or EnemyVariant.EnhancedShielded;
 
-        int perBalloon = 0;
-        for (int l = (int)group.layer; l >= (int)BalloonLayer.Red; l--)
+        int perEnemy = 0;
+        for (int l = (int)group.layer; l >= (int)EnemyLayer.Red; l--)
         {
             int reward = GameConstants.BaseLayerReward;
             if (enhanced) reward *= GameConstants.EnhancedMultiplier;
-            perBalloon += reward;
+            perEnemy += reward;
         }
-        if (shielded) perBalloon += GameConstants.DefaultShieldHp;
+        if (shielded) perEnemy += GameConstants.DefaultShieldHp;
 
-        return perBalloon * group.count;
+        return perEnemy * group.count;
     }
 }
 #endif

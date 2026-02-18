@@ -23,12 +23,12 @@ public class StatusEffectHandler : MonoBehaviour
 
     private readonly Dictionary<StatusEffectType, ActiveEffect> activeEffects = new();
     private readonly Dictionary<StatusEffectType, VisualEffect> visuals = new();
-    private Balloon balloon;
+    private Enemy enemy;
     private WaypointFollower follower;
 
     private void Awake()
     {
-        balloon = GetComponent<Balloon>();
+        enemy = GetComponent<Enemy>();
         follower = GetComponent<WaypointFollower>();
         InitVisual(StatusEffectType.Burn, burnEffectPrefab);
         InitVisual(StatusEffectType.Slow, slowEffectPrefab);
@@ -101,7 +101,7 @@ public class StatusEffectHandler : MonoBehaviour
                 effect.TickTimer -= Time.deltaTime;
                 if (effect.TickTimer <= 0f)
                 {
-                    balloon.TakeDamage(GameConstants.BurnDamagePerTick);
+                    enemy.TakeDamage(GameConstants.BurnDamagePerTick);
                     effect.TickTimer += GameConstants.BurnTickInterval;
                 }
             }

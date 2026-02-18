@@ -1,12 +1,12 @@
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class BalloonSpawner : MonoBehaviour
+public class EnemySpawner : MonoBehaviour
 {
-    public static BalloonSpawner Instance { get; private set; }
+    public static EnemySpawner Instance { get; private set; }
 
-    [Header("풍선 프리팹")]
-    [SerializeField] private GameObject balloonPrefab;
+    [Header("적 프리팹")]
+    [SerializeField] private GameObject enemyPrefab;
 
     [Header("부모 Transform")]
     [SerializeField] private Transform enemyParent;
@@ -14,7 +14,7 @@ public class BalloonSpawner : MonoBehaviour
     [Header("풀 크기")]
     [SerializeField] private int initialPoolSize = 30;
 
-    private ObjectPool<GameObject> balloonPool;
+    private ObjectPool<GameObject> enemyPool;
 
     private void Awake()
     {
@@ -29,10 +29,10 @@ public class BalloonSpawner : MonoBehaviour
 
     private void InitializePool()
     {
-        if (balloonPrefab == null) return;
+        if (enemyPrefab == null) return;
 
-        balloonPool = new ObjectPool<GameObject>(
-            createFunc: () => Instantiate(balloonPrefab, enemyParent),
+        enemyPool = new ObjectPool<GameObject>(
+            createFunc: () => Instantiate(enemyPrefab, enemyParent),
             actionOnGet: null,
             actionOnRelease: obj => obj.SetActive(false),
             actionOnDestroy: Destroy,
@@ -40,19 +40,19 @@ public class BalloonSpawner : MonoBehaviour
         );
     }
 
-    public GameObject SpawnBalloon(BalloonLayer layer, WaypointPath path,
+    public GameObject SpawnEnemy(EnemyLayer layer, WaypointPath path,
         EnemyVariant variant = EnemyVariant.Normal)
     {
-        var obj = balloonPool.Get();
+        var obj = enemyPool.Get();
         if (obj == null) return null;
-        var balloon = obj.GetComponent<Balloon>();
-        balloon.Initialize(layer, path, variant);
+        var enemy = obj.GetComponent<Enemy>();
+        enemy.Initialize(layer, path, variant);
         GameManager.Instance.RegisterEnemy();
         return obj;
     }
 
     public void Return(GameObject obj)
     {
-        balloonPool.Release(obj);
+        enemyPool.Release(obj);
     }
 }

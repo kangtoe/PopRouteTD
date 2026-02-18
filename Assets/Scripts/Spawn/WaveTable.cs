@@ -26,7 +26,7 @@ public class WaveData
 [Serializable]
 public class SpawnGroupData
 {
-    public BalloonLayer layer;
+    public EnemyLayer layer;
     public EnemyVariant variant;
     public int count;
     public float interval = 0.5f;

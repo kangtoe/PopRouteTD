@@ -17,7 +17,7 @@ public class PrefabCreator
         squareSprite = CreateSquareSprite();
 
         // 베이스 프리팹
-        CreateBaseBalloonPrefab();
+        CreateBaseEnemyPrefab();
         CreateBaseTowerPrefab();
         CreateProjectilePrefab();
         CreateEnergyItemPrefab();
@@ -50,14 +50,14 @@ public class PrefabCreator
         Debug.Log("[PopRouteTD] 폭탄 사수 프리팹 생성 완료!");
     }
 
-    // ── 베이스 풍선 ──
+    // ── 베이스 적 ──
 
-    private static void CreateBaseBalloonPrefab()
+    private static void CreateBaseEnemyPrefab()
     {
-        var path = "Assets/Prefabs/Enemies/Balloon.prefab";
+        var path = "Assets/Prefabs/Enemies/Enemy.prefab";
         if (AssetDatabase.LoadAssetAtPath<GameObject>(path) != null) return;
 
-        var obj = new GameObject("Balloon");
+        var obj = new GameObject("Enemy");
         obj.layer = LayerMask.NameToLayer(GameConstants.LayerEnemy);
 
         var sr = obj.AddComponent<SpriteRenderer>();
@@ -71,7 +71,7 @@ public class PrefabCreator
         col.radius = 0.5f;
 
         obj.AddComponent<WaypointFollower>();
-        obj.AddComponent<Balloon>();
+        obj.AddComponent<Enemy>();
 
         PrefabUtility.SaveAsPrefabAsset(obj, path);
         Object.DestroyImmediate(obj);
@@ -275,7 +275,7 @@ public class PrefabCreator
         var emission = ps.emission;
         emission.rateOverTime = 15f;
 
-        // ── Shape: 풍선 크기(0.5) 안쪽 원형 ──
+        // ── Shape: 적 크기(0.5) 안쪽 원형 ──
         var shape = ps.shape;
         shape.shapeType = ParticleSystemShapeType.Circle;
         shape.radius = 0.15f;
@@ -316,7 +316,7 @@ public class PrefabCreator
         var renderer = obj.GetComponent<ParticleSystemRenderer>();
         renderer.renderMode = ParticleSystemRenderMode.Billboard;
         renderer.sortingLayerName = GameConstants.SortEnemy;
-        renderer.sortingOrder = -1; // 풍선 뒤에 그려짐
+        renderer.sortingOrder = -1; // 적 뒤에 그려짐
 
         // Sprites-Default 머티리얼 사용
         var spriteMat = new Material(Shader.Find("Sprites/Default"));

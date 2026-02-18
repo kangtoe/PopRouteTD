@@ -49,7 +49,7 @@ MonoBehaviour:
     statusEffects: []
   main4:
     levelName: Bomb Shooter
-    description: Explosions become so violent, Bloons are stunned for a short time
+    description: Explosions become so violent, Enemies are stunned for a short time
       when they are hit
     cost: 2400
     stats:

@@ -2,9 +2,9 @@ using System;
 using UnityEngine;
 
 [RequireComponent(typeof(WaypointFollower), typeof(StatusEffectHandler))]
-public class Balloon : MonoBehaviour
+public class Enemy : MonoBehaviour
 {
-    [Header("풍선 데이터")]
+    [Header("적 데이터")]
     [SerializeField] private int hp = 1;
     [SerializeField, Range(0f, 1f)] private float statusEffectResistance;
     [SerializeField] private int shieldHp = GameConstants.DefaultShieldHp;
@@ -18,7 +18,7 @@ public class Balloon : MonoBehaviour
 
     private int currentHp;
     private int currentShieldHp;
-    private BalloonLayer currentLayer;
+    private EnemyLayer currentLayer;
     private EnemyVariant currentVariant;
     private const int SortingGap = 100;
     private const int SortingRange = SortingGap * 10000;
@@ -32,7 +32,7 @@ public class Balloon : MonoBehaviour
     private WaypointPath path;
     private bool deactivated;
 
-    public BalloonLayer CurrentLayer => currentLayer;
+    public EnemyLayer CurrentLayer => currentLayer;
     public EnemyVariant CurrentVariant => currentVariant;
     public int CurrentHp => currentHp;
     public WaypointFollower Follower => follower;
@@ -40,8 +40,8 @@ public class Balloon : MonoBehaviour
     private bool IsEnhanced => currentVariant is EnemyVariant.Enhanced or EnemyVariant.EnhancedShielded;
     private bool HasShield => currentShieldHp > 0;
 
-    public static event Action<Balloon> OnBalloonDestroyed;
-    public static event Action<Balloon> OnBalloonReachedBase;
+    public static event Action<Enemy> OnEnemyDestroyed;
+    public static event Action<Enemy> OnEnemyReachedBase;
 
     private void Awake()
     {
@@ -98,7 +98,7 @@ public class Balloon : MonoBehaviour
         if (enhancedVisual) enhancedVisual.SetActive(isEnhanced);
     }
 
-    public void Initialize(BalloonLayer startLayer, WaypointPath waypointPath,
+    public void Initialize(EnemyLayer startLayer, WaypointPath waypointPath,
         EnemyVariant variant = EnemyVariant.Normal)
     {
         path = waypointPath;
@@ -110,10 +110,10 @@ public class Balloon : MonoBehaviour
         deactivated = false;
         statusEffectHandler.ClearAll();
         ApplySortingOrder();
-        SetColor(GameConstants.GetBalloonColor(currentLayer));
+        SetColor(GameConstants.GetEnemyColor(currentLayer));
         ApplyVariantVisual();
 
-        float speed = GameConstants.GetBalloonSpeed(currentLayer);
+        float speed = GameConstants.GetEnemySpeed(currentLayer);
         if (IsEnhanced) speed *= GameConstants.EnhancedSpeedMultiplier;
         follower.Initialize(path, speed);
         follower.OnReachedEnd += OnReachBase;
@@ -182,14 +182,14 @@ public class Balloon : MonoBehaviour
         for (int i = 0; i < consumed; i++)
         {
             ResourceManager.Instance.AddEnergy(GetReward());
-            OnBalloonDestroyed?.Invoke(this);
+            OnEnemyDestroyed?.Invoke(this);
             currentLayer--;
         }
 
-        if (currentLayer >= BalloonLayer.Red)
+        if (currentLayer >= EnemyLayer.Red)
         {
             currentHp = GetLayerHp();
-            SetColor(GameConstants.GetBalloonColor(currentLayer));
+            SetColor(GameConstants.GetEnemyColor(currentLayer));
             ApplyLayerSpeed();
         }
         else
@@ -204,14 +204,14 @@ public class Balloon : MonoBehaviour
     private void PopLayer(bool giveReward = true)
     {
         if (giveReward) ResourceManager.Instance.AddEnergy(GetReward());
-        OnBalloonDestroyed?.Invoke(this);
+        OnEnemyDestroyed?.Invoke(this);
 
-        BalloonLayer lowerLayer = currentLayer - 1;
-        if (lowerLayer >= BalloonLayer.Red)
+        EnemyLayer lowerLayer = currentLayer - 1;
+        if (lowerLayer >= EnemyLayer.Red)
         {
             currentLayer = lowerLayer;
             currentHp = GetLayerHp();
-            SetColor(GameConstants.GetBalloonColor(currentLayer));
+            SetColor(GameConstants.GetEnemyColor(currentLayer));
             ApplyLayerSpeed();
         }
         else
@@ -235,7 +235,7 @@ public class Balloon : MonoBehaviour
 
     private void ApplyLayerSpeed()
     {
-        float speed = GameConstants.GetBalloonSpeed(currentLayer);
+        float speed = GameConstants.GetEnemySpeed(currentLayer);
         if (IsEnhanced) speed *= GameConstants.EnhancedSpeedMultiplier;
         follower.SetSpeed(speed);
     }
@@ -243,21 +243,21 @@ public class Balloon : MonoBehaviour
     private void OnReachBase()
     {
         ResourceManager.Instance.LoseLife((int)currentLayer);
-        OnBalloonReachedBase?.Invoke(this);
+        OnEnemyReachedBase?.Invoke(this);
         Deactivate();
     }
 
-    /// <summary>모든 레이어를 벗기고 풍선을 제거한다.</summary>
+    /// <summary>모든 레이어를 벗기고 적을 제거한다.</summary>
     public void PopAll(bool giveReward = true)
     {
         if (deactivated) return;
 
         if (HasShield) BreakShield(giveReward);
 
-        while (currentLayer >= BalloonLayer.Red)
+        while (currentLayer >= EnemyLayer.Red)
         {
             if (giveReward) ResourceManager.Instance.AddEnergy(GetReward());
-            OnBalloonDestroyed?.Invoke(this);
+            OnEnemyDestroyed?.Invoke(this);
             currentLayer--;
         }
 
@@ -282,6 +282,6 @@ public class Balloon : MonoBehaviour
         if (shieldVisual) shieldVisual.SetActive(false);
         if (enhancedVisual) enhancedVisual.SetActive(false);
         follower.OnReachedEnd -= OnReachBase;
-        BalloonSpawner.Instance.Return(gameObject);
+        EnemySpawner.Instance.Return(gameObject);
     }
 }

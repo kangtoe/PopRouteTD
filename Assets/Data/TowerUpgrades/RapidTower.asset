@@ -60,7 +60,7 @@ MonoBehaviour:
     statusEffects: []
   subA:
     levelName: Shock Shot
-    description: Bloons get slowed after each hit.
+    description: Enemies get slowed after each hit.
     cost: 3000
     stats:
       attackDamage: 0
