@@ -23,6 +23,7 @@ public class TowerInfoUI : MonoBehaviour
     [SerializeField] private UpgradeButtonUI subBButton;
 
     private Tower selectedTower;
+    private bool isPreview;
     private Image[] priorityImages;
     private static readonly Color normalColor = Color.white;
     private static readonly Color selectedColor = new Color(0.4f, 0.8f, 1f);
@@ -39,6 +40,8 @@ public class TowerInfoUI : MonoBehaviour
 
         InputManager.Instance.OnTowerClicked += Show;
         InputManager.Instance.OnEmptyClicked += Hide;
+        InputManager.Instance.OnDragStarted += ShowPreview;
+        InputManager.Instance.OnDragEnded += HidePreview;
         ResourceManager.Instance.OnEnergyChanged += OnEnergyChanged;
 
         firstButton.onClick.AddListener(() => OnPriorityClicked(TargetPriority.First));
@@ -63,6 +66,8 @@ public class TowerInfoUI : MonoBehaviour
         {
             InputManager.Instance.OnTowerClicked -= Show;
             InputManager.Instance.OnEmptyClicked -= Hide;
+            InputManager.Instance.OnDragStarted -= ShowPreview;
+            InputManager.Instance.OnDragEnded -= HidePreview;
         }
         if (ResourceManager.Instance != null)
             ResourceManager.Instance.OnEnergyChanged -= OnEnergyChanged;
@@ -81,11 +86,74 @@ public class TowerInfoUI : MonoBehaviour
 
     public void Hide()
     {
+        isPreview = false;
         if (selectedTower != null)
         {
             selectedTower.ShowRange(false);
             selectedTower = null;
         }
+        panel.SetActive(false);
+    }
+
+    private void ShowPreview(Tower prefabTower)
+    {
+        if (selectedTower != null) selectedTower.ShowRange(false);
+        selectedTower = null;
+        isPreview = true;
+        panel.SetActive(true);
+
+        var data = prefabTower.UpgradeData;
+        if (data == null) return;
+
+        // 이름 (레벨 표시 없음)
+        towerNameText.text = data.towerName;
+
+        // 기본 스탯
+        var s = data.main1.stats;
+        var stats = $"ATK {s.attackDamage}  SPD {s.attackInterval:0.#}s  RNG {s.attackRange:0.#}";
+        if (s.splashRadius > 0f) stats += $"  SPLASH {s.splashRadius:0.#}";
+        towerStatsText.text = stats;
+
+        // 타겟 지정·판매 숨기기
+        SetPriorityButtonsVisible(false);
+        sellButton.gameObject.SetActive(false);
+
+        // 업그레이드 버튼: 잠금 상태로 표시
+        UpdatePreviewUpgradeButtons(prefabTower);
+    }
+
+    private void UpdatePreviewUpgradeButtons(Tower prefabTower)
+    {
+        if (mainUpgradeButton != null)
+        {
+            var nextInfo = prefabTower.GetNextMainInfo();
+            if (nextInfo != null)
+                mainUpgradeButton.SetLocked("Upgrade", nextInfo.description);
+            else
+                mainUpgradeButton.SetMax();
+        }
+
+        if (subAButton != null && subBButton != null)
+        {
+            var subA = prefabTower.GetSubAInfo();
+            var subB = prefabTower.GetSubBInfo();
+            bool hasData = subA != null && subB != null;
+
+            subAButton.gameObject.SetActive(hasData);
+            subBButton.gameObject.SetActive(hasData);
+
+            if (hasData)
+            {
+                subAButton.SetLocked($"A: {subA.levelName}", subA.description);
+                subBButton.SetLocked($"B: {subB.levelName}", subB.description);
+            }
+        }
+    }
+
+    private void HidePreview()
+    {
+        if (!isPreview) return;
+        isPreview = false;
         panel.SetActive(false);
     }
 
@@ -111,6 +179,7 @@ public class TowerInfoUI : MonoBehaviour
         SetPriorityButtonsVisible(true);
 
         // 판매
+        sellButton.gameObject.SetActive(true);
         sellButtonText.text = $"Sell (+{tower.SellRefund})";
 
         // 업그레이드 버튼
@@ -126,7 +195,7 @@ public class TowerInfoUI : MonoBehaviour
 
     private void OnEnergyChanged(int _)
     {
-        if (selectedTower == null || !panel.activeSelf) return;
+        if (isPreview || selectedTower == null || !panel.activeSelf) return;
         UpdateMainButton();
         UpdateSubButtons();
     }

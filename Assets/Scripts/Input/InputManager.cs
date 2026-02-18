@@ -22,6 +22,8 @@ public class InputManager : MonoBehaviour
     public System.Action<Tower> OnTowerClicked;
     public System.Action OnEmptyClicked;
     public System.Action<GameObject> OnTowerPlaced;
+    public System.Action<Tower> OnDragStarted;
+    public System.Action OnDragEnded;
 
     private void Awake()
     {
@@ -57,6 +59,8 @@ public class InputManager : MonoBehaviour
         dragTowerPrefab = towerPrefab;
         isDragging = true;
         CreatePreview();
+
+        if (towerComp != null) OnDragStarted?.Invoke(towerComp);
 
         if (mainCamera != null && Mouse.current != null)
         {
@@ -113,6 +117,7 @@ public class InputManager : MonoBehaviour
         isDragging = false;
         dragTowerPrefab = null;
         DestroyPreview();
+        OnDragEnded?.Invoke();
     }
 
     private void HandleTowerClick(Vector2 worldPos)
