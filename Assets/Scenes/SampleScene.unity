@@ -1404,10 +1404,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TowerSelectUI
   towerPrefabs:
   - {fileID: 1817367166315376802, guid: 314484bca31869b45b63a2faabb94b28, type: 3}
-  - {fileID: 1535366368223834691, guid: 2f516737237480b41bb692b74b0dfae2, type: 3}
-  - {fileID: 1535366368223834691, guid: 56d224b6f0b2b044abadae2787fee8ec, type: 3}
-  - {fileID: 1535366368223834691, guid: 588697e0829f9034d9569da32c54cccb, type: 3}
   - {fileID: 1535366368223834691, guid: ceda9dad8ca774b42a29a3ccaf165b0d, type: 3}
+  - {fileID: 1535366368223834691, guid: 56d224b6f0b2b044abadae2787fee8ec, type: 3}
+  - {fileID: 1535366368223834691, guid: 2f516737237480b41bb692b74b0dfae2, type: 3}
+  - {fileID: 1535366368223834691, guid: 588697e0829f9034d9569da32c54cccb, type: 3}
   buttonParent: {fileID: 630125446}
   towerButtonPrefab: {fileID: 538165148242644719, guid: 210b764d9c69ad04fb73da82b9ddfc51, type: 3}
 --- !u!1 &639725551
