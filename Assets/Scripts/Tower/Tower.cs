@@ -215,11 +215,18 @@ public class Tower : MonoBehaviour
             durations[(int)e.type] += e.duration;
     }
 
-    private GameObject GetMainVisual(int level) => level switch
+    public GameObject GetMainVisual(int level) => level switch
     {
         2 => mainVisual2,
         3 => mainVisual3,
         4 => mainVisual4,
+        _ => null
+    };
+
+    public GameObject GetSubVisual(UpgradeTrack sub) => sub switch
+    {
+        UpgradeTrack.A => subVisualA,
+        UpgradeTrack.B => subVisualB,
         _ => null
     };
 

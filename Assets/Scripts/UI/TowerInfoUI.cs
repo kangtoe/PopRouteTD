@@ -27,6 +27,10 @@ public class TowerInfoUI : MonoBehaviour
     private static readonly Color normalColor = Color.white;
     private static readonly Color selectedColor = new Color(0.4f, 0.8f, 1f);
 
+    private Sprite mainUpgradeIcon;
+    private Sprite subAIcon;
+    private Sprite subBIcon;
+
     private void Start()
     {
         priorityImages = new[]
@@ -61,6 +65,7 @@ public class TowerInfoUI : MonoBehaviour
 
     private void OnDestroy()
     {
+        CleanupIcons();
         if (InputManager.Instance != null)
         {
             InputManager.Instance.OnTowerClicked -= Show;
@@ -87,6 +92,7 @@ public class TowerInfoUI : MonoBehaviour
     public void Hide()
     {
         isPreview = false;
+        CleanupIcons();
         if (selectedTower != null)
         {
             selectedTower.ShowRange(false);
@@ -136,6 +142,9 @@ public class TowerInfoUI : MonoBehaviour
         sellButton.gameObject.SetActive(true);
         sellButtonText.text = $"Sell (+{tower.SellRefund})";
 
+        // 업그레이드 아이콘 생성
+        GenerateUpgradeIcons();
+
         // 업그레이드 버튼
         UpdateMainButton();
         UpdateSubButtons();
@@ -166,7 +175,7 @@ public class TowerInfoUI : MonoBehaviour
 
         var nextInfo = selectedTower.GetNextMainInfo();
         if (nextInfo != null)
-            mainUpgradeButton.SetAvailable($"Upgrade ({nextInfo.cost})", nextInfo.cost, nextInfo.description);
+            mainUpgradeButton.SetAvailable($"Upgrade ({nextInfo.cost})", nextInfo.cost, nextInfo.description, mainUpgradeIcon);
     }
 
     private void UpdateSubButtons()
@@ -182,14 +191,14 @@ public class TowerInfoUI : MonoBehaviour
         if (!hasUpgradeData) return;
 
         if (selectedTower.HasSubA)
-            subAButton.SetSelected($"A: {subA.levelName}", subA.description);
+            subAButton.SetSelected($"A: {subA.levelName}", subA.description, subAIcon);
         else
-            subAButton.SetAvailable($"A: {subA.levelName} ({subA.cost})", subA.cost, subA.description);
+            subAButton.SetAvailable($"A: {subA.levelName} ({subA.cost})", subA.cost, subA.description, subAIcon);
 
         if (selectedTower.HasSubB)
-            subBButton.SetSelected($"B: {subB.levelName}", subB.description);
+            subBButton.SetSelected($"B: {subB.levelName}", subB.description, subBIcon);
         else
-            subBButton.SetAvailable($"B: {subB.levelName} ({subB.cost})", subB.cost, subB.description);
+            subBButton.SetAvailable($"B: {subB.levelName} ({subB.cost})", subB.cost, subB.description, subBIcon);
     }
 
     private void OnUpgradeClicked()
@@ -230,6 +239,35 @@ public class TowerInfoUI : MonoBehaviour
         {
             priorityImages[i].color = i == current ? selectedColor : normalColor;
         }
+    }
+
+    private void GenerateUpgradeIcons()
+    {
+        CleanupIcons();
+
+        if (selectedTower.CanUpgradeMain)
+            mainUpgradeIcon = TowerIconGenerator.GenerateUpgradeIcon(selectedTower, selectedTower.MainLevel + 1);
+
+        if (!selectedTower.HasSubA)
+            subAIcon = TowerIconGenerator.GenerateSubIcon(selectedTower, UpgradeTrack.A);
+
+        if (!selectedTower.HasSubB)
+            subBIcon = TowerIconGenerator.GenerateSubIcon(selectedTower, UpgradeTrack.B);
+    }
+
+    private void CleanupIcons()
+    {
+        DestroyIcon(ref mainUpgradeIcon);
+        DestroyIcon(ref subAIcon);
+        DestroyIcon(ref subBIcon);
+    }
+
+    private void DestroyIcon(ref Sprite icon)
+    {
+        if (icon == null) return;
+        Destroy(icon.texture);
+        Destroy(icon);
+        icon = null;
     }
 
     private void SetPriorityButtonsVisible(bool visible)

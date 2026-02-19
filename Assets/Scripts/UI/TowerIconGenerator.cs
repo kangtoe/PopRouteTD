@@ -8,13 +8,47 @@ public static class TowerIconGenerator
 
     public static Sprite GenerateIcon(GameObject towerPrefab)
     {
-        var rt = new RenderTexture(TextureSize, TextureSize, 24, RenderTextureFormat.ARGB32);
-        rt.Create();
-
         var instance = Object.Instantiate(towerPrefab,
             new Vector3(OffScreenPos, OffScreenPos, 0f), Quaternion.identity);
 
-        foreach (var behaviour in instance.GetComponents<MonoBehaviour>())
+        PrepareInstance(instance);
+        return CaptureIcon(instance);
+    }
+
+    public static Sprite GenerateUpgradeIcon(Tower tower, int targetMainLevel)
+    {
+        var instance = Object.Instantiate(tower.gameObject,
+            new Vector3(OffScreenPos, OffScreenPos, 0f), Quaternion.identity);
+
+        PrepareInstance(instance);
+
+        var cloneTower = instance.GetComponent<Tower>();
+        for (int level = 2; level <= targetMainLevel; level++)
+        {
+            var visual = cloneTower.GetMainVisual(level);
+            if (visual != null) visual.SetActive(true);
+        }
+
+        return CaptureIcon(instance);
+    }
+
+    public static Sprite GenerateSubIcon(Tower tower, UpgradeTrack sub)
+    {
+        var instance = Object.Instantiate(tower.gameObject,
+            new Vector3(OffScreenPos, OffScreenPos, 0f), Quaternion.identity);
+
+        PrepareInstance(instance);
+
+        var cloneTower = instance.GetComponent<Tower>();
+        var visual = cloneTower.GetSubVisual(sub);
+        if (visual != null) visual.SetActive(true);
+
+        return CaptureIcon(instance);
+    }
+
+    private static void PrepareInstance(GameObject instance)
+    {
+        foreach (var behaviour in instance.GetComponentsInChildren<MonoBehaviour>())
             behaviour.enabled = false;
         foreach (var col in instance.GetComponentsInChildren<Collider2D>())
             col.enabled = false;
@@ -27,6 +61,12 @@ public static class TowerIconGenerator
             if (tower.RangeIndicator != null)
                 tower.RangeIndicator.gameObject.SetActive(false);
         }
+    }
+
+    private static Sprite CaptureIcon(GameObject instance)
+    {
+        var rt = new RenderTexture(TextureSize, TextureSize, 24, RenderTextureFormat.ARGB32);
+        rt.Create();
 
         var camObj = new GameObject("TowerIconCamera");
         camObj.transform.position = new Vector3(OffScreenPos, OffScreenPos, -10f);
