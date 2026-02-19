@@ -58,6 +58,8 @@ public static class GameConstants
     public const string SortItem = "Item";
     public const string SortEnemy = "Enemy";
     public const string SortProjectile = "Projectile";
+    public const string SortUI = "UI";
+    public const string SortPreview = "Preview";
 
     // Wave Timing
     public const float PostSpawnTimeout = 15f;

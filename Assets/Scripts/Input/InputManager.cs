@@ -216,8 +216,8 @@ public class InputManager : MonoBehaviour
         foreach (var sr in allRenderers)
         {
             if (sr == rangeInd) continue;
-            sr.sortingLayerName = GameConstants.SortTower;
-            sr.sortingOrder = 100;
+            sr.sortingLayerName = GameConstants.SortPreview;
+            sr.sortingOrder = 0;
             rendererList.Add(sr);
         }
         previewRenderers = rendererList.ToArray();
