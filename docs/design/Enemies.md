@@ -59,7 +59,7 @@
 | **강화실드 (EnhancedShielded)** | 실드+강화+강화실드 부속물 ON | 강화 스탯 + 실드 HP. 실드 파괴 시 강화로 전환 |
 
 #### 실드 동작
-- 실드 HP는 본체와 별도 (기본 3)
+- 실드 HP는 본체와 별도 (고정값)
 - 데미지는 실드 HP를 먼저 소모, 초과분은 본체에 전달
 - 관통 탄환은 실드를 1레이어로 취급하여 파괴
 - 실드 파괴 시 variant 전환: Shielded→Normal, EnhancedShielded→Enhanced
