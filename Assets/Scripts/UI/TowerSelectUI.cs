@@ -13,15 +13,7 @@ public class TowerSelectUI : MonoBehaviour
     [SerializeField] private Transform buttonParent;
     [SerializeField] private TowerButton towerButtonPrefab;
 
-    private readonly Dictionary<GameObject, CooldownState> cooldowns = new();
     private readonly List<Sprite> generatedIcons = new();
-
-    private struct CooldownState
-    {
-        public TowerButton ui;
-        public string originalText;
-        public float timer;
-    }
 
     private void Awake()
     {
@@ -33,15 +25,12 @@ public class TowerSelectUI : MonoBehaviour
     {
         if (Instance != this) return;
         CreateButtons();
-        InputManager.Instance.OnTowerPlaced += OnTowerPlaced;
         Show();
     }
 
     private void OnDestroy()
     {
         if (Instance == this) Instance = null;
-        if (InputManager.Instance != null)
-            InputManager.Instance.OnTowerPlaced -= OnTowerPlaced;
 
         foreach (var icon in generatedIcons)
         {
@@ -59,11 +48,6 @@ public class TowerSelectUI : MonoBehaviour
     }
 
     public void Hide() => content.SetActive(false);
-
-    public bool IsOnCooldown(GameObject prefab)
-    {
-        return cooldowns.TryGetValue(prefab, out var cd) && cd.timer > 0f;
-    }
 
     private void CreateButtons()
     {
@@ -84,9 +68,6 @@ public class TowerSelectUI : MonoBehaviour
                 generatedIcons.Add(icon);
             }
 
-            if (tb.CooldownOverlay != null) tb.CooldownOverlay.fillAmount = 0f;
-            if (tb.CooldownText != null) tb.CooldownText.gameObject.SetActive(false);
-
             // PointerDown으로 드래그 배치 시작
             var p = prefab;
             var btnObj = tb.gameObject;
@@ -94,58 +75,6 @@ public class TowerSelectUI : MonoBehaviour
             var entry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
             entry.callback.AddListener(_ => InputManager.Instance.BeginDrag(p));
             trigger.triggers.Add(entry);
-
-            cooldowns[prefab] = new CooldownState
-            {
-                ui = tb,
-                originalText = label,
-                timer = 0f
-            };
-        }
-    }
-
-    private void OnTowerPlaced(GameObject prefab)
-    {
-        if (GameManager.Instance.CurrentState != GameState.Prepare
-            && cooldowns.ContainsKey(prefab))
-        {
-            var cd = cooldowns[prefab];
-            cd.timer = GameConstants.PlacementCooldown;
-            cd.ui.Button.interactable = false;
-            if (cd.ui.CooldownOverlay != null) cd.ui.CooldownOverlay.fillAmount = 1f;
-            if (cd.ui.CooldownText != null)
-            {
-                cd.ui.CooldownText.gameObject.SetActive(true);
-                cd.ui.CooldownText.text = Mathf.CeilToInt(cd.timer).ToString();
-            }
-            cooldowns[prefab] = cd;
-        }
-    }
-
-    private void Update()
-    {
-        var keys = new List<GameObject>(cooldowns.Keys);
-        foreach (var key in keys)
-        {
-            var cd = cooldowns[key];
-            if (cd.timer <= 0f) continue;
-
-            cd.timer -= Time.deltaTime;
-            if (cd.timer <= 0f)
-            {
-                cd.timer = 0f;
-                cd.ui.Button.interactable = true;
-                if (cd.ui.CooldownOverlay != null) cd.ui.CooldownOverlay.fillAmount = 0f;
-                if (cd.ui.CooldownText != null) cd.ui.CooldownText.gameObject.SetActive(false);
-            }
-            else
-            {
-                if (cd.ui.CooldownOverlay != null)
-                    cd.ui.CooldownOverlay.fillAmount = cd.timer / GameConstants.PlacementCooldown;
-                if (cd.ui.CooldownText != null)
-                    cd.ui.CooldownText.text = Mathf.CeilToInt(cd.timer).ToString();
-            }
-            cooldowns[key] = cd;
         }
     }
 }

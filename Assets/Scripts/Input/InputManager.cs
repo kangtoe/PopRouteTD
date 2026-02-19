@@ -45,8 +45,6 @@ public class InputManager : MonoBehaviour
     /// <summary>UI 버튼 PointerDown에서 호출 — 드래그 배치 시작</summary>
     public void BeginDrag(GameObject towerPrefab)
     {
-        if (TowerSelectUI.Instance != null && TowerSelectUI.Instance.IsOnCooldown(towerPrefab)) return;
-
         // 비용 부족 시 드래그 시작 차단
         var towerComp = towerPrefab.GetComponent<Tower>();
         if (towerComp != null && ResourceManager.Instance.Gold < towerComp.Cost) return;

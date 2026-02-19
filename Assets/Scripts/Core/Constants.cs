@@ -65,7 +65,6 @@ public static class GameConstants
     public const int EarlyStartBonusMax = 50;
 
     // Tower
-    public const float PlacementCooldown = 3f;
     public const float SellRefundRate = 0.5f;
 
     // 보상
