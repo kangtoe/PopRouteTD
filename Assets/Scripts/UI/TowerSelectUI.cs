@@ -11,9 +11,10 @@ public class TowerSelectUI : MonoBehaviour
     [SerializeField] private Text nameText;
     [SerializeField] private List<GameObject> towerPrefabs;
     [SerializeField] private Transform buttonParent;
-    [SerializeField] private TowerButton towerButtonPrefab;
+    [SerializeField] private TowerButtonUI towerButtonPrefab;
 
     private readonly List<Sprite> generatedIcons = new();
+    private readonly List<(TowerButtonUI button, int cost, string label, Sprite icon)> towerButtons = new();
 
     private void Awake()
     {
@@ -26,11 +27,14 @@ public class TowerSelectUI : MonoBehaviour
         if (Instance != this) return;
         CreateButtons();
         Show();
+        ResourceManager.Instance.OnGoldChanged += OnGoldChanged;
     }
 
     private void OnDestroy()
     {
         if (Instance == this) Instance = null;
+        if (ResourceManager.Instance != null)
+            ResourceManager.Instance.OnGoldChanged -= OnGoldChanged;
 
         foreach (var icon in generatedIcons)
         {
@@ -59,14 +63,10 @@ public class TowerSelectUI : MonoBehaviour
             var tb = Instantiate(towerButtonPrefab, buttonParent);
 
             string label = $"{tower.TowerName}\n({tower.Cost})";
-            if (tb.LabelText != null) tb.LabelText.text = label;
-
-            if (tb.IconImage != null)
-            {
-                var icon = TowerIconGenerator.GenerateIcon(prefab);
-                tb.IconImage.sprite = icon;
-                generatedIcons.Add(icon);
-            }
+            var icon = TowerIconGenerator.GenerateIcon(prefab);
+            generatedIcons.Add(icon);
+            tb.SetAvailable(label, tower.Cost, icon: icon);
+            towerButtons.Add((tb, tower.Cost, label, icon));
 
             // PointerDown으로 드래그 배치 시작
             var p = prefab;
@@ -76,5 +76,11 @@ public class TowerSelectUI : MonoBehaviour
             entry.callback.AddListener(_ => InputManager.Instance.BeginDrag(p));
             trigger.triggers.Add(entry);
         }
+    }
+
+    private void OnGoldChanged(int _)
+    {
+        foreach (var (button, cost, label, icon) in towerButtons)
+            button.SetAvailable(label, cost, icon: icon);
     }
 }

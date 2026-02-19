@@ -17,9 +17,9 @@ public class TowerInfoUI : MonoBehaviour
     [SerializeField] private Text sellButtonText;
 
     [Header("Upgrade")]
-    [SerializeField] private UpgradeButtonUI mainUpgradeButton;
-    [SerializeField] private UpgradeButtonUI subAButton;
-    [SerializeField] private UpgradeButtonUI subBButton;
+    [SerializeField] private TowerButtonUI mainUpgradeButton;
+    [SerializeField] private TowerButtonUI subAButton;
+    [SerializeField] private TowerButtonUI subBButton;
 
     private Tower selectedTower;
     private bool isPreview;
@@ -166,7 +166,7 @@ public class TowerInfoUI : MonoBehaviour
 
         var nextInfo = selectedTower.GetNextMainInfo();
         if (nextInfo != null)
-            mainUpgradeButton.SetAvailable("Upgrade", nextInfo.cost, nextInfo.description);
+            mainUpgradeButton.SetAvailable($"Upgrade ({nextInfo.cost})", nextInfo.cost, nextInfo.description);
     }
 
     private void UpdateSubButtons()
@@ -184,12 +184,12 @@ public class TowerInfoUI : MonoBehaviour
         if (selectedTower.HasSubA)
             subAButton.SetSelected($"A: {subA.levelName}", subA.description);
         else
-            subAButton.SetAvailable($"A: {subA.levelName}", subA.cost, subA.description);
+            subAButton.SetAvailable($"A: {subA.levelName} ({subA.cost})", subA.cost, subA.description);
 
         if (selectedTower.HasSubB)
             subBButton.SetSelected($"B: {subB.levelName}", subB.description);
         else
-            subBButton.SetAvailable($"B: {subB.levelName}", subB.cost, subB.description);
+            subBButton.SetAvailable($"B: {subB.levelName} ({subB.cost})", subB.cost, subB.description);
     }
 
     private void OnUpgradeClicked()
