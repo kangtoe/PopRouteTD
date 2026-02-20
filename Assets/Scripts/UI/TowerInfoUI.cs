@@ -17,9 +17,12 @@ public class TowerInfoUI : MonoBehaviour
     [SerializeField] private Text sellButtonText;
 
     [Header("Upgrade")]
-    [SerializeField] private TowerButtonUI mainUpgradeButton;
-    [SerializeField] private TowerButtonUI subAButton;
-    [SerializeField] private TowerButtonUI subBButton;
+    [SerializeField] private TowerButtonUI upgradeButtonPrefab;
+    [SerializeField] private Transform upgradeButtonParent;
+
+    private TowerButtonUI mainUpgradeButton;
+    private TowerButtonUI subAButton;
+    private TowerButtonUI subBButton;
 
     private Tower selectedTower;
     private bool isPreview;
@@ -53,13 +56,6 @@ public class TowerInfoUI : MonoBehaviour
         strongButton.onClick.AddListener(() => OnPriorityClicked(TargetPriority.Strong));
         sellButton.onClick.AddListener(OnSellClicked);
 
-        if (mainUpgradeButton != null)
-            mainUpgradeButton.Button.onClick.AddListener(OnUpgradeClicked);
-        if (subAButton != null)
-            subAButton.Button.onClick.AddListener(() => OnSubClicked(UpgradeTrack.A));
-        if (subBButton != null)
-            subBButton.Button.onClick.AddListener(() => OnSubClicked(UpgradeTrack.B));
-
         panel.SetActive(false);
     }
 
@@ -92,6 +88,7 @@ public class TowerInfoUI : MonoBehaviour
     public void Hide()
     {
         isPreview = false;
+        ClearUpgradeButtons();
         CleanupIcons();
         if (selectedTower != null)
         {
@@ -145,7 +142,8 @@ public class TowerInfoUI : MonoBehaviour
         // 업그레이드 아이콘 생성
         GenerateUpgradeIcons();
 
-        // 업그레이드 버튼
+        // 업그레이드 버튼 동적 생성 및 갱신
+        CreateUpgradeButtons();
         UpdateMainButton();
         UpdateSubButtons();
 
@@ -163,6 +161,32 @@ public class TowerInfoUI : MonoBehaviour
         UpdateSubButtons();
     }
 
+    private void CreateUpgradeButtons()
+    {
+        ClearUpgradeButtons();
+
+        mainUpgradeButton = Instantiate(upgradeButtonPrefab, upgradeButtonParent);
+        mainUpgradeButton.Button.onClick.AddListener(OnUpgradeClicked);
+
+        var subA = selectedTower.GetSubAInfo();
+        var subB = selectedTower.GetSubBInfo();
+        if (subA != null && subB != null)
+        {
+            subAButton = Instantiate(upgradeButtonPrefab, upgradeButtonParent);
+            subAButton.Button.onClick.AddListener(() => OnSubClicked(UpgradeTrack.A));
+
+            subBButton = Instantiate(upgradeButtonPrefab, upgradeButtonParent);
+            subBButton.Button.onClick.AddListener(() => OnSubClicked(UpgradeTrack.B));
+        }
+    }
+
+    private void ClearUpgradeButtons()
+    {
+        if (mainUpgradeButton != null) { Destroy(mainUpgradeButton.gameObject); mainUpgradeButton = null; }
+        if (subAButton != null) { Destroy(subAButton.gameObject); subAButton = null; }
+        if (subBButton != null) { Destroy(subBButton.gameObject); subBButton = null; }
+    }
+
     private void UpdateMainButton()
     {
         if (mainUpgradeButton == null) return;
@@ -175,7 +199,7 @@ public class TowerInfoUI : MonoBehaviour
 
         var nextInfo = selectedTower.GetNextMainInfo();
         if (nextInfo != null)
-            mainUpgradeButton.SetAvailable($"Upgrade ({nextInfo.cost})", nextInfo.cost, nextInfo.description, mainUpgradeIcon);
+            mainUpgradeButton.SetAvailable("Upgrade", nextInfo.cost, nextInfo.description, mainUpgradeIcon);
     }
 
     private void UpdateSubButtons()
@@ -193,12 +217,12 @@ public class TowerInfoUI : MonoBehaviour
         if (selectedTower.HasSubA)
             subAButton.SetSelected($"A: {subA.levelName}", subA.description, subAIcon);
         else
-            subAButton.SetAvailable($"A: {subA.levelName} ({subA.cost})", subA.cost, subA.description, subAIcon);
+            subAButton.SetAvailable($"A: {subA.levelName}", subA.cost, subA.description, subAIcon);
 
         if (selectedTower.HasSubB)
             subBButton.SetSelected($"B: {subB.levelName}", subB.description, subBIcon);
         else
-            subBButton.SetAvailable($"B: {subB.levelName} ({subB.cost})", subB.cost, subB.description, subBIcon);
+            subBButton.SetAvailable($"B: {subB.levelName}", subB.cost, subB.description, subBIcon);
     }
 
     private void OnUpgradeClicked()
