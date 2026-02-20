@@ -5,19 +5,19 @@ public enum UpgradeTrack { None, A, B }
 [System.Serializable]
 public class TowerStats
 {
-    public float attackDamage;
     public float attackInterval;
     public float attackRange;
     public float splashRadius;
     public int pierceCount;
+    public int areaTargets;
 
     public void Add(TowerStats other)
     {
-        attackDamage += other.attackDamage;
         attackInterval += other.attackInterval;
         attackRange += other.attackRange;
         splashRadius += other.splashRadius;
         pierceCount += other.pierceCount;
+        areaTargets += other.areaTargets;
     }
 }
 

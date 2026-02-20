@@ -16,73 +16,75 @@ MonoBehaviour:
   description: Attacks apply slow effect
   main1:
     levelName: Slow Shooter
-    description: Attacks apply slow effect
+    description: Level Upgrade
     cost: 250
     stats:
-      attackDamage: 0
       attackInterval: 1
-      attackRange: 4.6
+      attackRange: 4.5
       splashRadius: 0
       pierceCount: 0
+      areaTargets: 0
     statusEffects:
     - type: 2
-      duration: 12
+      duration: 8
   main2:
     levelName: Slow Shooter
-    description: Can coat one more Enemy per shot
+    description: Level Upgrade
     cost: 150
     stats:
-      attackDamage: 0
-      attackInterval: 0
-      attackRange: 0
+      attackInterval: -0.1
+      attackRange: 0.5
       splashRadius: 0
       pierceCount: 0
-    statusEffects: []
-  main3:
-    levelName: Slow Shooter
-    description: Freeze - Makes slow effect last much longer
-    cost: 250
-    stats:
-      attackDamage: 0
-      attackInterval: 0
-      attackRange: 0
-      splashRadius: 0
-      pierceCount: 0
+      areaTargets: 0
     statusEffects:
     - type: 2
-      duration: 12
-  main4:
+      duration: 4
+  main3:
     levelName: Slow Shooter
-    description: Frost Burn! - Slowed Enemies also pop one layer every few seconds
-    cost: 550
+    description: Level Upgrade
+    cost: 250
     stats:
-      attackDamage: 0
-      attackInterval: 0
-      attackRange: 0
+      attackInterval: -0.1
+      attackRange: 0.5
       splashRadius: 0
       pierceCount: 0
+      areaTargets: 0
     statusEffects:
-    - type: 1
-      duration: 24
+    - type: 2
+      duration: 4
+  main4:
+    levelName: Slow Shooter
+    description: Level Upgrade
+    cost: 450
+    stats:
+      attackInterval: -0.1
+      attackRange: 0.5
+      splashRadius: 0
+      pierceCount: 0
+      areaTargets: 0
+    statusEffects:
+    - type: 2
+      duration: 4
   subA:
     levelName: Bigger Cold
-    description: Can slow one additional Enemy per shot
+    description: Can slow 3 additional Enemies per shot
     cost: 300
     stats:
-      attackDamage: 0
       attackInterval: 0
       attackRange: 0
-      splashRadius: 0
-      pierceCount: 1
+      splashRadius: 1
+      pierceCount: 0
+      areaTargets: 3
     statusEffects: []
   subB:
     levelName: Ice Storm
     description: Shoots 3x as fast!
     cost: 2000
     stats:
-      attackDamage: 0
       attackInterval: -0.066
       attackRange: 0
       splashRadius: 0
       pierceCount: 0
+      areaTargets: 0
     statusEffects: []

@@ -30,16 +30,16 @@ public static class TowerUpgradeDataGenerator
         so.towerName = "BasicTower";
 
         so.main1 = Level("Basic Shooter", 100, "Single-target ranged attack",
-            dmg: 1, interval: 1.0f, range: 3.0f);
-        so.main2 = Level("Basic Shooter", 110, "ATK, SPD, RNG up",
-            dmg: 1, interval: -0.05f, range: 0.5f);
+            interval: 1.0f, range: 3.0f, pierce: 1);
+        so.main2 = Level("Basic Shooter", 110, "SPD, RNG, pierce up",
+            interval: -0.05f, range: 0.5f, pierce: 1);
         so.main3 = Level("Basic Shooter", 130, "Further stat boost",
-            dmg: 1, interval: -0.05f, range: 0.5f);
+            interval: -0.05f, range: 0.5f, pierce: 1);
         so.main4 = Level("Basic Shooter", 150, "Max performance",
-            dmg: 1, interval: -0.05f, range: 0.5f);
+            interval: -0.05f, range: 0.5f, pierce: 1);
 
         so.subA = Level("Elite", 100, "Balanced stat bonus",
-            dmg: 1, range: 0.5f);
+            range: 0.5f, pierce: 1);
         so.subB = Level("Frost", 100, "Grants slow effect",
             effects: new[] { Effect(StatusEffectType.Slow, 1.5f) });
 
@@ -55,13 +55,13 @@ public static class TowerUpgradeDataGenerator
         so.towerName = "BombTower";
 
         so.main1 = Level("Bomb Shooter", 150, "Splash area attack",
-            dmg: 1, interval: 1.5f, range: 3.0f, splash: 1.0f);
-        so.main2 = Level("Bomb Shooter", 165, "ATK, SPD, RNG, splash up",
-            dmg: 1, interval: -0.05f, range: 0.5f, splash: 0.2f);
+            interval: 1.5f, range: 3.0f, splash: 1.0f, pierce: 1);
+        so.main2 = Level("Bomb Shooter", 165, "SPD, RNG, splash up",
+            interval: -0.05f, range: 0.5f, splash: 0.2f, pierce: 1);
         so.main3 = Level("Bomb Shooter", 195, "Further stat boost",
-            dmg: 1, interval: -0.05f, range: 0.5f, splash: 0.3f);
+            interval: -0.05f, range: 0.5f, splash: 0.3f, pierce: 1);
         so.main4 = Level("Bomb Shooter", 225, "Max performance",
-            dmg: 1, interval: -0.05f, range: 0.5f, splash: 0.3f);
+            interval: -0.05f, range: 0.5f, splash: 0.3f, pierce: 1);
 
         so.subA = Level("Wide Area", 150, "Greatly expands splash radius",
             splash: 1.0f);
@@ -80,18 +80,18 @@ public static class TowerUpgradeDataGenerator
         so.towerName = "PierceTower";
 
         so.main1 = Level("Pierce Shooter", 200, "Piercing projectile hits multiple targets",
-            dmg: 2, interval: 1.2f, range: 4.0f, pierce: 2);
-        so.main2 = Level("Pierce Shooter", 220, "ATK, SPD, pierce up",
-            dmg: 1, interval: -0.1f, range: 0.5f, pierce: 1);
-        so.main3 = Level("Pierce Shooter", 260, "ATK, SPD, RNG up",
-            dmg: 1, interval: -0.1f, range: 0.5f);
+            interval: 1.2f, range: 4.0f, pierce: 2);
+        so.main2 = Level("Pierce Shooter", 220, "SPD, pierce up",
+            interval: -0.1f, range: 0.5f, pierce: 1);
+        so.main3 = Level("Pierce Shooter", 260, "SPD, RNG up",
+            interval: -0.1f, range: 0.5f);
         so.main4 = Level("Pierce Shooter", 300, "Max performance",
-            dmg: 1, interval: -0.1f, range: 0.5f, pierce: 1);
+            interval: -0.1f, range: 0.5f, pierce: 1);
 
         so.subA = Level("Rapid Fire", 200, "Greatly increases attack speed",
             interval: -0.15f, pierce: 1);
         so.subB = Level("Impact", 200, "Grants stun effect",
-            dmg: 2,
+            pierce: 2,
             effects: new[] { Effect(StatusEffectType.Stun, 0.5f) });
 
         Save(so, "PierceTower");
@@ -106,7 +106,7 @@ public static class TowerUpgradeDataGenerator
         so.towerName = "SlowTower";
 
         so.main1 = Level("Slow Shooter", 100, "Attacks apply slow effect",
-            dmg: 1, interval: 1.5f, range: 3.5f,
+            interval: 1.5f, range: 3.5f, pierce: 1,
             effects: new[] { Effect(StatusEffectType.Slow, 1.0f) });
         so.main2 = Level("Slow Shooter", 110, "Slow duration, SPD, RNG up",
             interval: -0.05f, range: 0.5f,
@@ -128,23 +128,23 @@ public static class TowerUpgradeDataGenerator
 
     // ───────── Rapid Tower ─────────
     // Main: fast fire rate attack, shorter range
-    // Sub A (Enhance): ATK bonus   Sub B (Spread): splash conversion
+    // Sub A (Enhance): pierce bonus   Sub B (Spread): splash conversion
     private static void CreateRapidTower()
     {
         var so = ScriptableObject.CreateInstance<TowerUpgradeData>();
         so.towerName = "RapidTower";
 
         so.main1 = Level("Rapid Shooter", 200, "Fast fire rate single-target attack",
-            dmg: 1, interval: 0.5f, range: 2.5f);
-        so.main2 = Level("Rapid Shooter", 220, "ATK, SPD, RNG up",
-            dmg: 1, interval: -0.03f, range: 0.25f);
+            interval: 0.5f, range: 2.5f, pierce: 1);
+        so.main2 = Level("Rapid Shooter", 220, "SPD, RNG up",
+            interval: -0.03f, range: 0.25f, pierce: 1);
         so.main3 = Level("Rapid Shooter", 260, "Further stat boost",
-            dmg: 1, interval: -0.03f, range: 0.25f);
+            interval: -0.03f, range: 0.25f, pierce: 1);
         so.main4 = Level("Rapid Shooter", 300, "Max performance",
-            dmg: 1, interval: -0.03f, range: 0.25f);
+            interval: -0.03f, range: 0.25f, pierce: 1);
 
-        so.subA = Level("Enhance", 200, "Increases ATK",
-            dmg: 1);
+        so.subA = Level("Enhance", 200, "Increases pierce",
+            pierce: 1);
         so.subB = Level("Spread", 200, "Converts to splash area attack",
             splash: 1.0f);
 
@@ -160,7 +160,7 @@ public static class TowerUpgradeDataGenerator
 
     private static UpgradeLevel Level(
         string name, int cost, string desc = "",
-        float dmg = 0, float interval = 0, float range = 0,
+        float interval = 0, float range = 0,
         float splash = 0, int pierce = 0,
         StatusEffectEntry[] effects = null)
     {
@@ -171,7 +171,6 @@ public static class TowerUpgradeDataGenerator
             cost = cost,
             stats = new TowerStats
             {
-                attackDamage = dmg,
                 attackInterval = interval,
                 attackRange = range,
                 splashRadius = splash,

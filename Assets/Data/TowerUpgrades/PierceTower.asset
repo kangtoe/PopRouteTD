@@ -16,69 +16,69 @@ MonoBehaviour:
   description: Armed with a high-powerd long range gun
   main1:
     levelName: Pierce Shooter
-    description: Armed with a high-powerd long range gun
+    description: Level Upgrade
     cost: 350
     stats:
-      attackDamage: 2
-      attackInterval: 1.6
+      attackInterval: 2
       attackRange: 10
       splashRadius: 0
-      pierceCount: 0
+      pierceCount: 4
+      areaTargets: 0
     statusEffects: []
   main2:
     levelName: Pierce Shooter
-    description: Use Anti-Armored Round - Can Deal More Damages to single Target
-    cost: 350
+    description: Level Upgrade
+    cost: 300
     stats:
-      attackDamage: 3
-      attackInterval: 0
-      attackRange: 0
+      attackInterval: -0.25
+      attackRange: 2
       splashRadius: 0
-      pierceCount: 0
+      pierceCount: 1
+      areaTargets: 0
     statusEffects: []
   main3:
     levelName: Pierce Shooter
-    description: Shots pierce to new targets up to 2 times.
-    cost: 2000
+    description: Level Upgrade
+    cost: 600
     stats:
-      attackDamage: 0
-      attackInterval: 0
-      attackRange: 0
+      attackInterval: -0.25
+      attackRange: 2
       splashRadius: 0
-      pierceCount: 2
+      pierceCount: 1
+      areaTargets: 0
     statusEffects: []
   main4:
     levelName: Full-Automatic
-    description: Greatly increases attack speed
-    cost: 2500
+    description: Level Upgrade
+    cost: 1000
     stats:
-      attackDamage: 0
-      attackInterval: -0.8
-      attackRange: 0
+      attackInterval: -0.25
+      attackRange: 2
       splashRadius: 0
-      pierceCount: 0
+      pierceCount: 2
+      areaTargets: 0
     statusEffects: []
   subA:
     levelName: Deadly Shot
     description: One Shot, One Kill.
     cost: 3000
     stats:
-      attackDamage: 10
       attackInterval: 0
       attackRange: 0
       splashRadius: 0
-      pierceCount: 0
+      pierceCount: 6
+      areaTargets: 0
     statusEffects: []
   subB:
     levelName: Impact!
     description: Grants stun effect
     cost: 1200
     stats:
-      attackDamage: 0
       attackInterval: 0
       attackRange: 0
       splashRadius: 0
       pierceCount: 0
+      areaTargets: 0
     statusEffects:
     - type: 3
       duration: 0.5

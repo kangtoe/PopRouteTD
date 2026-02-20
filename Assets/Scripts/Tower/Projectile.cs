@@ -9,8 +9,8 @@ public class Projectile : MonoBehaviour
 
     public float Speed => speed;
 
-    private int damage;
     private float splashRadius;
+    private int areaTargets;
     private int pierceCount;
     private int remainingPierce;
     private StatusEffectType effectType;
@@ -28,12 +28,12 @@ public class Projectile : MonoBehaviour
         enemyLayerMask = 1 << LayerMask.NameToLayer(GameConstants.LayerEnemy);
     }
 
-    public void Initialize(int attackDamage, float splash = 0f,
+    public void Initialize(int pierce, float splash = 0f,
         StatusEffectType statusEffect = StatusEffectType.None, float statusDuration = 0f,
-        int pierce = 0)
+        int splashAreaTargets = 0)
     {
-        damage = attackDamage;
         splashRadius = splash;
+        areaTargets = splashAreaTargets;
         pierceCount = pierce;
         remainingPierce = pierce;
         effectType = statusEffect;
@@ -66,17 +66,29 @@ public class Projectile : MonoBehaviour
         {
             ExplosionEffect.Spawn(transform.position, splashRadius);
             var hits = Physics2D.OverlapCircleAll(transform.position, splashRadius, enemyLayerMask);
-            foreach (var hit in hits)
+
+            if (areaTargets > 0 && hits.Length > areaTargets)
             {
-                var enemy = hit.GetComponent<Enemy>();
+                var pos = (Vector2)transform.position;
+                System.Array.Sort(hits, (a, b) =>
+                    ((Vector2)a.transform.position - pos).sqrMagnitude
+                    .CompareTo(((Vector2)b.transform.position - pos).sqrMagnitude));
+            }
+
+            int limit = areaTargets > 0 ? areaTargets : hits.Length;
+            for (int i = 0; i < limit && i < hits.Length; i++)
+            {
+                var enemy = hits[i].GetComponent<Enemy>();
                 if (enemy != null)
                 {
-                    enemy.TakeDamage(damage);
+                    enemy.TakeLayerDamage(pierceCount);
                     ApplyStatusEffect(enemy);
                 }
             }
+
+            Deactivate();
         }
-        else if (pierceCount > 0)
+        else
         {
             int instanceId = other.gameObject.GetInstanceID();
             if (hitInstanceIds.Contains(instanceId)) return;
@@ -92,21 +104,8 @@ public class Projectile : MonoBehaviour
             if (remainingPierce <= 0)
             {
                 Deactivate();
-                return;
-            }
-            return;
-        }
-        else
-        {
-            var enemy = other.GetComponent<Enemy>();
-            if (enemy != null)
-            {
-                enemy.TakeDamage(damage);
-                ApplyStatusEffect(enemy);
             }
         }
-
-        Deactivate();
     }
 
     private void ApplyStatusEffect(Enemy enemy)

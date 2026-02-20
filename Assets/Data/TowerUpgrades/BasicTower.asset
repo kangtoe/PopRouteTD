@@ -16,67 +16,67 @@ MonoBehaviour:
   description: Single-target ranged attack
   main1:
     levelName: Basic Shooter
-    description: Single-target ranged attack
+    description: Level Upgrade
     cost: 200
     stats:
-      attackDamage: 1
       attackInterval: 1
       attackRange: 3.2
       splashRadius: 0
-      pierceCount: 0
+      pierceCount: 1
+      areaTargets: 0
     statusEffects: []
   main2:
     levelName: Basic Shooter
-    description: Long Range Shot - Makes shoot further than normal
-    cost: 100
+    description: Level Upgrade
+    cost: 150
     stats:
-      attackDamage: 0
-      attackInterval: 0
-      attackRange: 0.8
+      attackInterval: -0.3
+      attackRange: 1
       splashRadius: 0
       pierceCount: 0
+      areaTargets: 0
     statusEffects: []
   main3:
     levelName: Basic Shooter
-    description: Quick Shots -  Shoots 15% faster.
-    cost: 100
+    description: Level Upgrade
+    cost: 250
     stats:
-      attackDamage: 0
-      attackInterval: -0.15
-      attackRange: 0
+      attackInterval: -0.2
+      attackRange: 1
       splashRadius: 0
       pierceCount: 0
+      areaTargets: 0
     statusEffects: []
   main4:
     levelName: Basic Shooter
-    description: Very Quick Shots - Shoots 33% faster!
-    cost: 250
+    description: Level Upgrade
+    cost: 350
     stats:
-      attackDamage: 0
-      attackInterval: -0.15
-      attackRange: 0.5
+      attackInterval: -0.1
+      attackRange: 1
       splashRadius: 0
       pierceCount: 0
+      areaTargets: 0
     statusEffects: []
   subA:
     levelName: Enhanced Eyesight
     description: Shoots even further!
-    cost: 200
+    cost: 300
     stats:
-      attackDamage: 0
       attackInterval: 0
-      attackRange: 0.8
+      attackRange: 2
       splashRadius: 0
       pierceCount: 0
+      areaTargets: 0
     statusEffects: []
   subB:
     levelName: Razor Sharp Shots
-    description: Can hit 2 more Enemies per shot.
-    cost: 200
+    description: Can hit more Enemy per shot.
+    cost: 1200
     stats:
-      attackDamage: 0
       attackInterval: 0
       attackRange: 0
       splashRadius: 0
-      pierceCount: 2
+      pierceCount: 1
+      areaTargets: 0
     statusEffects: []

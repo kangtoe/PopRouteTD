@@ -33,7 +33,6 @@ public class Tower : MonoBehaviour
 
     public string TowerName => upgradeData != null ? upgradeData.towerName : "";
     public int Cost => upgradeData != null ? upgradeData.main1.cost : 0;
-    public float AttackDamage => currentStats.attackDamage;
     public float AttackInterval => currentStats.attackInterval;
     public float AttackRange => currentStats.attackRange;
     public int SellRefund => Mathf.RoundToInt((Cost + totalUpgradeCost) * GameConstants.SellRefundRate);
@@ -345,8 +344,8 @@ public class Tower : MonoBehaviour
         projObj.transform.position = spawnPos;
         projObj.transform.rotation = body.rotation;
         var projectile = projObj.GetComponent<Projectile>();
-        projectile.Initialize((int)currentStats.attackDamage, currentStats.splashRadius,
-            statusEffectType, effectDuration, currentStats.pierceCount);
+        projectile.Initialize(currentStats.pierceCount, currentStats.splashRadius,
+            statusEffectType, effectDuration, currentStats.areaTargets);
     }
 
     private void SetSortingLayer(string layerName)

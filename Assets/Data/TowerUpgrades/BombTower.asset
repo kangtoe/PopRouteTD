@@ -16,72 +16,69 @@ MonoBehaviour:
   description: Splash area attack
   main1:
     levelName: Bomb Shooter
-    description: Splash area attack
-    cost: 400
+    description: Level Upgrade
+    cost: 500
     stats:
-      attackDamage: 1
       attackInterval: 1.5
       attackRange: 4
-      splashRadius: 1.2
-      pierceCount: 0
+      splashRadius: 1
+      pierceCount: 1
+      areaTargets: 6
     statusEffects: []
   main2:
     levelName: Bomb Shooter
-    description: Improved Shooting System - gets Extra Range, Reloads faster
-    cost: 550
+    description: Level Upgrade
+    cost: 400
     stats:
-      attackDamage: 0
-      attackInterval: -0.5
-      attackRange: 1.2
-      splashRadius: 0
+      attackInterval: -0.15
+      attackRange: 1
+      splashRadius: 0.2
       pierceCount: 0
+      areaTargets: 2
     statusEffects: []
   main3:
     levelName: Bomb Shooter
-    description: Big One - Explosions deal more damage and have a larger blast area
-    cost: 1100
+    description: Level Upgrade
+    cost: 550
     stats:
-      attackDamage: 1
-      attackInterval: 0
-      attackRange: 0
-      splashRadius: 0.6
+      attackInterval: -0.15
+      attackRange: 1
+      splashRadius: 0.2
       pierceCount: 0
+      areaTargets: 2
     statusEffects: []
   main4:
     levelName: Bomb Shooter
-    description: Explosions become so violent, Enemies are stunned for a short time
-      when they are hit
-    cost: 2400
+    description: Level Upgrade
+    cost: 800
     stats:
-      attackDamage: 0
-      attackInterval: 0
-      attackRange: 0
-      splashRadius: 0
+      attackInterval: -0.15
+      attackRange: 1
+      splashRadius: 0.2
       pierceCount: 0
-    statusEffects:
-    - type: 3
-      duration: 1
+      areaTargets: 2
+    statusEffects: []
   subA:
     levelName: Cluster Bombs
     description: Greatly expands splash radius
-    cost: 1200
+    cost: 750
     stats:
-      attackDamage: 0
       attackInterval: 0
       attackRange: 0
       splashRadius: 1
       pierceCount: 0
+      areaTargets: 4
     statusEffects: []
   subB:
     levelName: Incendiary Shell
     description: Grants burn effect
     cost: 850
     stats:
-      attackDamage: 0
       attackInterval: 0
       attackRange: 0
       splashRadius: 0
       pierceCount: 0
+      areaTargets: 0
     statusEffects:
     - type: 1
       duration: 3
