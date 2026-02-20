@@ -5,9 +5,9 @@ using UnityEngine;
 public class TowerUpgradeDataEditor : Editor
 {
     private bool showAnalysis = true;
+    private float enemySpeed = 1.0f;
     private GUIStyle _header;
     private GUIStyle _cell;
-    private GUIStyle _cellLeft;
     private GUIStyle _rich;
 
     private GUIStyle HeaderStyle => _header ??= new GUIStyle(EditorStyles.miniLabel)
@@ -19,11 +19,6 @@ public class TowerUpgradeDataEditor : Editor
     private GUIStyle CellStyle => _cell ??= new GUIStyle(EditorStyles.miniLabel)
     {
         alignment = TextAnchor.MiddleCenter
-    };
-
-    private GUIStyle CellLeftStyle => _cellLeft ??= new GUIStyle(EditorStyles.miniLabel)
-    {
-        alignment = TextAnchor.MiddleLeft
     };
 
     private GUIStyle RichStyle => _rich ??= new GUIStyle(EditorStyles.label)
@@ -47,190 +42,248 @@ public class TowerUpgradeDataEditor : Editor
 
         UpgradeLevel[] mains = { data.main1, data.main2, data.main3, data.main4 };
 
-        DrawMainTable(mains);
-        DrawSubComparison(data, mains);
-        DrawInvestmentCheck(data, mains);
+        DrawAnalysis(data, mains);
     }
 
-    // ─── 주 모듈 누적 테이블 ─────────────────────────
+    // ─── 밸런스 분석 테이블 ─────────────────────────
 
-    private void DrawMainTable(UpgradeLevel[] mains)
+    private void DrawAnalysis(TowerUpgradeData data, UpgradeLevel[] mains)
     {
         var cum = CumStats(mains);
         var costs = CumCosts(mains);
+        int baseCost = mains[0].cost;
 
-        bool sp = false, pi = false;
-        foreach (var s in cum) { sp |= s.splashRadius > 0; pi |= s.pierceCount > 0; }
+        bool sp = false;
+        foreach (var s in cum) { sp |= s.splashRadius > 0; }
+        if (data.subA?.stats != null) { sp |= data.subA.stats.splashRadius > 0; }
+        if (data.subB?.stats != null) { sp |= data.subB.stats.splashRadius > 0; }
 
-        EditorGUILayout.Space(5);
-        EditorGUILayout.LabelField("주 모듈 (누적)", EditorStyles.boldLabel);
-
-        // 헤더
-        EditorGUILayout.BeginHorizontal();
-        H("Lv", 24); H("ATK", 36); H("주기", 38); H("사거리", 42);
-        if (sp) H("스플", 36);
-        if (pi) H("관통", 34);
-        H("누적비용", 52); H("DPS", 44);
-        if (sp) H("효율DPS", 50);
-        H("DPS/비용", 55);
-        EditorGUILayout.EndHorizontal();
-
-        // 데이터 행
+        float basicDps = 0f, basicRange = 0f;
+        int basicCost = 0;
+        if (baseCost > 0) GetBasicTowerInfo(out basicDps, out basicRange, out basicCost);
+        float basicDwell = enemySpeed > 0 ? 2f * basicRange / enemySpeed : 0;
+        float basicExpDmg = basicDps * basicDwell;
+        float baselineEff = basicCost > 0 ? basicExpDmg / basicCost : 0;
+        float[] dpsArr = new float[4];
+        float[] cumExpDmg = new float[4];
         for (int i = 0; i < 4; i++)
         {
-            var s = cum[i];
-            float dps = CalcDps(s);
-            float eff = EffDps(s, dps);
-            float dpc = costs[i] > 0 ? dps / costs[i] : 0;
+            dpsArr[i] = CalcDps(cum[i]);
+            float dwell = enemySpeed > 0 ? 2f * cum[i].attackRange / enemySpeed : 0;
+            cumExpDmg[i] = EffDps(cum[i], dpsArr[i]) * dwell;
+        }
+
+        // 적 속도 슬라이더
+        EditorGUILayout.Space(5);
+        enemySpeed = EditorGUILayout.Slider("적 이동속도", enemySpeed, 1.0f, 4.0f);
+
+        string speedRef = enemySpeed <= 1.0f ? "(빨강)" :
+                          enemySpeed <= 1.5f ? "(주황)" :
+                          enemySpeed <= 2.0f ? "(노랑)" :
+                          enemySpeed <= 2.5f ? "(초록)" :
+                          enemySpeed <= 3.0f ? "(파랑)" :
+                          enemySpeed <= 3.5f ? "(남색)" : "(보라)";
+        EditorGUILayout.LabelField(
+            $"  체류시간 = 2 × 사거리 / {enemySpeed:F1} {speedRef}    |    기준: BasicTower Lv1 기대피해={basicExpDmg:F2}, 기대피해/비용×100={baselineEff * 100:F2}",
+            EditorStyles.miniLabel);
+        EditorGUILayout.Space(3);
+
+        // ── 단일 (레벨별) 테이블 ──
+        EditorGUILayout.LabelField("▸ 단일 (레벨별)", EditorStyles.boldLabel);
+
+        DrawTableHeader(sp);
+
+        for (int i = 0; i < 4; i++)
+        {
+            var ls = mains[i].stats;
+            if (ls == null) continue;
+            string fxText = LevelEffects(mains[i]);
 
             var row = EditorGUILayout.BeginHorizontal();
             if (i % 2 == 1) EditorGUI.DrawRect(row, new Color(0.5f, 0.5f, 0.5f, 0.06f));
 
-            C($"{i + 1}", 24); C($"{s.attackDamage:F0}", 36);
-            C($"{s.attackInterval:F2}", 38); C($"{s.attackRange:F1}", 42);
-            if (sp) C(s.splashRadius > 0 ? $"{s.splashRadius:F1}" : "-", 36);
-            if (pi) C(s.pierceCount > 0 ? $"{s.pierceCount}" : "-", 34);
-            C($"{costs[i]}", 52); C($"{dps:F2}", 44);
-            if (sp) C(Mathf.Abs(eff - dps) > 0.01f ? $"{eff:F2}" : "-", 50);
-            C($"{dpc:F4}", 55);
+            C($"{i + 1}", 28);
+            C(FormatDelta(ls.pierceCount, i == 0), 30);
+            C(FormatDelta(ls.attackInterval, i == 0), 36);
+            C(FormatDelta(ls.attackRange, i == 0), 38);
+            if (sp)
+            {
+                C(ls.splashRadius != 0 ? FormatDelta(ls.splashRadius, i == 0) : "-", 32);
+                C(ls.areaTargets != 0 ? FormatDelta(ls.areaTargets, i == 0) : "-", 30);
+            }
+            C($"{mains[i].cost}", 42);
+
+            float deltaDps = dpsArr[i] - (i > 0 ? dpsArr[i - 1] : 0);
+            float deltaEffMaxDmg = cumExpDmg[i] - (i > 0 ? cumExpDmg[i - 1] : 0);
+
+            C(FormatDelta(deltaDps, i == 0, "F2"), 40);
+            C(FormatDelta(deltaEffMaxDmg, i == 0, "F1"), 48);
+            C(VsDps(deltaDps, basicDps, i == 0), 50);
+            C(VsExpDmg(deltaEffMaxDmg, basicExpDmg, i == 0), 50);
+            DrawVsBaseline(deltaEffMaxDmg, mains[i].cost, baselineEff, 50);
+            DrawEffectLabel(fxText);
 
             EditorGUILayout.EndHorizontal();
         }
 
-        // 비고
-        if (pi) EditorGUILayout.LabelField("  * DPS = ATK × 관통수 / 주기", EditorStyles.miniLabel);
-        if (sp) EditorGUILayout.LabelField("  * 효율DPS: DPS × 2.5 (추정 평균 적중)", EditorStyles.miniLabel);
-
-        var fx = AccumEffects(mains, null);
-        if (fx != "-")
-            EditorGUILayout.LabelField($"  상태이상 (Lv4 누적): {fx}", EditorStyles.miniLabel);
-    }
-
-    // ─── 서브 모듈 비교 ──────────────────────────────
-
-    private void DrawSubComparison(TowerUpgradeData data, UpgradeLevel[] mains)
-    {
-        if (data.subA == null && data.subB == null) return;
-
-        var lv4 = CumStats(mains)[3];
-        int lv4Cost = CumCosts(mains)[3];
-
-        EditorGUILayout.Space(10);
-        EditorGUILayout.LabelField("서브 모듈 비교 (Lv4 기준)", EditorStyles.boldLabel);
-
-        // 헤더
-        EditorGUILayout.BeginHorizontal();
-        H("구성", 78); H("ATK", 36); H("주기", 38);
-        H("DPS", 44); H("총비용", 52); H("DPS/비용", 55);
-        GUILayout.Label("효과", HeaderStyle);
-        EditorGUILayout.EndHorizontal();
-
-        // Lv4 기본
-        SubRow("Lv4 기본", lv4, lv4Cost, AccumEffects(mains, null));
-
-        // + Sub A
-        if (data.subA != null)
+        if (data.subA != null || data.subB != null)
         {
-            var s = Clone(lv4);
-            if (data.subA.stats != null) s.Add(data.subA.stats);
-            SubRow($"+ {data.subA.levelName}", s, lv4Cost + data.subA.cost, AccumEffects(mains, data.subA));
+            EditorGUILayout.Space(2);
+            DrawSingleSubRow("A", data.subA, cum[3], dpsArr[3], cumExpDmg[3], baselineEff, basicDps, basicExpDmg, sp);
+            DrawSingleSubRow("B", data.subB, cum[3], dpsArr[3], cumExpDmg[3], baselineEff, basicDps, basicExpDmg, sp);
         }
 
-        // + Sub B
-        if (data.subB != null)
+        // ── 누적 테이블 ──
+        EditorGUILayout.Space(8);
+        EditorGUILayout.LabelField("▸ 누적", EditorStyles.boldLabel);
+
+        DrawTableHeader(sp);
+
+        for (int i = 0; i < 4; i++)
         {
-            var s = Clone(lv4);
-            if (data.subB.stats != null) s.Add(data.subB.stats);
-            SubRow($"+ {data.subB.levelName}", s, lv4Cost + data.subB.cost, AccumEffects(mains, data.subB));
+            var s = cum[i];
+            float dps = dpsArr[i];
+            float effMaxDmg = cumExpDmg[i];
+
+            float deltaEffMaxDmg = cumExpDmg[i] - (i > 0 ? cumExpDmg[i - 1] : 0);
+            int levelCost = mains[i].cost;
+            string fxText = AccumEffects(mains, i);
+
+            var row = EditorGUILayout.BeginHorizontal();
+            if (i % 2 == 1) EditorGUI.DrawRect(row, new Color(0.5f, 0.5f, 0.5f, 0.06f));
+
+            C($"{i + 1}", 28); C($"{s.pierceCount}", 30);
+            C($"{s.attackInterval:F2}", 36); C($"{s.attackRange:F1}", 38);
+            if (sp)
+            {
+                C(s.splashRadius > 0 ? $"{s.splashRadius:F1}" : "-", 32);
+                C(s.areaTargets > 0 ? $"{s.areaTargets}" : "-", 30);
+            }
+            C($"{costs[i]}", 42); C($"{dps:F2}", 40);
+            C(float.IsNaN(effMaxDmg) ? "ERR" : $"{effMaxDmg:F1}", 48);
+            C(basicDps > 0 ? $"{dps / basicDps:F2}\ubc30" : "-", 50);
+            C(VsExpDmg(effMaxDmg, basicExpDmg, true), 50);
+
+            DrawVsBaseline(deltaEffMaxDmg, levelCost, baselineEff, 50);
+            DrawEffectLabel(fxText);
+
+            EditorGUILayout.EndHorizontal();
         }
-    }
 
-    private void SubRow(string label, TowerStats s, int cost, string fx)
-    {
-        float dps = CalcDps(s);
-        float dpc = cost > 0 ? dps / cost : 0;
+        // ── 서브 모듈 행 (누적) ──
+        if (data.subA != null || data.subB != null)
+        {
+            EditorGUILayout.Space(3);
+            var lv4 = cum[3];
+            int lv4Cost = costs[3];
 
-        EditorGUILayout.BeginHorizontal();
-        C(label, 78); C($"{s.attackDamage:F0}", 36); C($"{s.attackInterval:F2}", 38);
-        C($"{dps:F2}", 44); C($"{cost}", 52); C($"{dpc:F4}", 55);
-        GUILayout.Label(fx, CellLeftStyle);
-        EditorGUILayout.EndHorizontal();
-    }
+            if (data.subA != null)
+            {
+                var s = Clone(lv4);
+                if (data.subA.stats != null) s.Add(data.subA.stats);
+                SubAnalysisRow("+A", s, lv4Cost + data.subA.cost,
+                    data.subA.cost, cumExpDmg[3], baselineEff, basicDps, basicExpDmg, sp, AccumEffects(mains, 3, data.subA));
+            }
+            if (data.subB != null)
+            {
+                var s = Clone(lv4);
+                if (data.subB.stats != null) s.Add(data.subB.stats);
+                SubAnalysisRow("+B", s, lv4Cost + data.subB.cost,
+                    data.subB.cost, cumExpDmg[3], baselineEff, basicDps, basicExpDmg, sp, AccumEffects(mains, 3, data.subB));
+            }
+            if (data.subA != null && data.subB != null)
+            {
+                var s = Clone(lv4);
+                if (data.subA.stats != null) s.Add(data.subA.stats);
+                if (data.subB.stats != null) s.Add(data.subB.stats);
+                int abCost = data.subA.cost + data.subB.cost;
+                SubAnalysisRow("+AB", s, lv4Cost + abCost,
+                    abCost, cumExpDmg[3], baselineEff, basicDps, basicExpDmg, sp, AccumEffects(mains, 3, data.subA, data.subB));
+            }
+        }
 
-    // ─── 모듈별 투자 효율 ─────────────────────────────
-
-    private void DrawInvestmentCheck(TowerUpgradeData data, UpgradeLevel[] mains)
-    {
-        int baseCost = mains[0].cost;
-        if (baseCost <= 0) return;
-
-        var cum = CumStats(mains);
-        float[] dps = new float[4];
-        for (int i = 0; i < 4; i++) dps[i] = CalcDps(cum[i]);
-
-        float baselineEff = GetBasicTowerEfficiency();
-
-        EditorGUILayout.Space(10);
-        EditorGUILayout.LabelField("모듈별 투자 효율", EditorStyles.boldLabel);
-        EditorGUILayout.LabelField(
-            $"  기준: BasicTower Lv1 = {baselineEff:F4} DPS/비용",
-            EditorStyles.miniLabel);
+        // ── 비고 ──
         EditorGUILayout.Space(3);
 
-        // 헤더
-        EditorGUILayout.BeginHorizontal();
-        H("모듈", 55); H("비용", 38); H("\u0394DPS", 48); H("한계효율", 55);
-        GUILayout.Label("vs 기준", HeaderStyle);
-        EditorGUILayout.EndHorizontal();
+        var fxAccum = AccumEffects(mains, 3);
+        if (fxAccum != "-")
+            EditorGUILayout.LabelField($"  상태이상 (Lv4 누적): {fxAccum}", EditorStyles.miniLabel);
 
-        // Lv1 배치
-        EfficiencyRow("Lv1", baseCost, dps[0], baselineEff, LevelEffects(mains[0]));
-
-        // Lv2~4
-        for (int i = 1; i < 4; i++)
+        // ── 경고 ──
+        bool missingAreaTargets = sp && cum[3].splashRadius > 0 && cum[3].areaTargets <= 0;
+        if (missingAreaTargets)
         {
-            if (mains[i] == null) continue;
-            float delta = dps[i] - dps[i - 1];
-            EfficiencyRow($"Lv{i + 1}", mains[i].cost, delta, baselineEff, LevelEffects(mains[i]));
+            EditorGUILayout.Space(3);
+            EditorGUILayout.HelpBox(
+                "스플래시 타워에 적중수(areaTargets)가 설정되지 않았습니다.\n" +
+                "게임에서 범위 내 모든 적에게 무제한 피해가 적용됩니다. 적중수를 설정하세요.",
+                MessageType.Warning);
         }
-
-        // Sub A
-        if (data.subA != null)
-        {
-            var withA = Clone(cum[3]);
-            if (data.subA.stats != null) withA.Add(data.subA.stats);
-            float delta = CalcDps(withA) - dps[3];
-            EfficiencyRow("Sub A", data.subA.cost, delta, baselineEff, LevelEffects(data.subA));
-        }
-
-        // Sub B
-        if (data.subB != null)
-        {
-            var withB = Clone(cum[3]);
-            if (data.subB.stats != null) withB.Add(data.subB.stats);
-            float delta = CalcDps(withB) - dps[3];
-            EfficiencyRow("Sub B", data.subB.cost, delta, baselineEff, LevelEffects(data.subB));
-        }
-
-        // 총 투자 비율
-        EditorGUILayout.Space(5);
-        int lv4Cost = CumCosts(mains)[3];
-        TotalLine("Lv4 (메인)", lv4Cost, baseCost);
-        if (data.subA != null)
-            TotalLine($"+ {data.subA.levelName}", lv4Cost + data.subA.cost, baseCost);
-        if (data.subB != null)
-            TotalLine($"+ {data.subB.levelName}", lv4Cost + data.subB.cost, baseCost);
 
         EditorGUILayout.Space(3);
         EditorGUILayout.HelpBox(
-            $"설계 목표: 총 투자 = 배치비용({baseCost})의 5~6배 = {baseCost * 5}~{baseCost * 6}\n" +
-            "한계효율 vs 기준 > 1.0 → 업그레이드가 신규 배치보다 효율적 (밸런스 주의)\n" +
-            "기준 = BasicTower Lv1 DPS/비용",
+            "DPS = 관통수 / 주기\n" +
+            "기대피해 = DPS × 적중수 × 체류시간    (체류시간 = 2 × 사거리 / 적속도)\n" +
+            "투자효율 = (Δ기대피해 / 비용) / 기준    (< 1.0 → 신규 배치보다 비효율적)",
             MessageType.Info);
     }
 
-    private static float GetBasicTowerEfficiency()
+    private void SubAnalysisRow(string label, TowerStats s, int totalCost,
+        int subCost, float lv4ExpDmg, float baselineEff, float basicDps, float basicExpDmg, bool sp, string fxText)
     {
+        float dps = CalcDps(s);
+        float dwell = enemySpeed > 0 ? 2f * s.attackRange / enemySpeed : 0;
+        float effMaxDmg = EffDps(s, dps) * dwell;
+
+        EditorGUILayout.BeginHorizontal();
+        C(label, 28); C($"{s.pierceCount}", 30);
+        C($"{s.attackInterval:F2}", 36); C($"{s.attackRange:F1}", 38);
+        if (sp)
+        {
+            C(s.splashRadius > 0 ? $"{s.splashRadius:F1}" : "-", 32);
+            C(s.areaTargets > 0 ? $"{s.areaTargets}" : "-", 30);
+        }
+        C($"{totalCost}", 42); C($"{dps:F2}", 40);
+        C(float.IsNaN(effMaxDmg) ? "ERR" : $"{effMaxDmg:F1}", 48);
+        C(basicDps > 0 ? $"{dps / basicDps:F2}\ubc30" : "-", 50);
+        C(VsExpDmg(effMaxDmg, basicExpDmg, true), 50);
+        float deltaEffMaxDmg = effMaxDmg - lv4ExpDmg;
+        DrawVsBaseline(deltaEffMaxDmg, subCost, baselineEff, 50);
+        DrawEffectLabel(fxText);
+        EditorGUILayout.EndHorizontal();
+    }
+
+    private void DrawVsBaseline(float deltaExpDmg, int cost, float baseEff, float width)
+    {
+        if (float.IsNaN(deltaExpDmg))
+        {
+            C("ERR", width);
+            return;
+        }
+        if (deltaExpDmg > 0.01f)
+        {
+            float marginal = cost > 0 ? deltaExpDmg / cost : 0;
+            float ratio = baseEff > 0 ? marginal / baseEff : 0;
+            bool ok = ratio >= 1.0f;
+            string color = ok ? "#4CAF50" : "#F44336";
+            string icon = ok ? "\u2713" : "\u2717";
+            GUILayout.Label($"<color={color}>{icon}{ratio:F2}\ubc30</color>", RichStyle, GUILayout.Width(width));
+        }
+        else
+        {
+            C("-", width);
+        }
+    }
+
+    private void DrawEffectLabel(string fxText)
+    {
+        bool hasFx = !string.IsNullOrEmpty(fxText);
+        GUILayout.Label(hasFx ? $"<color=#2196F3>{fxText}</color>" : "-", RichStyle);
+    }
+
+    private static void GetBasicTowerInfo(out float basicDps, out float basicRange, out int basicCost)
+    {
+        basicDps = 0f; basicRange = 0f; basicCost = 0;
         const string BasicTowerName = "BasicTower";
         var guids = AssetDatabase.FindAssets("t:TowerUpgradeData");
         foreach (var guid in guids)
@@ -238,52 +291,12 @@ public class TowerUpgradeDataEditor : Editor
             var path = AssetDatabase.GUIDToAssetPath(guid);
             var td = AssetDatabase.LoadAssetAtPath<TowerUpgradeData>(path);
             if (td == null || td.towerName != BasicTowerName) continue;
-            if (td.main1 == null || td.main1.stats == null || td.main1.cost <= 0) return 0f;
-            return CalcDps(td.main1.stats) / td.main1.cost;
+            if (td.main1 == null || td.main1.stats == null || td.main1.cost <= 0) return;
+            basicDps = CalcDps(td.main1.stats);
+            basicRange = td.main1.stats.attackRange;
+            basicCost = td.main1.cost;
+            return;
         }
-        return 0f;
-    }
-
-    private void EfficiencyRow(string label, int cost, float deltaDps, float baseEff, string fx)
-    {
-        bool hasDps = deltaDps > 0.01f;
-        bool hasFx = !string.IsNullOrEmpty(fx);
-
-        EditorGUILayout.BeginHorizontal();
-        C(label, 55);
-        C($"{cost}", 38);
-
-        if (hasDps)
-        {
-            float marginal = cost > 0 ? deltaDps / cost : 0;
-            float ratio = baseEff > 0 ? marginal / baseEff : 0;
-            bool ok = ratio <= 1.05f;
-            string color = ok ? "#4CAF50" : "#F44336";
-            string icon = ok ? "\u2713" : "\u2717";
-            string extra = hasFx ? $"  + {fx}" : "";
-
-            C($"+{deltaDps:F2}", 48);
-            C($"{marginal:F4}", 55);
-            GUILayout.Label($"<color={color}>{icon} {ratio:F2}\ubc30</color>{extra}", RichStyle);
-        }
-        else
-        {
-            C("-", 48); C("-", 55);
-            GUILayout.Label(hasFx ? $"<color=#2196F3>{fx}</color>" : "-", RichStyle);
-        }
-
-        EditorGUILayout.EndHorizontal();
-    }
-
-    private void TotalLine(string label, int total, int baseCost)
-    {
-        float ratio = (float)total / baseCost;
-        bool ok = ratio >= 4.5f && ratio <= 6.5f;
-        string color = ok ? "#4CAF50" : "#F44336";
-        string icon = ok ? "\u2713" : "\u2717";
-        EditorGUILayout.LabelField(
-            $"  <color={color}>{icon}</color> {label}: {total} / {baseCost} = <b>{ratio:F1}\ubc30</b>",
-            RichStyle);
     }
 
     private static string LevelEffects(UpgradeLevel level)
@@ -299,17 +312,104 @@ public class TowerUpgradeDataEditor : Editor
         return sb.ToString();
     }
 
+    private void DrawSingleSubRow(string label, UpgradeLevel sub,
+        TowerStats lv4, float lv4Dps, float lv4ExpDmg, float baselineEff, float basicDps, float basicExpDmg, bool sp)
+    {
+        if (sub == null) return;
+        var ls = sub.stats;
+        string fxText = LevelEffects(sub);
+
+        EditorGUILayout.BeginHorizontal();
+        C($"+{label}", 28);
+        if (ls != null)
+        {
+            C(ls.pierceCount != 0 ? FormatDelta(ls.pierceCount, false) : "-", 30);
+            C(ls.attackInterval != 0 ? FormatDelta(ls.attackInterval, false) : "-", 36);
+            C(ls.attackRange != 0 ? FormatDelta(ls.attackRange, false) : "-", 38);
+            if (sp)
+            {
+                C(ls.splashRadius != 0 ? FormatDelta(ls.splashRadius, false) : "-", 32);
+                C(ls.areaTargets != 0 ? FormatDelta(ls.areaTargets, false) : "-", 30);
+            }
+        }
+        else
+        {
+            C("-", 30); C("-", 36); C("-", 38);
+            if (sp) { C("-", 32); C("-", 30); }
+        }
+        C($"{sub.cost}", 42);
+
+        var merged = Clone(lv4);
+        if (ls != null) merged.Add(ls);
+        float mergedDps = CalcDps(merged);
+        float deltaDps = mergedDps - lv4Dps;
+        float dwell = enemySpeed > 0 ? 2f * merged.attackRange / enemySpeed : 0;
+        float mergedExpDmg = EffDps(merged, mergedDps) * dwell;
+        float deltaEffMaxDmg = mergedExpDmg - lv4ExpDmg;
+
+        C(FormatDelta(deltaDps, false, "F2"), 40);
+        C(FormatDelta(deltaEffMaxDmg, false, "F1"), 48);
+        C(VsDps(deltaDps, basicDps, false), 50);
+        C(VsExpDmg(deltaEffMaxDmg, basicExpDmg, false), 50);
+        DrawVsBaseline(deltaEffMaxDmg, sub.cost, baselineEff, 50);
+        DrawEffectLabel(fxText);
+        EditorGUILayout.EndHorizontal();
+    }
+
+    private void DrawTableHeader(bool sp)
+    {
+        EditorGUILayout.BeginHorizontal();
+        H("Lv", 28); H("관통", 30); H("주기", 36); H("사거리", 38);
+        if (sp) { H("스플", 32); H("적중", 30); }
+        H("비용", 42); H("DPS", 40); H("기대피해", 48);
+        H("vs DPS", 50); H("vs 기대", 50); H("투자효율", 50);
+        GUILayout.Label("효과", HeaderStyle);
+        EditorGUILayout.EndHorizontal();
+    }
+
     // ─── 유틸리티 ────────────────────────────────────
 
     private void H(string text, float w) => GUILayout.Label(text, HeaderStyle, GUILayout.Width(w));
     private void C(string text, float w) => GUILayout.Label(text, CellStyle, GUILayout.Width(w));
 
+    private static string FormatDelta(float v, bool isBase, string fmt = "G4")
+    {
+        if (float.IsNaN(v)) return "ERR";
+        if (isBase) return v.ToString(fmt);
+        if (v == 0) return "-";
+        return v > 0 ? $"+{v.ToString(fmt)}" : v.ToString(fmt);
+    }
+
+    private static string FormatDelta(int v, bool isBase)
+    {
+        if (isBase) return $"{v}";
+        if (v == 0) return "-";
+        return v > 0 ? $"+{v}" : $"{v}";
+    }
+
+    private static string VsDps(float value, float basicDps, bool isBase)
+    {
+        if (basicDps <= 0) return "-";
+        float ratio = value / basicDps;
+        string s = FormatDelta(ratio, isBase, "F2");
+        return s == "-" ? "-" : s + "\ubc30";
+    }
+
+    private static string VsExpDmg(float value, float basicExpDmg, bool isBase)
+    {
+        if (float.IsNaN(value) || basicExpDmg <= 0) return "-";
+        float ratio = value / basicExpDmg;
+        string s = FormatDelta(ratio, isBase, "F2");
+        return s == "-" ? "-" : s + "\ubc30";
+    }
+
     private static float CalcDps(TowerStats s) =>
-        s.attackInterval > 0 ? s.attackDamage * Mathf.Max(1, s.pierceCount) / s.attackInterval : 0;
+        s.attackInterval > 0 ? s.pierceCount / s.attackInterval : 0;
 
     private static float EffDps(TowerStats s, float dps)
     {
-        if (s.splashRadius > 0) return dps * 2.5f;
+        if (s.splashRadius > 0 && s.areaTargets > 0) return dps * s.areaTargets;
+        if (s.splashRadius > 0) return float.NaN;
         return dps;
     }
 
@@ -336,28 +436,31 @@ public class TowerUpgradeDataEditor : Editor
 
     private static TowerStats Clone(TowerStats s) => new()
     {
-        attackDamage = s.attackDamage,
         attackInterval = s.attackInterval,
         attackRange = s.attackRange,
         splashRadius = s.splashRadius,
-        pierceCount = s.pierceCount
+        pierceCount = s.pierceCount,
+        areaTargets = s.areaTargets
     };
 
-    private static string AccumEffects(UpgradeLevel[] mains, UpgradeLevel sub)
+    private static string AccumEffects(UpgradeLevel[] mains, int upTo, params UpgradeLevel[] subs)
     {
         int count = System.Enum.GetValues(typeof(StatusEffectType)).Length;
         float[] dur = new float[count];
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i <= upTo && i < mains.Length; i++)
         {
             if (mains[i]?.statusEffects == null) continue;
             foreach (var e in mains[i].statusEffects)
                 dur[(int)e.type] += e.duration;
         }
 
-        if (sub?.statusEffects != null)
+        foreach (var sub in subs)
+        {
+            if (sub?.statusEffects == null) continue;
             foreach (var e in sub.statusEffects)
                 dur[(int)e.type] += e.duration;
+        }
 
         var sb = new System.Text.StringBuilder();
         for (int i = 1; i < count; i++)
