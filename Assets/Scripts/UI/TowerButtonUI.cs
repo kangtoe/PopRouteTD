@@ -5,6 +5,7 @@ public class TowerButtonUI : MonoBehaviour
 {
     [SerializeField] private Button button;
     [SerializeField] private Text labelText;
+    [SerializeField] private Text costText;
     [SerializeField] private Text descriptionText;
     [SerializeField] private Image iconImage;
     [SerializeField] private Image backgroundImage;
@@ -19,6 +20,7 @@ public class TowerButtonUI : MonoBehaviour
     public void SetAvailable(string label, int cost, string desc = "", Sprite icon = null)
     {
         SetLabel(label);
+        SetCost(cost);
         SetDescription(desc);
         SetIcon(icon);
         button.interactable = ResourceManager.Instance.Gold >= cost;
@@ -29,6 +31,7 @@ public class TowerButtonUI : MonoBehaviour
     public void SetSelected(string label, string desc = "", Sprite icon = null)
     {
         SetLabel(label);
+        SetCost(-1);
         SetDescription(desc);
         SetIcon(icon);
         button.interactable = false;
@@ -39,6 +42,7 @@ public class TowerButtonUI : MonoBehaviour
     public void SetLocked(string label, string desc = "", Sprite icon = null)
     {
         SetLabel(label);
+        SetCost(-1);
         SetDescription(desc);
         SetIcon(icon);
         button.interactable = false;
@@ -49,6 +53,7 @@ public class TowerButtonUI : MonoBehaviour
     public void SetMax()
     {
         SetLabel("MAX");
+        SetCost(-1);
         SetDescription("");
         button.interactable = false;
         SetBackgroundColor(normalColor);
@@ -58,6 +63,12 @@ public class TowerButtonUI : MonoBehaviour
     {
         if (labelText != null)
             labelText.text = text;
+    }
+
+    private void SetCost(int cost)
+    {
+        if (costText != null)
+            costText.text = cost >= 0 ? $"{cost}" : "";
     }
 
     private void SetDescription(string desc)

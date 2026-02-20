@@ -62,7 +62,7 @@ public class TowerSelectUI : MonoBehaviour
 
             var tb = Instantiate(towerButtonPrefab, buttonParent);
 
-            string label = $"{tower.TowerName}\n({tower.Cost})";
+            string label = tower.TowerName;
             var icon = TowerIconGenerator.GenerateIcon(prefab);
             generatedIcons.Add(icon);
             tb.SetAvailable(label, tower.Cost, icon: icon);
