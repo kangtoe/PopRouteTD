@@ -128,10 +128,7 @@ public class TowerInfoUI : MonoBehaviour
     {
         var tower = selectedTower;
 
-        // 타워 이름 + 주 모듈 레벨
-        towerNameText.text = tower.CanUpgradeMain || tower.MainLevel > 1
-            ? $"{tower.TowerName} Lv.{tower.MainLevel}"
-            : tower.TowerName;
+        towerNameText.text = tower.TowerName;
 
         SetPriorityButtonsVisible(true);
 
@@ -215,14 +212,14 @@ public class TowerInfoUI : MonoBehaviour
         if (!hasUpgradeData) return;
 
         if (selectedTower.HasSubA)
-            subAButton.SetSelected($"A: {subA.levelName}", subA.description, subAIcon);
+            subAButton.SetSelected(subA.levelName, subA.description, subAIcon);
         else
-            subAButton.SetAvailable($"A: {subA.levelName}", subA.cost, subA.description, subAIcon);
+            subAButton.SetAvailable(subA.levelName, subA.cost, subA.description, subAIcon);
 
         if (selectedTower.HasSubB)
-            subBButton.SetSelected($"B: {subB.levelName}", subB.description, subBIcon);
+            subBButton.SetSelected(subB.levelName, subB.description, subBIcon);
         else
-            subBButton.SetAvailable($"B: {subB.levelName}", subB.cost, subB.description, subBIcon);
+            subBButton.SetAvailable(subB.levelName, subB.cost, subB.description, subBIcon);
     }
 
     private void OnUpgradeClicked()
