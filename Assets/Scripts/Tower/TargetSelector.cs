@@ -9,7 +9,7 @@ public static class TargetSelector
 
         Enemy best = null;
         float bestValue = float.MinValue;
-        int bestLayer = priority == TargetPriority.Strong ? int.MinValue : int.MaxValue;
+        int bestLayer = int.MinValue;
 
         foreach (var hit in hits)
         {
@@ -38,23 +38,21 @@ public static class TargetSelector
                     }
                     break;
                 }
-                case TargetPriority.Strong:
+                case TargetPriority.Last:
                 {
-                    int layer = (int)enemy.CurrentLayer;
                     float progress = enemy.Follower.Progress;
-                    if (layer > bestLayer || (layer == bestLayer && progress > bestValue))
+                    if (best == null || progress < bestValue)
                     {
-                        bestLayer = layer;
                         bestValue = progress;
                         best = enemy;
                     }
                     break;
                 }
-                case TargetPriority.Weak:
+                case TargetPriority.Strong:
                 {
                     int layer = (int)enemy.CurrentLayer;
                     float progress = enemy.Follower.Progress;
-                    if (layer < bestLayer || (layer == bestLayer && progress > bestValue))
+                    if (layer > bestLayer || (layer == bestLayer && progress > bestValue))
                     {
                         bestLayer = layer;
                         bestValue = progress;

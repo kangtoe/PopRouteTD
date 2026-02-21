@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class TowerInfoUI : MonoBehaviour
@@ -8,8 +9,9 @@ public class TowerInfoUI : MonoBehaviour
 
     [Header("Targeting")]
     [SerializeField] private Button firstButton;
+    [FormerlySerializedAs("weakButton")]
+    [SerializeField] private Button lastButton;
     [SerializeField] private Button closeButton;
-    [SerializeField] private Button weakButton;
     [SerializeField] private Button strongButton;
 
     [Header("Sell")]
@@ -39,8 +41,8 @@ public class TowerInfoUI : MonoBehaviour
         priorityImages = new[]
         {
             firstButton.GetComponent<Image>(),
+            lastButton.GetComponent<Image>(),
             closeButton.GetComponent<Image>(),
-            weakButton.GetComponent<Image>(),
             strongButton.GetComponent<Image>()
         };
 
@@ -51,8 +53,8 @@ public class TowerInfoUI : MonoBehaviour
         ResourceManager.Instance.OnGoldChanged += OnGoldChanged;
 
         firstButton.onClick.AddListener(() => OnPriorityClicked(TargetPriority.First));
+        lastButton.onClick.AddListener(() => OnPriorityClicked(TargetPriority.Last));
         closeButton.onClick.AddListener(() => OnPriorityClicked(TargetPriority.Close));
-        weakButton.onClick.AddListener(() => OnPriorityClicked(TargetPriority.Weak));
         strongButton.onClick.AddListener(() => OnPriorityClicked(TargetPriority.Strong));
         sellButton.onClick.AddListener(OnSellClicked);
 
@@ -294,8 +296,8 @@ public class TowerInfoUI : MonoBehaviour
     private void SetPriorityButtonsVisible(bool visible)
     {
         firstButton.gameObject.SetActive(visible);
+        lastButton.gameObject.SetActive(visible);
         closeButton.gameObject.SetActive(visible);
-        weakButton.gameObject.SetActive(visible);
         strongButton.gameObject.SetActive(visible);
     }
 }

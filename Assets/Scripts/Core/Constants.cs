@@ -13,8 +13,8 @@ public enum EnemyLayer
 public enum TargetPriority
 {
     First,
+    Last,
     Close,
-    Weak,
     Strong
 }
 
