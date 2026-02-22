@@ -15,7 +15,7 @@ MonoBehaviour:
   towerName: PierceTower
   description: Armed with a high-powerd long range gun
   main1:
-    levelName: Pierce Shooter
+    upgradeName: Level 1
     description: Level Upgrade
     cost: 350
     stats:
@@ -26,7 +26,7 @@ MonoBehaviour:
       areaTargets: 0
     statusEffects: []
   main2:
-    levelName: Pierce Shooter
+    upgradeName: Level 2
     description: Level Upgrade
     cost: 300
     stats:
@@ -37,7 +37,7 @@ MonoBehaviour:
       areaTargets: 0
     statusEffects: []
   main3:
-    levelName: Pierce Shooter
+    upgradeName: Level 3
     description: Level Upgrade
     cost: 600
     stats:
@@ -48,7 +48,7 @@ MonoBehaviour:
       areaTargets: 0
     statusEffects: []
   main4:
-    levelName: Full-Automatic
+    upgradeName: Level 4
     description: Level Upgrade
     cost: 1000
     stats:
@@ -59,7 +59,7 @@ MonoBehaviour:
       areaTargets: 0
     statusEffects: []
   subA:
-    levelName: Deadly Shot
+    upgradeName: Deadly Shot
     description: One Shot, One Kill.
     cost: 3000
     stats:
@@ -70,7 +70,7 @@ MonoBehaviour:
       areaTargets: 0
     statusEffects: []
   subB:
-    levelName: Impact!
+    upgradeName: Impact!
     description: Grants stun effect
     cost: 1200
     stats:

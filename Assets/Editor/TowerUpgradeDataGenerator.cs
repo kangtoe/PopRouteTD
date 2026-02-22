@@ -166,7 +166,7 @@ public static class TowerUpgradeDataGenerator
     {
         return new UpgradeLevel
         {
-            levelName = name,
+            upgradeName = name,
             description = desc,
             cost = cost,
             stats = new TowerStats

@@ -15,7 +15,7 @@ MonoBehaviour:
   towerName: BasicTower
   description: Single-target ranged attack
   main1:
-    levelName: Basic Shooter
+    upgradeName: Level 1
     description: Level Upgrade
     cost: 200
     stats:
@@ -26,7 +26,7 @@ MonoBehaviour:
       areaTargets: 0
     statusEffects: []
   main2:
-    levelName: Basic Shooter
+    upgradeName: Level 2
     description: Level Upgrade
     cost: 150
     stats:
@@ -37,7 +37,7 @@ MonoBehaviour:
       areaTargets: 0
     statusEffects: []
   main3:
-    levelName: Basic Shooter
+    upgradeName: Level 3
     description: Level Upgrade
     cost: 250
     stats:
@@ -48,7 +48,7 @@ MonoBehaviour:
       areaTargets: 0
     statusEffects: []
   main4:
-    levelName: Basic Shooter
+    upgradeName: Level 4
     description: Level Upgrade
     cost: 350
     stats:
@@ -59,7 +59,7 @@ MonoBehaviour:
       areaTargets: 0
     statusEffects: []
   subA:
-    levelName: Enhanced Eyesight
+    upgradeName: Eyesight
     description: Shoots even further!
     cost: 300
     stats:
@@ -70,7 +70,7 @@ MonoBehaviour:
       areaTargets: 0
     statusEffects: []
   subB:
-    levelName: Razor Sharp Shots
+    upgradeName: Razor Sharp
     description: Can hit more Enemy per shot.
     cost: 1200
     stats:

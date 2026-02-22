@@ -15,7 +15,7 @@ MonoBehaviour:
   towerName: BombTower
   description: Splash area attack
   main1:
-    levelName: Bomb Shooter
+    upgradeName: Level 1
     description: Level Upgrade
     cost: 500
     stats:
@@ -26,7 +26,7 @@ MonoBehaviour:
       areaTargets: 6
     statusEffects: []
   main2:
-    levelName: Bomb Shooter
+    upgradeName: Level 2
     description: Level Upgrade
     cost: 400
     stats:
@@ -37,7 +37,7 @@ MonoBehaviour:
       areaTargets: 2
     statusEffects: []
   main3:
-    levelName: Bomb Shooter
+    upgradeName: Level 3
     description: Level Upgrade
     cost: 550
     stats:
@@ -48,7 +48,7 @@ MonoBehaviour:
       areaTargets: 2
     statusEffects: []
   main4:
-    levelName: Bomb Shooter
+    upgradeName: Level 4
     description: Level Upgrade
     cost: 800
     stats:
@@ -59,7 +59,7 @@ MonoBehaviour:
       areaTargets: 2
     statusEffects: []
   subA:
-    levelName: Cluster Bombs
+    upgradeName: Cluster
     description: Greatly expands splash radius
     cost: 750
     stats:
@@ -70,7 +70,7 @@ MonoBehaviour:
       areaTargets: 4
     statusEffects: []
   subB:
-    levelName: Incendiary Shell
+    upgradeName: Incendiary
     description: Grants burn effect
     cost: 850
     stats:

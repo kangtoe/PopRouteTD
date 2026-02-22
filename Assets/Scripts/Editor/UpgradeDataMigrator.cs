@@ -34,7 +34,7 @@ public static class UpgradeDataMigrator
     {
         return new UpgradeLevel
         {
-            levelName = name,
+            upgradeName = name,
             description = desc,
             cost = cost,
             stats = stats,

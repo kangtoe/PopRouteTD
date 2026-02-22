@@ -15,7 +15,7 @@ MonoBehaviour:
   towerName: SlowTower
   description: Attacks apply slow effect
   main1:
-    levelName: Slow Shooter
+    upgradeName: Level 1
     description: Level Upgrade
     cost: 250
     stats:
@@ -28,7 +28,7 @@ MonoBehaviour:
     - type: 2
       duration: 8
   main2:
-    levelName: Slow Shooter
+    upgradeName: Level 2
     description: Level Upgrade
     cost: 150
     stats:
@@ -41,7 +41,7 @@ MonoBehaviour:
     - type: 2
       duration: 4
   main3:
-    levelName: Slow Shooter
+    upgradeName: Level 3
     description: Level Upgrade
     cost: 250
     stats:
@@ -54,7 +54,7 @@ MonoBehaviour:
     - type: 2
       duration: 4
   main4:
-    levelName: Slow Shooter
+    upgradeName: Level 4
     description: Level Upgrade
     cost: 450
     stats:
@@ -67,7 +67,7 @@ MonoBehaviour:
     - type: 2
       duration: 4
   subA:
-    levelName: Bigger Cold
+    upgradeName: Bigger Cold
     description: Can slow 3 additional Enemies per shot
     cost: 300
     stats:
@@ -78,7 +78,7 @@ MonoBehaviour:
       areaTargets: 3
     statusEffects: []
   subB:
-    levelName: Ice Storm
+    upgradeName: Ice Storm
     description: Shoots 3x as fast!
     cost: 2000
     stats:

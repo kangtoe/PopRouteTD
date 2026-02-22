@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public enum UpgradeTrack { None, A, B }
 
@@ -31,7 +32,8 @@ public class StatusEffectEntry
 [System.Serializable]
 public class UpgradeLevel
 {
-    public string levelName;
+    [FormerlySerializedAs("levelName")]
+    public string upgradeName;
     [TextArea] public string description;
     public int cost;
     public TowerStats stats;

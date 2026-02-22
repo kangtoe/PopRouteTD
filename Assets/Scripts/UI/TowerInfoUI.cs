@@ -29,8 +29,8 @@ public class TowerInfoUI : MonoBehaviour
     private Tower selectedTower;
     private bool isPreview;
     private Image[] priorityImages;
-    private static readonly Color normalColor = Color.white;
-    private static readonly Color selectedColor = new Color(0.4f, 0.8f, 1f);
+    private static readonly Color normalColor = new(0.3f, 0.3f, 0.4f);
+    private static readonly Color activeColor = new(0.2f, 0.6f, 0.3f);
 
     private Sprite mainUpgradeIcon;
     private Sprite subAIcon;
@@ -198,7 +198,7 @@ public class TowerInfoUI : MonoBehaviour
 
         var nextInfo = selectedTower.GetNextMainInfo();
         if (nextInfo != null)
-            mainUpgradeButton.SetAvailable("Upgrade", nextInfo.cost, nextInfo.description, mainUpgradeIcon);
+            mainUpgradeButton.SetAvailable(nextInfo.upgradeName, nextInfo.cost, nextInfo.description, mainUpgradeIcon);
     }
 
     private void UpdateSubButtons()
@@ -214,14 +214,14 @@ public class TowerInfoUI : MonoBehaviour
         if (!hasUpgradeData) return;
 
         if (selectedTower.HasSubA)
-            subAButton.SetSelected(subA.levelName, subA.description, subAIcon);
+            subAButton.SetSelected(subA.upgradeName, subA.description, subAIcon);
         else
-            subAButton.SetAvailable(subA.levelName, subA.cost, subA.description, subAIcon);
+            subAButton.SetAvailable(subA.upgradeName, subA.cost, subA.description, subAIcon);
 
         if (selectedTower.HasSubB)
-            subBButton.SetSelected(subB.levelName, subB.description, subBIcon);
+            subBButton.SetSelected(subB.upgradeName, subB.description, subBIcon);
         else
-            subBButton.SetAvailable(subB.levelName, subB.cost, subB.description, subBIcon);
+            subBButton.SetAvailable(subB.upgradeName, subB.cost, subB.description, subBIcon);
     }
 
     private void OnUpgradeClicked()
@@ -260,7 +260,7 @@ public class TowerInfoUI : MonoBehaviour
         int current = (int)selectedTower.Priority;
         for (int i = 0; i < priorityImages.Length; i++)
         {
-            priorityImages[i].color = i == current ? selectedColor : normalColor;
+            priorityImages[i].color = i == current ? activeColor : normalColor;
         }
     }
 
