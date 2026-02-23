@@ -6,6 +6,7 @@ public class TowerInfoUI : MonoBehaviour
 {
     [SerializeField] private GameObject panel;
     [SerializeField] private Text towerNameText;
+    [SerializeField] private Text descriptionText;
 
     [Header("Targeting")]
     [SerializeField] private Button firstButton;
@@ -26,8 +27,11 @@ public class TowerInfoUI : MonoBehaviour
     private TowerButtonUI subAButton;
     private TowerButtonUI subBButton;
 
+    private enum PendingUpgrade { None, Main, SubA, SubB }
+
     private Tower selectedTower;
     private bool isPreview;
+    private PendingUpgrade pendingUpgrade;
     private Image[] priorityImages;
     private static readonly Color normalColor = new(0.3f, 0.3f, 0.4f);
     private static readonly Color activeColor = new(0.2f, 0.6f, 0.3f);
@@ -149,6 +153,9 @@ public class TowerInfoUI : MonoBehaviour
         // 우선순위 하이라이트
         UpdatePriorityHighlight();
 
+        // 설명 텍스트
+        UpdateDescription();
+
         // 사거리 표시 갱신
         tower.ShowRange(true);
     }
@@ -181,9 +188,33 @@ public class TowerInfoUI : MonoBehaviour
 
     private void ClearUpgradeButtons()
     {
+        pendingUpgrade = PendingUpgrade.None;
         if (mainUpgradeButton != null) { Destroy(mainUpgradeButton.gameObject); mainUpgradeButton = null; }
         if (subAButton != null) { Destroy(subAButton.gameObject); subAButton = null; }
         if (subBButton != null) { Destroy(subBButton.gameObject); subBButton = null; }
+    }
+
+    private void CancelPending()
+    {
+        if (pendingUpgrade == PendingUpgrade.None) return;
+        pendingUpgrade = PendingUpgrade.None;
+        UpdateMainButton();
+        UpdateSubButtons();
+        UpdateDescription();
+    }
+
+    private void UpdateDescription()
+    {
+        if (descriptionText == null) return;
+        if (selectedTower == null) { descriptionText.text = ""; return; }
+
+        descriptionText.text = pendingUpgrade switch
+        {
+            PendingUpgrade.Main => selectedTower.GetNextMainInfo()?.description ?? "",
+            PendingUpgrade.SubA => selectedTower.GetSubAInfo()?.description ?? "",
+            PendingUpgrade.SubB => selectedTower.GetSubBInfo()?.description ?? "",
+            _ => selectedTower.UpgradeData != null ? selectedTower.UpgradeData.description : ""
+        };
     }
 
     private void UpdateMainButton()
@@ -228,16 +259,44 @@ public class TowerInfoUI : MonoBehaviour
     {
         if (selectedTower == null) return;
 
-        if (selectedTower.UpgradeMain())
-            UpdateDisplay();
+        if (pendingUpgrade == PendingUpgrade.Main)
+        {
+            if (selectedTower.UpgradeMain())
+                UpdateDisplay();
+        }
+        else
+        {
+            CancelPending();
+            pendingUpgrade = PendingUpgrade.Main;
+            var info = selectedTower.GetNextMainInfo();
+            if (info != null)
+                mainUpgradeButton.SetConfirm(info.upgradeName, info.cost, info.description, mainUpgradeIcon);
+            UpdateDescription();
+        }
     }
 
     private void OnSubClicked(UpgradeTrack sub)
     {
         if (selectedTower == null) return;
 
-        if (selectedTower.SelectSub(sub))
-            UpdateDisplay();
+        var track = sub == UpgradeTrack.A ? PendingUpgrade.SubA : PendingUpgrade.SubB;
+
+        if (pendingUpgrade == track)
+        {
+            if (selectedTower.SelectSub(sub))
+                UpdateDisplay();
+        }
+        else
+        {
+            CancelPending();
+            pendingUpgrade = track;
+            var btn = sub == UpgradeTrack.A ? subAButton : subBButton;
+            var info = sub == UpgradeTrack.A ? selectedTower.GetSubAInfo() : selectedTower.GetSubBInfo();
+            var icon = sub == UpgradeTrack.A ? subAIcon : subBIcon;
+            if (info != null)
+                btn.SetConfirm(info.upgradeName, info.cost, info.description, icon);
+            UpdateDescription();
+        }
     }
 
     private void OnPriorityClicked(TargetPriority priority)

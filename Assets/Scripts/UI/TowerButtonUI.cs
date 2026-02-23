@@ -13,6 +13,7 @@ public class TowerButtonUI : MonoBehaviour
     private static readonly Color normalColor = new Color(0.3f, 0.3f, 0.4f);
     private static readonly Color selectedColor = new Color(0.4f, 0.8f, 1f);
     private static readonly Color lockedColor = new Color(0.5f, 0.5f, 0.5f);
+    private static readonly Color confirmColor = new(0.2f, 0.6f, 0.3f);
 
     public Button Button => button;
 
@@ -36,6 +37,17 @@ public class TowerButtonUI : MonoBehaviour
         SetIcon(icon);
         button.interactable = false;
         SetBackgroundColor(selectedColor);
+    }
+
+    /// <summary>확인 대기 상태: 주황색, 한 번 더 클릭하면 실행</summary>
+    public void SetConfirm(string label, int cost, string desc = "", Sprite icon = null)
+    {
+        SetLabel(label);
+        SetCost(cost);
+        SetDescription(desc);
+        SetIcon(icon);
+        button.interactable = true;
+        SetBackgroundColor(confirmColor);
     }
 
     /// <summary>잠금 상태: 회색, 비활성</summary>
