@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Tower : MonoBehaviour
@@ -30,6 +31,8 @@ public class Tower : MonoBehaviour
     private bool hasSubA;
     private bool hasSubB;
     private int totalUpgradeCost;
+    private Coroutine boingCoroutine;
+    private Coroutine fireBoingCoroutine;
 
     public string TowerName => upgradeData != null ? upgradeData.towerName : "";
     public int Cost => upgradeData != null ? upgradeData.main1.cost : 0;
@@ -59,6 +62,8 @@ public class Tower : MonoBehaviour
 
         if (upgradeData != null)
             RecalculateStats();
+
+        PlayBoing();
     }
 
     public void SetTargetPriority(TargetPriority priority)
@@ -69,7 +74,10 @@ public class Tower : MonoBehaviour
     public void Sell()
     {
         ResourceManager.Instance.AddGold(SellRefund);
-        Destroy(gameObject);
+        initialized = false;
+        if (boingCoroutine != null)
+            StopCoroutine(boingCoroutine);
+        StartCoroutine(SellBoingRoutine());
     }
 
     #region 업그레이드
@@ -89,6 +97,7 @@ public class Tower : MonoBehaviour
 
         RecalculateStats();
         ActivateVisual(GetMainVisual(mainLevel));
+        PlayBoing();
         return true;
     }
 
@@ -110,6 +119,7 @@ public class Tower : MonoBehaviour
 
         RecalculateStats();
         ActivateVisual(sub == UpgradeTrack.A ? subVisualA : subVisualB);
+        PlayBoing();
         return true;
     }
 
@@ -244,6 +254,70 @@ public class Tower : MonoBehaviour
 
     #endregion
 
+    private IEnumerator SellBoingRoutine()
+    {
+        const float boingDuration = 0.15f;
+        const float shrinkDuration = 0.15f;
+        const float amplitude = 0.2f;
+        Vector3 baseScale = Vector3.one;
+        float elapsed = 0f;
+
+        // 한번 통통
+        while (elapsed < boingDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / boingDuration;
+            float wave = Mathf.Sin(t * Mathf.PI);
+            float s = amplitude * wave;
+            transform.localScale = new Vector3(baseScale.x * (1f - s * 0.5f), baseScale.y * (1f + s), baseScale.z);
+            yield return null;
+        }
+
+        // 쪼그라들며 사라짐
+        elapsed = 0f;
+        while (elapsed < shrinkDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / shrinkDuration;
+            float scale = 1f - t;
+            transform.localScale = baseScale * scale;
+            yield return null;
+        }
+
+        Destroy(gameObject);
+    }
+
+    private void PlayBoing()
+    {
+        if (boingCoroutine != null)
+            StopCoroutine(boingCoroutine);
+        transform.localScale = Vector3.one;
+        boingCoroutine = StartCoroutine(BoingRoutine());
+    }
+
+    private IEnumerator BoingRoutine()
+    {
+        const float duration = 0.35f;
+        const float amplitude = 0.15f;
+        const float frequency = 3f;
+        Vector3 baseScale = Vector3.one;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            float decay = 1f - t;
+            float wave = Mathf.Sin(t * frequency * Mathf.PI * 2f);
+            float s = amplitude * decay * wave;
+            transform.localScale = new Vector3(baseScale.x * (1f - s * 0.5f), baseScale.y * (1f + s), baseScale.z);
+            yield return null;
+        }
+
+        transform.localScale = baseScale;
+        boingCoroutine = null;
+    }
+
     public void ShowRange(bool show)
     {
         if (rangeIndicator != null)
@@ -351,6 +425,32 @@ public class Tower : MonoBehaviour
         var projectile = projObj.GetComponent<Projectile>();
         projectile.Initialize(currentStats.pierceCount, currentStats.splashRadius,
             statusEffectType, effectDuration, currentStats.areaTargets);
+
+        if (fireBoingCoroutine != null)
+            StopCoroutine(fireBoingCoroutine);
+        body.localScale = Vector3.one;
+        fireBoingCoroutine = StartCoroutine(FireBoingRoutine());
+    }
+
+    private IEnumerator FireBoingRoutine()
+    {
+        const float duration = 0.2f;
+        const float amplitude = 0.15f;
+        Vector3 baseScale = Vector3.one;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            float wave = Mathf.Sin(t * Mathf.PI);
+            float s = amplitude * wave;
+            body.localScale = new Vector3(baseScale.x * (1f + s * 0.5f), baseScale.y * (1f - s), baseScale.z);
+            yield return null;
+        }
+
+        body.localScale = baseScale;
+        fireBoingCoroutine = null;
     }
 
     private void SetSortingLayer(string layerName)
