@@ -229,7 +229,11 @@ public class TowerInfoUI : MonoBehaviour
         }
 
         var nextInfo = selectedTower.GetNextMainInfo();
-        if (nextInfo != null)
+        if (nextInfo == null) return;
+
+        if (pendingUpgrade == PendingUpgrade.Main)
+            mainUpgradeButton.SetConfirm(nextInfo.upgradeName, nextInfo.cost, nextInfo.description, mainUpgradeIcon);
+        else
             mainUpgradeButton.SetAvailable(nextInfo.upgradeName, nextInfo.cost, nextInfo.description, mainUpgradeIcon);
     }
 
@@ -247,11 +251,15 @@ public class TowerInfoUI : MonoBehaviour
 
         if (selectedTower.HasSubA)
             subAButton.SetSelected(subA.upgradeName, subA.description, subAIcon);
+        else if (pendingUpgrade == PendingUpgrade.SubA)
+            subAButton.SetConfirm(subA.upgradeName, subA.cost, subA.description, subAIcon);
         else
             subAButton.SetAvailable(subA.upgradeName, subA.cost, subA.description, subAIcon);
 
         if (selectedTower.HasSubB)
             subBButton.SetSelected(subB.upgradeName, subB.description, subBIcon);
+        else if (pendingUpgrade == PendingUpgrade.SubB)
+            subBButton.SetConfirm(subB.upgradeName, subB.cost, subB.description, subBIcon);
         else
             subBButton.SetAvailable(subB.upgradeName, subB.cost, subB.description, subBIcon);
     }
