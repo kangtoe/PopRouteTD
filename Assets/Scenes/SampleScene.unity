@@ -5947,6 +5947,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TowerInfoUI
   panel: {fileID: 1952660797}
   towerNameText: {fileID: 2031723557}
+  descriptionText: {fileID: 287868076054391300}
   firstButton: {fileID: 1468711769}
   lastButton: {fileID: 1566588205}
   closeButton: {fileID: 175903292}
