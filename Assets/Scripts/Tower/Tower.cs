@@ -119,6 +119,11 @@ public class Tower : MonoBehaviour
         return GetMainLevel(mainLevel + 1);
     }
 
+    public UpgradeLevel GetCurrentMainInfo()
+    {
+        return GetMainLevel(mainLevel);
+    }
+
     public UpgradeLevel GetSubAInfo()
     {
         if (upgradeData == null) return null;

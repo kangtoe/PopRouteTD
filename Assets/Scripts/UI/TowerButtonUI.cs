@@ -9,9 +9,9 @@ public class TowerButtonUI : MonoBehaviour
     [SerializeField] private Text descriptionText;
     [SerializeField] private Image iconImage;
     [SerializeField] private Image backgroundImage;
+    [SerializeField] private GameObject maxImage;
 
     private static readonly Color normalColor = new Color(0.3f, 0.3f, 0.4f);
-    private static readonly Color selectedColor = new Color(0.4f, 0.8f, 1f);
     private static readonly Color lockedColor = new Color(0.5f, 0.5f, 0.5f);
     private static readonly Color confirmColor = new(0.2f, 0.6f, 0.3f);
 
@@ -26,6 +26,7 @@ public class TowerButtonUI : MonoBehaviour
         SetIcon(icon);
         button.interactable = ResourceManager.Instance.Gold >= cost;
         SetBackgroundColor(normalColor);
+        SetMaxImageActive(false);
     }
 
     /// <summary>선택 완료 상태: 하이라이트, 비활성</summary>
@@ -36,7 +37,8 @@ public class TowerButtonUI : MonoBehaviour
         SetDescription(desc);
         SetIcon(icon);
         button.interactable = false;
-        SetBackgroundColor(selectedColor);
+        SetBackgroundColor(normalColor);
+        SetMaxImageActive(true);
     }
 
     /// <summary>확인 대기 상태: 주황색, 한 번 더 클릭하면 실행</summary>
@@ -48,6 +50,7 @@ public class TowerButtonUI : MonoBehaviour
         SetIcon(icon);
         button.interactable = true;
         SetBackgroundColor(confirmColor);
+        SetMaxImageActive(false);
     }
 
     /// <summary>잠금 상태: 회색, 비활성</summary>
@@ -59,16 +62,19 @@ public class TowerButtonUI : MonoBehaviour
         SetIcon(icon);
         button.interactable = false;
         SetBackgroundColor(lockedColor);
+        SetMaxImageActive(false);
     }
 
     /// <summary>최대 레벨 도달</summary>
-    public void SetMax()
+    public void SetMax(string label, Sprite icon = null)
     {
-        SetLabel("MAX");
+        SetLabel(label);
         SetCost(-1);
         SetDescription("");
+        SetIcon(icon);
         button.interactable = false;
         SetBackgroundColor(normalColor);
+        SetMaxImageActive(true);
     }
 
     private void SetLabel(string text)
@@ -99,5 +105,11 @@ public class TowerButtonUI : MonoBehaviour
     {
         if (backgroundImage != null)
             backgroundImage.color = color;
+    }
+
+    private void SetMaxImageActive(bool active)
+    {
+        if (maxImage != null)
+            maxImage.SetActive(active);
     }
 }

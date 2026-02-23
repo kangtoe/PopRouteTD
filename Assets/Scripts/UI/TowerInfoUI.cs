@@ -223,7 +223,8 @@ public class TowerInfoUI : MonoBehaviour
 
         if (!selectedTower.CanUpgradeMain)
         {
-            mainUpgradeButton.SetMax();
+            var currentInfo = selectedTower.GetCurrentMainInfo();
+            mainUpgradeButton.SetMax(currentInfo?.upgradeName ?? "", mainUpgradeIcon);
             return;
         }
 
@@ -329,12 +330,11 @@ public class TowerInfoUI : MonoBehaviour
 
         if (selectedTower.CanUpgradeMain)
             mainUpgradeIcon = TowerIconGenerator.GenerateUpgradeIcon(selectedTower, selectedTower.MainLevel + 1);
+        else
+            mainUpgradeIcon = TowerIconGenerator.GenerateUpgradeIcon(selectedTower, selectedTower.MainLevel);
 
-        if (!selectedTower.HasSubA)
-            subAIcon = TowerIconGenerator.GenerateSubIcon(selectedTower, UpgradeTrack.A);
-
-        if (!selectedTower.HasSubB)
-            subBIcon = TowerIconGenerator.GenerateSubIcon(selectedTower, UpgradeTrack.B);
+        subAIcon = TowerIconGenerator.GenerateSubIcon(selectedTower, UpgradeTrack.A);
+        subBIcon = TowerIconGenerator.GenerateSubIcon(selectedTower, UpgradeTrack.B);
     }
 
     private void CleanupIcons()
