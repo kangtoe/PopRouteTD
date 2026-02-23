@@ -932,6 +932,7 @@ GameObject:
   - component: {fileID: 2033661592106507403}
   - component: {fileID: 1425262051550988063}
   - component: {fileID: 8374649942179888899}
+  - component: {fileID: -6690534024500652632}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Untagged
@@ -1077,9 +1078,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c05e6cdf1b99813449b7f2b337327211, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  hp: 1
-  statusEffectResistance: 0
-  shieldHp: 3
   layerColors: {fileID: 11400000, guid: 5ef715aab1cb29a40998731cc8727f7e, type: 2}
   hitEffect: {fileID: 7086463146503359885, guid: f293808fb039edc4caf6b048680e3969, type: 3}
   bodyOutline: {fileID: 4455335329506907487}
@@ -1107,6 +1105,20 @@ MonoBehaviour:
   burnEffectPrefab: {fileID: 3704268398773397896, guid: 0e38994e1c8fcb047b07b060d8fb55f5, type: 3}
   slowEffectPrefab: {fileID: 3704268398773397896, guid: 3be471f1362a82c4d89c2b6b76edb520, type: 3}
   stunEffectPrefab: {fileID: 3704268398773397896, guid: f113477e3be6be3419cb1031eee8f2bb, type: 3}
+--- !u!114 &-6690534024500652632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8127152185616255251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eebc2581532827b48b2531c2b13479ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BoingAnimation
+  frequency: 1
+  amplitude: 0.15
 --- !u!1 &9221251309267947827
 GameObject:
   m_ObjectHideFlags: 0
