@@ -1081,6 +1081,7 @@ MonoBehaviour:
   statusEffectResistance: 0
   shieldHp: 3
   layerColors: {fileID: 11400000, guid: 5ef715aab1cb29a40998731cc8727f7e, type: 2}
+  hitEffect: {fileID: 7086463146503359885, guid: f293808fb039edc4caf6b048680e3969, type: 3}
   bodyOutline: {fileID: 4455335329506907487}
   enhancedVisual: {fileID: 9221251309267947827}
   enhancedOutline: {fileID: 1640058171357458097}

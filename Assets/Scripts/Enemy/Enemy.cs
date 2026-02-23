@@ -5,10 +5,13 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [Header("적 데이터")]
-    [SerializeField] private int hp = 1;
-    [SerializeField, Range(0f, 1f)] private float statusEffectResistance;
-    [SerializeField] private int shieldHp = GameConstants.DefaultShieldHp;
     [SerializeField] private EnemyLayerColors layerColors;
+
+    private readonly int hp = 1;
+    private readonly int shieldHp = GameConstants.DefaultShieldHp;
+
+    [Header("이펙트")]
+    [SerializeField] private ParticleSystem hitEffect;
 
     [Header("변형 외관")]
     [SerializeField] private GameObject bodyOutline;
@@ -145,6 +148,7 @@ public class Enemy : MonoBehaviour
         if (HasShield)
         {
             currentShieldHp -= damage;
+            PlayHitEffect();
             if (currentShieldHp <= 0)
             {
                 int overflow = -currentShieldHp;
@@ -155,6 +159,7 @@ public class Enemy : MonoBehaviour
         }
 
         currentHp -= damage;
+        PlayHitEffect();
         if (currentHp <= 0)
         {
             PopLayer();
@@ -172,9 +177,15 @@ public class Enemy : MonoBehaviour
         int shieldConsumed = 0;
         if (HasShield)
         {
-            BreakShield();
-            shieldConsumed = 1;
-            layerCount--;
+            int shieldDamage = Mathf.Min(layerCount, currentShieldHp);
+            currentShieldHp -= shieldDamage;
+            shieldConsumed = shieldDamage;
+            layerCount -= shieldDamage;
+            PlayHitEffect();
+
+            if (currentShieldHp <= 0)
+                BreakShield();
+
             if (layerCount <= 0) return shieldConsumed;
         }
 
@@ -184,6 +195,7 @@ public class Enemy : MonoBehaviour
         {
             ResourceManager.Instance.AddGold(GetReward());
             OnEnemyDestroyed?.Invoke(this);
+            PlayHitEffect();
             currentLayer--;
         }
 
@@ -269,10 +281,20 @@ public class Enemy : MonoBehaviour
     {
         if (deactivated) return;
 
-        float reducedDuration = duration * (1f - statusEffectResistance);
+        float resistance = IsEnhanced ? GameConstants.EnhancedStatusResistance : 0f;
+        float reducedDuration = duration * (1f - resistance);
         if (reducedDuration <= 0f) return;
 
         statusEffectHandler.ApplyEffect(type, reducedDuration);
+    }
+
+    private void PlayHitEffect()
+    {
+        if (hitEffect == null) return;
+        var ps = Instantiate(hitEffect, transform.position, Quaternion.identity);
+        var main = ps.main;
+        main.stopAction = ParticleSystemStopAction.Destroy;
+        ps.Play();
     }
 
     private void Deactivate()

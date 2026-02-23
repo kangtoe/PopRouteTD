@@ -81,6 +81,7 @@ public static class GameConstants
     // Enhanced 배율
     public const int EnhancedMultiplier = 2;
     public const float EnhancedSpeedMultiplier = 1.2f;
+    public const float EnhancedStatusResistance = 0.5f;
 
     // Shield
     public const int DefaultShieldHp = 10;
