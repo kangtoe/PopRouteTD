@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private WaveManager waveManager;
 
+
     public GameState CurrentState { get; private set; }
     public int CurrentWave { get; private set; }
 
@@ -41,6 +42,7 @@ public class GameManager : MonoBehaviour
 
         CurrentWave = 0;
         SetState(GameState.Prepare);
+        SoundManager.Instance.PlaySceneStart();
     }
 
     private void OnDestroy()
@@ -100,6 +102,7 @@ public class GameManager : MonoBehaviour
         CurrentWave++;
         OnWaveChanged?.Invoke(CurrentWave);
         SetState(GameState.Wave);
+        SoundManager.Instance.PlayWaveStart();
         waveManager.StartWave(CurrentWave);
     }
 
@@ -152,6 +155,7 @@ public class GameManager : MonoBehaviour
         waveManager.StopSpawning();
         Time.timeScale = 1f;
         SetState(GameState.GameOver);
+        SoundManager.Instance.PlayGameOver();
     }
 
     public void RestartGame()

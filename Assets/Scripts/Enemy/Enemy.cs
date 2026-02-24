@@ -290,11 +290,13 @@ public class Enemy : MonoBehaviour
 
     private void PlayHitEffect()
     {
-        if (hitEffect == null) return;
-        var ps = Instantiate(hitEffect, transform.position, Quaternion.identity);
-        var main = ps.main;
-        main.stopAction = ParticleSystemStopAction.Destroy;
-        ps.Play();
+        if (hitEffect != null)
+        {
+            var ps = Instantiate(hitEffect, transform.position, Quaternion.identity);
+            var main = ps.main;
+            main.stopAction = ParticleSystemStopAction.Destroy;
+            ps.Play();
+        }
     }
 
     private void Deactivate()

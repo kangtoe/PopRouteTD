@@ -199,6 +199,7 @@ public class InputManager : MonoBehaviour
         var parent = towerParent != null ? towerParent : transform;
         var towerObj = Instantiate(dragTowerPrefab, (Vector3)pos, Quaternion.identity, parent);
         towerObj.GetComponent<Tower>().Initialize();
+        SoundManager.Instance.PlayPlace();
         OnTowerPlaced?.Invoke(dragTowerPrefab);
         return true;
     }
@@ -212,6 +213,7 @@ public class InputManager : MonoBehaviour
         var parent = towerParent != null ? towerParent : transform;
         var bombObj = Instantiate(dragTowerPrefab, (Vector3)pos, Quaternion.identity, parent);
         bombObj.GetComponent<Bomb>().Initialize();
+        SoundManager.Instance.PlayPlace();
         OnTowerPlaced?.Invoke(dragTowerPrefab);
         return true;
     }

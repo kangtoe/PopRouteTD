@@ -19,6 +19,8 @@ public class Tower : MonoBehaviour
     [SerializeField] private Transform body;
     [SerializeField] private Transform firePoint;
     [SerializeField] private SpriteRenderer rangeIndicator;
+    [SerializeField] private AudioClip hitSoundOverride;
+
 
     private TowerStats currentStats = new();
     private float attackTimer;
@@ -76,6 +78,7 @@ public class Tower : MonoBehaviour
 
     public void Sell()
     {
+        SoundManager.Instance.PlaySell();
         ResourceManager.Instance.AddGold(SellRefund);
         initialized = false;
         if (boingCoroutine != null)
@@ -100,6 +103,7 @@ public class Tower : MonoBehaviour
 
         RecalculateStats();
         ActivateVisual(GetMainVisual(mainLevel));
+        SoundManager.Instance.PlayUpgrade();
         PlayBoing();
         return true;
     }
@@ -122,6 +126,7 @@ public class Tower : MonoBehaviour
 
         RecalculateStats();
         ActivateVisual(sub == UpgradeTrack.A ? subVisualA : subVisualB);
+        SoundManager.Instance.PlayUpgrade();
         PlayBoing();
         return true;
     }
@@ -427,8 +432,7 @@ public class Tower : MonoBehaviour
         projObj.transform.rotation = body.rotation;
         var projectile = projObj.GetComponent<Projectile>();
         projectile.Initialize(currentStats.pierceCount, currentStats.splashRadius,
-            statusEffectType, effectDuration, currentStats.areaTargets);
-
+            statusEffectType, effectDuration, currentStats.areaTargets, hitSoundOverride);
         if (fireBoingCoroutine != null)
             StopCoroutine(fireBoingCoroutine);
         body.localScale = Vector3.one;

@@ -46,7 +46,10 @@ public class ResourceManager : MonoBehaviour
 
     public void LoseLife(int amount)
     {
+        if (Lives <= 0) return;
+
         Lives = Mathf.Max(0, Lives - amount);
+        SoundManager.Instance.PlayLifeLost();
         OnLivesChanged?.Invoke(Lives);
         if (Lives <= 0)
         {

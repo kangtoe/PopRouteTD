@@ -19,6 +19,7 @@ public class Projectile : MonoBehaviour
     private float timer;
     private int enemyLayerMask;
     private bool isDeactivated;
+    private AudioClip hitSoundOverride;
     private readonly HashSet<int> hitInstanceIds = new();
 
     private void Awake()
@@ -30,7 +31,7 @@ public class Projectile : MonoBehaviour
 
     public void Initialize(int pierce, float splash = 0f,
         StatusEffectType statusEffect = StatusEffectType.None, float statusDuration = 0f,
-        int splashAreaTargets = 0)
+        int splashAreaTargets = 0, AudioClip hitOverride = null)
     {
         splashRadius = splash;
         areaTargets = splashAreaTargets;
@@ -38,6 +39,7 @@ public class Projectile : MonoBehaviour
         remainingPierce = pierce;
         effectType = statusEffect;
         effectDuration = statusDuration;
+        hitSoundOverride = hitOverride;
         timer = lifetime;
         isDeactivated = false;
         hitInstanceIds.Clear();
@@ -86,6 +88,7 @@ public class Projectile : MonoBehaviour
                 }
             }
 
+            PlayHitSound();
             Deactivate();
         }
         else
@@ -100,6 +103,7 @@ public class Projectile : MonoBehaviour
             remainingPierce -= consumed;
             hitInstanceIds.Add(instanceId);
             ApplyStatusEffect(enemy);
+            PlayHitSound();
 
             if (remainingPierce <= 0)
             {
@@ -112,6 +116,14 @@ public class Projectile : MonoBehaviour
     {
         if (effectType == StatusEffectType.None) return;
         enemy.ApplyStatusEffect(effectType, effectDuration);
+    }
+
+    private void PlayHitSound()
+    {
+        if (hitSoundOverride != null)
+            SoundManager.Instance.PlaySFX(hitSoundOverride);
+        else
+            SoundManager.Instance.PlayHit();
     }
 
     private void Deactivate()

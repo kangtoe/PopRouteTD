@@ -140,6 +140,7 @@ public class Bomb : MonoBehaviour
 
     private void Explode()
     {
+        SoundManager.Instance.PlayExplode();
         ExplosionEffect.Spawn(transform.position, explosionRadius);
 
         var hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius, enemyLayerMask);
