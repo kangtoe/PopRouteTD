@@ -11,6 +11,8 @@ public class Bomb : MonoBehaviour
     [SerializeField] private float fuseTime = 3f;
     [SerializeField] private float explosionRadius = 1.5f;
     [SerializeField] private int damage = 3;
+
+    [Header("Icon Rendering")]
     [SerializeField] private float renderOffsetY = 0.3f;
     [SerializeField] private float renderScale = 1f;
 
@@ -25,14 +27,22 @@ public class Bomb : MonoBehaviour
     public SpriteRenderer RangeIndicator => rangeIndicator;
 
     private int enemyLayerMask;
+    private SpriteRenderer[] visualRenderers;
+    private Color[] originalColors;
 
     public void Initialize()
     {
+        var list = new System.Collections.Generic.List<SpriteRenderer>();
         foreach (var sr in GetComponentsInChildren<SpriteRenderer>())
         {
             if (sr == rangeIndicator) continue;
             sr.sortingLayerName = GameConstants.SortTower;
+            list.Add(sr);
         }
+        visualRenderers = list.ToArray();
+        originalColors = new Color[visualRenderers.Length];
+        for (int i = 0; i < visualRenderers.Length; i++)
+            originalColors[i] = visualRenderers[i].color;
 
         if (rangeIndicator != null)
             rangeIndicator.gameObject.SetActive(false);
@@ -57,8 +67,40 @@ public class Bomb : MonoBehaviour
 
     private IEnumerator FuseCountdown()
     {
-        yield return new WaitForSeconds(fuseTime);
+        float elapsed = 0f;
+
+        while (elapsed < fuseTime)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / fuseTime);
+            float interval = Mathf.Lerp(0.6f, 0.15f, t);
+            float wave = Mathf.PingPong(elapsed / interval, 1f);
+            float glow = Mathf.Lerp(0.15f, 0.5f, t) * wave;
+            SetVisualBrightness(1f + glow);
+            yield return null;
+        }
+
+        RestoreVisualColors();
         Explode();
+    }
+
+    private void SetVisualBrightness(float brightness)
+    {
+        for (int i = 0; i < visualRenderers.Length; i++)
+        {
+            if (visualRenderers[i] == null) continue;
+            var c = originalColors[i];
+            visualRenderers[i].color = new Color(c.r * brightness, c.g * brightness, c.b * brightness, c.a);
+        }
+    }
+
+    private void RestoreVisualColors()
+    {
+        for (int i = 0; i < visualRenderers.Length; i++)
+        {
+            if (visualRenderers[i] == null) continue;
+            visualRenderers[i].color = originalColors[i];
+        }
     }
 
     private void Explode()
