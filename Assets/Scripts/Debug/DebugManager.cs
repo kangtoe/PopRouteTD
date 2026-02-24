@@ -24,7 +24,7 @@ public class DebugManager : MonoBehaviour
 
     private void OnGUI()
     {
-        if (!showPanel) return;
+        if (!showPanel || GameManager.Instance == null) return;
 
         float sw = Screen.width;
         GUILayout.BeginArea(new Rect(sw - 210, 10, 200, 400), "Debug", GUI.skin.window);

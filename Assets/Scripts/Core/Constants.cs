@@ -53,6 +53,7 @@ public static class GameConstants
     public const string LayerItem = "Item";
 
     // Sorting Layers
+    public const string SortBackground = "Background";
     public const string SortPath = "Path";
     public const string SortTower = "Tower";
     public const string SortItem = "Item";
