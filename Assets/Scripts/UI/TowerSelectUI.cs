@@ -10,11 +10,15 @@ public class TowerSelectUI : MonoBehaviour
     [SerializeField] private GameObject content;
     [SerializeField] private Text nameText;
     [SerializeField] private List<GameObject> towerPrefabs;
+    [SerializeField] private List<GameObject> bombPrefabs;
     [SerializeField] private Transform buttonParent;
+    [SerializeField] private Transform bombButtonParent;
+    [SerializeField] private Text bombNameText;
     [SerializeField] private TowerButtonUI towerButtonPrefab;
 
     private readonly List<Sprite> generatedIcons = new();
     private readonly List<(TowerButtonUI button, int cost, string label, Sprite icon)> towerButtons = new();
+    private readonly List<(TowerButtonUI button, int cost, string label, Sprite icon)> bombButtons = new();
 
     private void Awake()
     {
@@ -49,6 +53,7 @@ public class TowerSelectUI : MonoBehaviour
     {
         content.SetActive(true);
         if (nameText != null) nameText.text = "Towers";
+        if (bombNameText != null) bombNameText.text = "Bombs";
     }
 
     public void Hide() => content.SetActive(false);
@@ -76,11 +81,35 @@ public class TowerSelectUI : MonoBehaviour
             entry.callback.AddListener(_ => InputManager.Instance.BeginDrag(p));
             trigger.triggers.Add(entry);
         }
+
+        var bombParent = bombButtonParent != null ? bombButtonParent : buttonParent;
+        foreach (var prefab in bombPrefabs)
+        {
+            var bomb = prefab.GetComponent<Bomb>();
+            if (bomb == null) continue;
+
+            var tb = Instantiate(towerButtonPrefab, bombParent);
+
+            string label = bomb.BombName;
+            var icon = TowerIconGenerator.GenerateIcon(prefab);
+            generatedIcons.Add(icon);
+            tb.SetAvailable(label, bomb.Cost, icon: icon);
+            bombButtons.Add((tb, bomb.Cost, label, icon));
+
+            var p = prefab;
+            var btnObj = tb.gameObject;
+            var trigger = btnObj.GetComponent<EventTrigger>() ?? btnObj.AddComponent<EventTrigger>();
+            var entry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
+            entry.callback.AddListener(_ => InputManager.Instance.BeginDrag(p));
+            trigger.triggers.Add(entry);
+        }
     }
 
     private void OnGoldChanged(int _)
     {
         foreach (var (button, cost, label, icon) in towerButtons)
+            button.SetAvailable(label, cost, icon: icon);
+        foreach (var (button, cost, label, icon) in bombButtons)
             button.SetAvailable(label, cost, icon: icon);
     }
 }

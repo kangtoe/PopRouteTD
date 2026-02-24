@@ -12,7 +12,16 @@ public static class TowerIconGenerator
             new Vector3(OffScreenPos, OffScreenPos, 0f), Quaternion.identity);
 
         PrepareInstance(instance);
-        return CaptureIcon(instance);
+
+        float offsetY = 0f;
+        var bomb = instance.GetComponent<Bomb>();
+        if (bomb != null)
+        {
+            offsetY = bomb.RenderOffsetY;
+            instance.transform.localScale *= bomb.RenderScale;
+        }
+
+        return CaptureIcon(instance, offsetY);
     }
 
     public static Sprite GenerateUpgradeIcon(Tower tower, int targetMainLevel)
@@ -61,15 +70,22 @@ public static class TowerIconGenerator
             if (tower.RangeIndicator != null)
                 tower.RangeIndicator.gameObject.SetActive(false);
         }
+
+        var bomb = instance.GetComponent<Bomb>();
+        if (bomb != null)
+        {
+            if (bomb.RangeIndicator != null)
+                bomb.RangeIndicator.gameObject.SetActive(false);
+        }
     }
 
-    private static Sprite CaptureIcon(GameObject instance)
+    private static Sprite CaptureIcon(GameObject instance, float cameraOffsetY = 0f)
     {
         var rt = new RenderTexture(TextureSize, TextureSize, 24, RenderTextureFormat.ARGB32);
         rt.Create();
 
         var camObj = new GameObject("TowerIconCamera");
-        camObj.transform.position = new Vector3(OffScreenPos, OffScreenPos, -10f);
+        camObj.transform.position = new Vector3(OffScreenPos, OffScreenPos + cameraOffsetY, -10f);
         var cam = camObj.AddComponent<Camera>();
         cam.orthographic = true;
         cam.orthographicSize = CameraOrthoSize;

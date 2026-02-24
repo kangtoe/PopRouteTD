@@ -47,7 +47,12 @@ public class InputManager : MonoBehaviour
     {
         // 비용 부족 시 드래그 시작 차단
         var towerComp = towerPrefab.GetComponent<Tower>();
-        if (towerComp != null && ResourceManager.Instance.Gold < towerComp.Cost) return;
+        var bombComp = towerComp == null ? towerPrefab.GetComponent<Bomb>() : null;
+
+        int cost = towerComp != null ? towerComp.Cost
+                 : bombComp != null ? bombComp.Cost
+                 : 0;
+        if (ResourceManager.Instance.Gold < cost) return;
 
         if (mainCamera == null) mainCamera = Camera.main;
 
@@ -107,15 +112,23 @@ public class InputManager : MonoBehaviour
     {
         bool placed = false;
 
-        if (!EventSystem.current.IsPointerOverGameObject() && CanPlaceAt(worldPos))
+        if (!EventSystem.current.IsPointerOverGameObject())
         {
-            placed = PlaceTower(worldPos);
+            if (IsBombDrag())
+                placed = PlaceBomb(worldPos);
+            else if (CanPlaceAt(worldPos))
+                placed = PlaceTower(worldPos);
         }
 
         isDragging = false;
         dragTowerPrefab = null;
         DestroyPreview();
         OnDragEnded?.Invoke();
+    }
+
+    private bool IsBombDrag()
+    {
+        return dragTowerPrefab != null && dragTowerPrefab.GetComponent<Bomb>() != null;
     }
 
     private void HandleTowerClick(Vector2 worldPos)
@@ -190,6 +203,19 @@ public class InputManager : MonoBehaviour
         return true;
     }
 
+    private bool PlaceBomb(Vector2 pos)
+    {
+        var bomb = dragTowerPrefab.GetComponent<Bomb>();
+        if (bomb == null) return false;
+        if (!ResourceManager.Instance.SpendGold(bomb.Cost)) return false;
+
+        var parent = towerParent != null ? towerParent : transform;
+        var bombObj = Instantiate(dragTowerPrefab, (Vector3)pos, Quaternion.identity, parent);
+        bombObj.GetComponent<Bomb>().Initialize();
+        OnTowerPlaced?.Invoke(dragTowerPrefab);
+        return true;
+    }
+
     private void CreatePreview()
     {
         DestroyPreview();
@@ -203,12 +229,19 @@ public class InputManager : MonoBehaviour
             col.enabled = false;
 
         // 범위 표시기 표시 & 프리뷰용 렌더러 수집 (범위 표시기 제외)
-        var tower = previewObj.GetComponent<Tower>();
         SpriteRenderer rangeInd = null;
+        var tower = previewObj.GetComponent<Tower>();
+        var bomb = previewObj.GetComponent<Bomb>();
+
         if (tower != null)
         {
             tower.ShowRange(true);
             rangeInd = tower.RangeIndicator;
+        }
+        else if (bomb != null)
+        {
+            bomb.ShowRange(true);
+            rangeInd = bomb.RangeIndicator;
         }
 
         var allRenderers = previewObj.GetComponentsInChildren<SpriteRenderer>();
@@ -228,7 +261,7 @@ public class InputManager : MonoBehaviour
         if (previewObj == null) return;
 
         previewObj.transform.position = (Vector3)worldPos;
-        bool canPlace = CanPlaceAt(worldPos);
+        bool canPlace = IsBombDrag() || CanPlaceAt(worldPos);
         Color tint = canPlace
             ? new Color(0.3f, 0.8f, 0.3f, 0.5f)
             : new Color(0.8f, 0.3f, 0.3f, 0.5f);
