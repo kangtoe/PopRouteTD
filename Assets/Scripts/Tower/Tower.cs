@@ -33,6 +33,7 @@ public class Tower : MonoBehaviour
     private int totalUpgradeCost;
     private Coroutine boingCoroutine;
     private Coroutine fireBoingCoroutine;
+    private Vector3 originalScale;
 
     public string TowerName => upgradeData != null ? upgradeData.towerName : "";
     public int Cost => upgradeData != null ? upgradeData.main1.cost : 0;
@@ -59,6 +60,8 @@ public class Tower : MonoBehaviour
         enemyLayerMask = 1 << LayerMask.NameToLayer(GameConstants.LayerEnemy);
         projectileSpeed = ProjectilePool.Instance != null ? ProjectilePool.Instance.ProjectileSpeed : 15f;
         initialized = true;
+
+        originalScale = transform.localScale;
 
         if (upgradeData != null)
             RecalculateStats();
@@ -259,7 +262,7 @@ public class Tower : MonoBehaviour
         const float boingDuration = 0.15f;
         const float shrinkDuration = 0.15f;
         const float amplitude = 0.2f;
-        Vector3 baseScale = Vector3.one;
+        Vector3 baseScale = originalScale;
         float elapsed = 0f;
 
         // 한번 통통
@@ -291,7 +294,7 @@ public class Tower : MonoBehaviour
     {
         if (boingCoroutine != null)
             StopCoroutine(boingCoroutine);
-        transform.localScale = Vector3.one;
+        transform.localScale = originalScale;
         boingCoroutine = StartCoroutine(BoingRoutine());
     }
 
@@ -300,7 +303,7 @@ public class Tower : MonoBehaviour
         const float duration = 0.35f;
         const float amplitude = 0.15f;
         const float frequency = 3f;
-        Vector3 baseScale = Vector3.one;
+        Vector3 baseScale = originalScale;
         float elapsed = 0f;
 
         while (elapsed < duration)

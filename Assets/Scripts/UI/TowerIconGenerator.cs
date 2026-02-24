@@ -3,7 +3,7 @@ using UnityEngine;
 public static class TowerIconGenerator
 {
     private const int TextureSize = 128;
-    private const float CameraOrthoSize = 1.0f;
+    private const float CameraOrthoSize = 1.3f;
     private const float OffScreenPos = -100f;
 
     public static Sprite GenerateIcon(GameObject towerPrefab)
