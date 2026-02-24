@@ -29,6 +29,8 @@ public class Bomb : MonoBehaviour
     private int enemyLayerMask;
     private SpriteRenderer[] visualRenderers;
     private Color[] originalColors;
+    private Vector3 originalScale;
+    private Coroutine boingCoroutine;
 
     public void Initialize()
     {
@@ -48,6 +50,8 @@ public class Bomb : MonoBehaviour
             rangeIndicator.gameObject.SetActive(false);
 
         enemyLayerMask = 1 << LayerMask.NameToLayer(GameConstants.LayerEnemy);
+        originalScale = transform.localScale;
+        PlayBoing();
         StartCoroutine(FuseCountdown());
     }
 
@@ -63,6 +67,37 @@ public class Bomb : MonoBehaviour
             diameter / parentScale.x,
             diameter / parentScale.y,
             1f);
+    }
+
+    private void PlayBoing()
+    {
+        if (boingCoroutine != null)
+            StopCoroutine(boingCoroutine);
+        transform.localScale = originalScale;
+        boingCoroutine = StartCoroutine(BoingRoutine());
+    }
+
+    private IEnumerator BoingRoutine()
+    {
+        const float duration = 0.35f;
+        const float amplitude = 0.15f;
+        const float frequency = 3f;
+        Vector3 baseScale = originalScale;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            float decay = 1f - t;
+            float wave = Mathf.Sin(t * frequency * Mathf.PI * 2f);
+            float s = amplitude * decay * wave;
+            transform.localScale = new Vector3(baseScale.x * (1f - s * 0.5f), baseScale.y * (1f + s), baseScale.z);
+            yield return null;
+        }
+
+        transform.localScale = baseScale;
+        boingCoroutine = null;
     }
 
     private IEnumerator FuseCountdown()
