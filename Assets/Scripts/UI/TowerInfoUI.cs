@@ -27,8 +27,6 @@ public class TowerInfoUI : MonoBehaviour
     private Tower selectedTower;
     private bool isPreview;
     private Image[] priorityImages;
-    private static readonly Color normalColor = new(0.3f, 0.3f, 0.4f);
-    private static readonly Color activeColor = new(0.2f, 0.6f, 0.3f);
 
     private Sprite mainUpgradeIcon;
     private Sprite subAIcon;
@@ -38,7 +36,6 @@ public class TowerInfoUI : MonoBehaviour
     private bool eventsInitialized;
 
     // Hold-to-confirm
-    private const float HoldDuration = 0.5f;
     private TowerButtonUI holdButton;
     private float holdTimer;
     private Action holdAction;
@@ -90,9 +87,9 @@ public class TowerInfoUI : MonoBehaviour
         if (holdButton == null) return;
 
         holdTimer += Time.deltaTime;
-        holdButton.SetHoldProgress(holdTimer / HoldDuration);
+        holdButton.SetHoldProgress(holdTimer / GameConstants.HoldDuration);
 
-        if (holdTimer >= HoldDuration)
+        if (holdTimer >= GameConstants.HoldDuration)
         {
             var action = holdAction;
             ResetHold();
@@ -365,7 +362,7 @@ public class TowerInfoUI : MonoBehaviour
         int current = (int)selectedTower.Priority;
         for (int i = 0; i < priorityImages.Length; i++)
         {
-            priorityImages[i].color = i == current ? activeColor : normalColor;
+            priorityImages[i].color = i == current ? GameConstants.UIColorActive : GameConstants.UIColorNormal;
         }
     }
 

@@ -11,11 +11,6 @@ public class TowerButtonUI : MonoBehaviour
     [SerializeField] private Image backgroundImage;
     [SerializeField] private GameObject maxImage;
 
-    private static readonly Color normalColor = new Color(0.3f, 0.3f, 0.4f);
-    private static readonly Color lockedColor = new Color(0.5f, 0.5f, 0.5f);
-    private static readonly Color confirmColor = new(0.2f, 0.6f, 0.3f);
-    private static readonly Color draggingColor = new(0.2f, 0.6f, 0.3f);
-
     public Button Button => button;
 
     /// <summary>구매 가능 상태: 골드 부족 시 interactable = false</summary>
@@ -26,7 +21,7 @@ public class TowerButtonUI : MonoBehaviour
         SetDescription(desc);
         SetIcon(icon);
         button.interactable = ResourceManager.Instance.Gold >= cost;
-        SetBackgroundColor(normalColor);
+        SetBackgroundColor(GameConstants.UIColorNormal);
         SetMaxImageActive(false);
         SetHoldProgress(0);
     }
@@ -39,7 +34,7 @@ public class TowerButtonUI : MonoBehaviour
         SetDescription(desc);
         SetIcon(icon);
         button.interactable = false;
-        SetBackgroundColor(normalColor);
+        SetBackgroundColor(GameConstants.UIColorNormal);
         SetMaxImageActive(true);
         SetHoldProgress(0);
     }
@@ -52,7 +47,7 @@ public class TowerButtonUI : MonoBehaviour
         SetDescription(desc);
         SetIcon(icon);
         button.interactable = true;
-        SetBackgroundColor(confirmColor);
+        SetBackgroundColor(GameConstants.UIColorActive);
         SetMaxImageActive(false);
         SetHoldProgress(0);
     }
@@ -65,7 +60,7 @@ public class TowerButtonUI : MonoBehaviour
         SetDescription(desc);
         SetIcon(icon);
         button.interactable = false;
-        SetBackgroundColor(lockedColor);
+        SetBackgroundColor(GameConstants.UIColorLocked);
         SetMaxImageActive(false);
         SetHoldProgress(0);
     }
@@ -78,7 +73,7 @@ public class TowerButtonUI : MonoBehaviour
         SetDescription("");
         SetIcon(icon);
         button.interactable = false;
-        SetBackgroundColor(normalColor);
+        SetBackgroundColor(GameConstants.UIColorNormal);
         SetMaxImageActive(true);
         SetHoldProgress(0);
     }
@@ -115,7 +110,7 @@ public class TowerButtonUI : MonoBehaviour
 
     public void SetDragging(bool dragging)
     {
-        SetBackgroundColor(dragging ? draggingColor : normalColor);
+        SetBackgroundColor(dragging ? GameConstants.UIColorActive : GameConstants.UIColorNormal);
     }
 
     [SerializeField] private Image holdFillImage;
@@ -126,7 +121,7 @@ public class TowerButtonUI : MonoBehaviour
 
         if (t > 0f)
         {
-            holdFillImage.color = confirmColor;
+            holdFillImage.color = GameConstants.UIColorActive;
             holdFillImage.fillAmount = Mathf.Clamp01(t);
             holdFillImage.gameObject.SetActive(true);
         }

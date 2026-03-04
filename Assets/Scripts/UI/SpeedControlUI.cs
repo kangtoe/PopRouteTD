@@ -8,8 +8,6 @@ public class SpeedControlUI : MonoBehaviour
     private static readonly float[] Speeds = { 1f, 4f };
     private static readonly string[] Labels = { "x1", "x4" };
 
-    private readonly Color normalColor = new(0.3f, 0.3f, 0.4f);
-    private readonly Color activeColor = new(0.2f, 0.6f, 0.3f);
 
     private int currentIndex;
 
@@ -51,7 +49,7 @@ public class SpeedControlUI : MonoBehaviour
         {
             var img = speedButtons[i].GetComponent<Image>();
             if (img != null)
-                img.color = i == currentIndex ? activeColor : normalColor;
+                img.color = i == currentIndex ? GameConstants.UIColorActive : GameConstants.UIColorNormal;
         }
     }
 }

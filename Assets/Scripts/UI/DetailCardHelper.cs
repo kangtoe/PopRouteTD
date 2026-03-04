@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 public static class DetailCardHelper
 {
-    private const float CardGap = 18f;
     private const string ContentName = "_DetailContent";
 
     public static TowerButtonUI Create(TowerButtonUI prefab, Transform parent)
@@ -63,7 +62,7 @@ public static class DetailCardHelper
         float cardHalfW = card.rect.width * 0.5f;
 
         card.anchoredPosition = new Vector2(
-            localPoint.x - anchorHalfW - CardGap - cardHalfW,
+            localPoint.x - anchorHalfW - GameConstants.DetailCardGap - cardHalfW,
             localPoint.y);
     }
 

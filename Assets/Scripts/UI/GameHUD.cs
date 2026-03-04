@@ -10,8 +10,6 @@ public class GameHUD : MonoBehaviour
     [SerializeField] private Button startWaveButton;
     private Text startWaveButtonText;
 
-    private readonly Color normalColor = new(0.3f, 0.3f, 0.4f);
-    private readonly Color activeColor = new(0.2f, 0.6f, 0.3f);
 
     [Header("준비 단계 타이머")]
     [SerializeField] private Image prepareTimerFill;
@@ -75,7 +73,7 @@ public class GameHUD : MonoBehaviour
         {
             bool canStart = state == GameState.Prepare;
             startWaveButton.interactable = canStart;
-            startWaveButton.image.color = canStart ? activeColor : normalColor;
+            startWaveButton.image.color = canStart ? GameConstants.UIColorActive : GameConstants.UIColorNormal;
             if (startWaveButtonText != null)
                 startWaveButtonText.text = canStart ? "Start Wave!" : "On Wave";
         }

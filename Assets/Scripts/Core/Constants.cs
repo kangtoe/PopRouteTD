@@ -97,4 +97,12 @@ public static class GameConstants
         return 1.0f + ((int)layer - 1) * 0.5f;
     }
 
+    // UI Colors
+    public static readonly UnityEngine.Color UIColorNormal = new(0.3f, 0.3f, 0.4f);
+    public static readonly UnityEngine.Color UIColorActive = new(0.2f, 0.6f, 0.3f);
+    public static readonly UnityEngine.Color UIColorLocked = new(0.5f, 0.5f, 0.5f);
+
+    // UI Values
+    public const float HoldDuration = 0.5f;
+    public const float DetailCardGap = 18f;
 }
