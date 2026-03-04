@@ -19,7 +19,7 @@ MonoBehaviour:
     description: Level Upgrade 1
     cost: 180
     stats:
-      attackInterval: 1.5
+      attackInterval: 1.25
       attackRange: 3.2
       splashRadius: 0
       pierceCount: 1
@@ -30,7 +30,7 @@ MonoBehaviour:
     description: Level Upgrade 2
     cost: 50
     stats:
-      attackInterval: -0.1
+      attackInterval: -0.15
       attackRange: 0.5
       splashRadius: 0
       pierceCount: 0
@@ -41,7 +41,7 @@ MonoBehaviour:
     description: Level Upgrade 3
     cost: 80
     stats:
-      attackInterval: -0.15
+      attackInterval: -0.2
       attackRange: 0.5
       splashRadius: 0
       pierceCount: 0
@@ -61,7 +61,7 @@ MonoBehaviour:
   subA:
     upgradeName: Eyesight
     description: Shoots even further!
-    cost: 250
+    cost: 220
     stats:
       attackInterval: 0
       attackRange: 2

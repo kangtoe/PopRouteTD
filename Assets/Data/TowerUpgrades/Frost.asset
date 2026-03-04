@@ -69,7 +69,7 @@ MonoBehaviour:
   subA:
     upgradeName: Bigger Cold
     description: Can slow 3 additional Enemies per shot
-    cost: 500
+    cost: 450
     stats:
       attackInterval: 0
       attackRange: 0
@@ -80,7 +80,7 @@ MonoBehaviour:
   subB:
     upgradeName: Ice Storm
     description: Shoots 3x as fast!
-    cost: 2000
+    cost: 1200
     stats:
       attackInterval: -0.066
       attackRange: 0
