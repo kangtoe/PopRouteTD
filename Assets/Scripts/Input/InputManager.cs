@@ -161,6 +161,8 @@ public class InputManager : MonoBehaviour
 
     private bool CanPlaceAt(Vector2 pos)
     {
+        if (EventSystem.current.IsPointerOverGameObject()) return false;
+        if (!IsInsideScreen(pos)) return false;
         if (IsOnPath(pos)) return false;
 
         var overlap = Physics2D.OverlapCircle(pos, towerRadius, towerLayerMask);
@@ -169,12 +171,21 @@ public class InputManager : MonoBehaviour
         return true;
     }
 
+    private bool IsInsideScreen(Vector2 worldPos)
+    {
+        if (mainCamera == null) return false;
+        Vector3 vp = mainCamera.WorldToViewportPoint(worldPos);
+        return vp.x >= 0f && vp.x <= 1f && vp.y >= 0f && vp.y <= 1f;
+    }
+
     private bool IsOnPath(Vector2 pos)
     {
         if (waypointPath == null) return false;
 
-        var waypoints = waypointPath.GetWaypoints();
-        for (int i = 0; i < waypoints.Length - 1; i++)
+        // Awake 시점에 캐싱된 곡선 경로 사용 (동적 이동 영향 없음)
+        var waypoints = waypointPath.GetSmoothedWaypoints();
+        // 첫 세그먼트(스폰→경로)와 마지막 세그먼트(경로→기지) 제외
+        for (int i = 1; i < waypoints.Length - 2; i++)
         {
             Vector2 a = waypoints[i];
             Vector2 b = waypoints[i + 1];
