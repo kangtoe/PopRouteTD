@@ -10,11 +10,11 @@ public static class UpgradeDataMigrator
     [MenuItem("PopRouteTD/업그레이드 데이터 마이그레이션")]
     public static void Migrate()
     {
-        MigrateBasicTower();
-        MigrateBombTower();
-        MigrateRapidTower();
-        MigrateSlowTower();
-        MigratePierceTower();
+        MigrateScout();
+        MigrateMortar();
+        MigrateGatling();
+        MigrateFrost();
+        MigrateLancer();
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -47,25 +47,25 @@ public static class UpgradeDataMigrator
         return new StatusEffectEntry { type = type, duration = duration };
     }
 
-    // ── BasicTower ──
+    // ── Scout ──
 
-    private static void MigrateBasicTower()
+    private static void MigrateScout()
     {
-        var d = Load("BasicTower");
+        var d = Load("Scout");
         if (d == null) return;
 
-        d.towerName = "BasicTower";
+        d.towerName = "Scout";
 
-        d.main1 = Level("Basic Shooter", "Single-target ranged attack", 15,
+        d.main1 = Level("Scout", "Single-target ranged attack", 15,
             new TowerStats { attackInterval = 1, attackRange = 3, pierceCount = 1 });
 
-        d.main2 = Level("Basic Shooter", "SPD, RNG, pierce up", 80,
+        d.main2 = Level("Scout", "SPD, RNG, pierce up", 80,
             new TowerStats { attackInterval = -0.1f, attackRange = 0.5f, pierceCount = 1 });
 
-        d.main3 = Level("Basic Shooter", "Further stat boost", 200,
+        d.main3 = Level("Scout", "Further stat boost", 200,
             new TowerStats { attackInterval = -0.1f, attackRange = 0.5f, pierceCount = 1 });
 
-        d.main4 = Level("Basic Shooter", "Max performance", 500,
+        d.main4 = Level("Scout", "Max performance", 500,
             new TowerStats { attackInterval = -0.1f, attackRange = 0.5f, pierceCount = 2 });
 
         d.subA = Level("Elite", "Balanced stat bonus", 200,
@@ -78,25 +78,25 @@ public static class UpgradeDataMigrator
         EditorUtility.SetDirty(d);
     }
 
-    // ── BombTower ──
+    // ── Mortar ──
 
-    private static void MigrateBombTower()
+    private static void MigrateMortar()
     {
-        var d = Load("BombTower");
+        var d = Load("Mortar");
         if (d == null) return;
 
-        d.towerName = "BombTower";
+        d.towerName = "Mortar";
 
-        d.main1 = Level("Bomb Shooter", "Splash area attack", 30,
+        d.main1 = Level("Mortar", "Splash area attack", 30,
             new TowerStats { attackInterval = 1.5f, attackRange = 3, splashRadius = 1, pierceCount = 1 });
 
-        d.main2 = Level("Bomb Shooter", "SPD, RNG, splash up", 100,
+        d.main2 = Level("Mortar", "SPD, RNG, splash up", 100,
             new TowerStats { attackInterval = -0.1f, attackRange = 0.5f, splashRadius = 0.2f, pierceCount = 1 });
 
-        d.main3 = Level("Bomb Shooter", "Further stat boost", 250,
+        d.main3 = Level("Mortar", "Further stat boost", 250,
             new TowerStats { attackInterval = -0.1f, attackRange = 0.5f, splashRadius = 0.3f, pierceCount = 1 });
 
-        d.main4 = Level("Bomb Shooter", "Max performance", 600,
+        d.main4 = Level("Mortar", "Max performance", 600,
             new TowerStats { attackInterval = -0.1f, attackRange = 0.5f, splashRadius = 0.3f, pierceCount = 1 });
 
         d.subA = Level("Wide Area", "Greatly expands splash radius", 250,
@@ -109,25 +109,25 @@ public static class UpgradeDataMigrator
         EditorUtility.SetDirty(d);
     }
 
-    // ── RapidTower ──
+    // ── Gatling ──
 
-    private static void MigrateRapidTower()
+    private static void MigrateGatling()
     {
-        var d = Load("RapidTower");
+        var d = Load("Gatling");
         if (d == null) return;
 
-        d.towerName = "RapidTower";
+        d.towerName = "Gatling";
 
-        d.main1 = Level("Rapid Shooter", "Fast fire rate single-target attack", 20,
+        d.main1 = Level("Gatling", "Fast fire rate single-target attack", 20,
             new TowerStats { attackInterval = 0.4f, attackRange = 3, pierceCount = 1 });
 
-        d.main2 = Level("Rapid Shooter", "SPD, RNG up", 80,
+        d.main2 = Level("Gatling", "SPD, RNG up", 80,
             new TowerStats { attackInterval = -0.05f, attackRange = 0.5f });
 
-        d.main3 = Level("Rapid Shooter", "Further stat boost", 200,
+        d.main3 = Level("Gatling", "Further stat boost", 200,
             new TowerStats { attackInterval = -0.05f, attackRange = 0.5f, pierceCount = 1 });
 
-        d.main4 = Level("Rapid Shooter", "Max performance", 500,
+        d.main4 = Level("Gatling", "Max performance", 500,
             new TowerStats { attackInterval = -0.05f, attackRange = 0.5f, pierceCount = 1 });
 
         d.subA = Level("Enhance", "Greatly increases pierce", 200,
@@ -139,28 +139,28 @@ public static class UpgradeDataMigrator
         EditorUtility.SetDirty(d);
     }
 
-    // ── SlowTower ──
+    // ── Frost ──
 
-    private static void MigrateSlowTower()
+    private static void MigrateFrost()
     {
-        var d = Load("SlowTower");
+        var d = Load("Frost");
         if (d == null) return;
 
-        d.towerName = "SlowTower";
+        d.towerName = "Frost";
 
-        d.main1 = Level("Slow Shooter", "Attacks apply slow effect", 20,
+        d.main1 = Level("Frost", "Attacks apply slow effect", 20,
             new TowerStats { attackInterval = 1.5f, attackRange = 3.5f, pierceCount = 1 },
             new[] { Effect(StatusEffectType.Slow, 1f) });
 
-        d.main2 = Level("Slow Shooter", "Slow duration, RNG up", 80,
+        d.main2 = Level("Frost", "Slow duration, RNG up", 80,
             new TowerStats { attackInterval = -0.1f, attackRange = 0.5f },
             new[] { Effect(StatusEffectType.Slow, 0.5f) });
 
-        d.main3 = Level("Slow Shooter", "Further stat boost", 200,
+        d.main3 = Level("Frost", "Further stat boost", 200,
             new TowerStats { attackInterval = -0.1f, attackRange = 0.5f },
             new[] { Effect(StatusEffectType.Slow, 0.5f) });
 
-        d.main4 = Level("Slow Shooter", "Max performance", 500,
+        d.main4 = Level("Frost", "Max performance", 500,
             new TowerStats { attackInterval = -0.1f, attackRange = 0.5f },
             new[] { Effect(StatusEffectType.Slow, 0.5f) });
 
@@ -175,25 +175,25 @@ public static class UpgradeDataMigrator
         EditorUtility.SetDirty(d);
     }
 
-    // ── PierceTower ──
+    // ── Lancer ──
 
-    private static void MigratePierceTower()
+    private static void MigrateLancer()
     {
-        var d = Load("PierceTower");
+        var d = Load("Lancer");
         if (d == null) return;
 
-        d.towerName = "PierceTower";
+        d.towerName = "Lancer";
 
-        d.main1 = Level("Pierce Shooter", "Piercing projectile hits multiple targets", 25,
+        d.main1 = Level("Lancer", "Piercing projectile hits multiple targets", 25,
             new TowerStats { attackInterval = 1.2f, attackRange = 4, pierceCount = 2 });
 
-        d.main2 = Level("Pierce Shooter", "SPD, pierce up", 120,
+        d.main2 = Level("Lancer", "SPD, pierce up", 120,
             new TowerStats { attackInterval = -0.1f, attackRange = 0.5f, pierceCount = 1 });
 
-        d.main3 = Level("Pierce Shooter", "Further stat boost", 300,
+        d.main3 = Level("Lancer", "Further stat boost", 300,
             new TowerStats { attackInterval = -0.2f, attackRange = 0.5f, pierceCount = 1 });
 
-        d.main4 = Level("Pierce Shooter", "Max performance", 700,
+        d.main4 = Level("Lancer", "Max performance", 700,
             new TowerStats { attackInterval = -0.2f, attackRange = 0.5f, pierceCount = 1 });
 
         d.subA = Level("Rapid Fire", "Greatly increases attack speed", 300,

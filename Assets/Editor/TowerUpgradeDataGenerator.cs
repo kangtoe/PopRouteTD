@@ -10,32 +10,32 @@ public static class TowerUpgradeDataGenerator
     {
         EnsureFolder();
 
-        CreateBasicTower();
-        CreateBombTower();
-        CreatePierceTower();
-        CreateSlowTower();
-        CreateRapidTower();
+        CreateScout();
+        CreateMortar();
+        CreateLancer();
+        CreateFrost();
+        CreateGatling();
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         Debug.Log("[TowerUpgradeDataGenerator] Generated 5 tower upgrade data assets.");
     }
 
-    // ───────── Basic Tower ─────────
+    // ───────── Scout ─────────
     // Main: balanced single-target ranged attack
     // Sub A (Elite): stat bonus   Sub B (Frost): slow effect
-    private static void CreateBasicTower()
+    private static void CreateScout()
     {
         var so = ScriptableObject.CreateInstance<TowerUpgradeData>();
-        so.towerName = "BasicTower";
+        so.towerName = "Scout";
 
-        so.main1 = Level("Basic Shooter", 100, "Single-target ranged attack",
+        so.main1 = Level("Scout", 100, "Single-target ranged attack",
             interval: 1.0f, range: 3.0f, pierce: 1);
-        so.main2 = Level("Basic Shooter", 110, "SPD, RNG, pierce up",
+        so.main2 = Level("Scout", 110, "SPD, RNG, pierce up",
             interval: -0.05f, range: 0.5f, pierce: 1);
-        so.main3 = Level("Basic Shooter", 130, "Further stat boost",
+        so.main3 = Level("Scout", 130, "Further stat boost",
             interval: -0.05f, range: 0.5f, pierce: 1);
-        so.main4 = Level("Basic Shooter", 150, "Max performance",
+        so.main4 = Level("Scout", 150, "Max performance",
             interval: -0.05f, range: 0.5f, pierce: 1);
 
         so.subA = Level("Elite", 100, "Balanced stat bonus",
@@ -43,24 +43,24 @@ public static class TowerUpgradeDataGenerator
         so.subB = Level("Frost", 100, "Grants slow effect",
             effects: new[] { Effect(StatusEffectType.Slow, 1.5f) });
 
-        Save(so, "BasicTower");
+        Save(so, "Scout");
     }
 
-    // ───────── Bomb Tower ─────────
+    // ───────── Mortar ─────────
     // Main: splash area attack
     // Sub A (Wide): splash radius up   Sub B (Incendiary): burn effect
-    private static void CreateBombTower()
+    private static void CreateMortar()
     {
         var so = ScriptableObject.CreateInstance<TowerUpgradeData>();
-        so.towerName = "BombTower";
+        so.towerName = "Mortar";
 
-        so.main1 = Level("Bomb Shooter", 150, "Splash area attack",
+        so.main1 = Level("Mortar", 150, "Splash area attack",
             interval: 1.5f, range: 3.0f, splash: 1.0f, pierce: 1);
-        so.main2 = Level("Bomb Shooter", 165, "SPD, RNG, splash up",
+        so.main2 = Level("Mortar", 165, "SPD, RNG, splash up",
             interval: -0.05f, range: 0.5f, splash: 0.2f, pierce: 1);
-        so.main3 = Level("Bomb Shooter", 195, "Further stat boost",
+        so.main3 = Level("Mortar", 195, "Further stat boost",
             interval: -0.05f, range: 0.5f, splash: 0.3f, pierce: 1);
-        so.main4 = Level("Bomb Shooter", 225, "Max performance",
+        so.main4 = Level("Mortar", 225, "Max performance",
             interval: -0.05f, range: 0.5f, splash: 0.3f, pierce: 1);
 
         so.subA = Level("Wide Area", 150, "Greatly expands splash radius",
@@ -68,24 +68,24 @@ public static class TowerUpgradeDataGenerator
         so.subB = Level("Incendiary", 150, "Grants burn effect",
             effects: new[] { Effect(StatusEffectType.Burn, 3.0f) });
 
-        Save(so, "BombTower");
+        Save(so, "Mortar");
     }
 
-    // ───────── Pierce Tower ─────────
+    // ───────── Lancer ─────────
     // Main: piercing projectile attack
     // Sub A (Rapid Fire): attack speed bonus   Sub B (Impact): stun effect
-    private static void CreatePierceTower()
+    private static void CreateLancer()
     {
         var so = ScriptableObject.CreateInstance<TowerUpgradeData>();
-        so.towerName = "PierceTower";
+        so.towerName = "Lancer";
 
-        so.main1 = Level("Pierce Shooter", 200, "Piercing projectile hits multiple targets",
+        so.main1 = Level("Lancer", 200, "Piercing projectile hits multiple targets",
             interval: 1.2f, range: 4.0f, pierce: 2);
-        so.main2 = Level("Pierce Shooter", 220, "SPD, pierce up",
+        so.main2 = Level("Lancer", 220, "SPD, pierce up",
             interval: -0.1f, range: 0.5f, pierce: 1);
-        so.main3 = Level("Pierce Shooter", 260, "SPD, RNG up",
+        so.main3 = Level("Lancer", 260, "SPD, RNG up",
             interval: -0.1f, range: 0.5f);
-        so.main4 = Level("Pierce Shooter", 300, "Max performance",
+        so.main4 = Level("Lancer", 300, "Max performance",
             interval: -0.1f, range: 0.5f, pierce: 1);
 
         so.subA = Level("Rapid Fire", 200, "Greatly increases attack speed",
@@ -94,27 +94,27 @@ public static class TowerUpgradeDataGenerator
             pierce: 2,
             effects: new[] { Effect(StatusEffectType.Stun, 0.5f) });
 
-        Save(so, "PierceTower");
+        Save(so, "Lancer");
     }
 
-    // ───────── Slow Tower ─────────
+    // ───────── Frost ─────────
     // Main: slow effect attack
     // Sub A (Frostbite): adds burn   Sub B (Freeze): greatly extends slow duration
-    private static void CreateSlowTower()
+    private static void CreateFrost()
     {
         var so = ScriptableObject.CreateInstance<TowerUpgradeData>();
-        so.towerName = "SlowTower";
+        so.towerName = "Frost";
 
-        so.main1 = Level("Slow Shooter", 100, "Attacks apply slow effect",
+        so.main1 = Level("Frost", 100, "Attacks apply slow effect",
             interval: 1.5f, range: 3.5f, pierce: 1,
             effects: new[] { Effect(StatusEffectType.Slow, 1.0f) });
-        so.main2 = Level("Slow Shooter", 110, "Slow duration, SPD, RNG up",
+        so.main2 = Level("Frost", 110, "Slow duration, SPD, RNG up",
             interval: -0.05f, range: 0.5f,
             effects: new[] { Effect(StatusEffectType.Slow, 0.5f) });
-        so.main3 = Level("Slow Shooter", 130, "Further stat boost",
+        so.main3 = Level("Frost", 130, "Further stat boost",
             interval: -0.05f, range: 0.5f,
             effects: new[] { Effect(StatusEffectType.Slow, 0.5f) });
-        so.main4 = Level("Slow Shooter", 150, "Max performance",
+        so.main4 = Level("Frost", 150, "Max performance",
             interval: -0.05f, range: 0.5f,
             effects: new[] { Effect(StatusEffectType.Slow, 0.5f) });
 
@@ -123,24 +123,24 @@ public static class TowerUpgradeDataGenerator
         so.subB = Level("Freeze", 100, "Greatly extends slow duration",
             effects: new[] { Effect(StatusEffectType.Slow, 1.5f) });
 
-        Save(so, "SlowTower");
+        Save(so, "Frost");
     }
 
-    // ───────── Rapid Tower ─────────
+    // ───────── Gatling ─────────
     // Main: fast fire rate attack, shorter range
     // Sub A (Enhance): pierce bonus   Sub B (Spread): splash conversion
-    private static void CreateRapidTower()
+    private static void CreateGatling()
     {
         var so = ScriptableObject.CreateInstance<TowerUpgradeData>();
-        so.towerName = "RapidTower";
+        so.towerName = "Gatling";
 
-        so.main1 = Level("Rapid Shooter", 200, "Fast fire rate single-target attack",
+        so.main1 = Level("Gatling", 200, "Fast fire rate single-target attack",
             interval: 0.5f, range: 2.5f, pierce: 1);
-        so.main2 = Level("Rapid Shooter", 220, "SPD, RNG up",
+        so.main2 = Level("Gatling", 220, "SPD, RNG up",
             interval: -0.03f, range: 0.25f, pierce: 1);
-        so.main3 = Level("Rapid Shooter", 260, "Further stat boost",
+        so.main3 = Level("Gatling", 260, "Further stat boost",
             interval: -0.03f, range: 0.25f, pierce: 1);
-        so.main4 = Level("Rapid Shooter", 300, "Max performance",
+        so.main4 = Level("Gatling", 300, "Max performance",
             interval: -0.03f, range: 0.25f, pierce: 1);
 
         so.subA = Level("Enhance", 200, "Increases pierce",
@@ -148,7 +148,7 @@ public static class TowerUpgradeDataGenerator
         so.subB = Level("Spread", 200, "Converts to splash area attack",
             splash: 1.0f);
 
-        Save(so, "RapidTower");
+        Save(so, "Gatling");
     }
 
     // ───────── Helpers ─────────

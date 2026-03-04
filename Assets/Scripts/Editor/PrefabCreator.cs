@@ -30,8 +30,8 @@ public class PrefabCreator
         Debug.Log("[PopRouteTD] 프리팹 에셋 생성 완료!");
     }
 
-    [MenuItem("PopRouteTD/타워 프리팹 생성/폭탄 사수")]
-    public static void CreateBombShooterPrefab()
+    [MenuItem("PopRouteTD/타워 프리팹 생성/Mortar")]
+    public static void CreateMortarPrefab()
     {
         EnsureFolder("Assets/Prefabs/Towers");
         squareSprite = CreateSquareSprite();
@@ -43,11 +43,11 @@ public class PrefabCreator
             basePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Towers/Tower.prefab");
         }
 
-        CreateTowerVariant(basePrefab, "Tower_BombShooter", "BombTower", new Color(0.8f, 0.3f, 0.3f));
+        CreateTowerVariant(basePrefab, "Tower_Mortar", "Mortar", new Color(0.8f, 0.3f, 0.3f));
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
-        Debug.Log("[PopRouteTD] 폭탄 사수 프리팹 생성 완료!");
+        Debug.Log("[PopRouteTD] Mortar 프리팹 생성 완료!");
     }
 
     // ── 베이스 적 ──
@@ -107,8 +107,8 @@ public class PrefabCreator
         var basePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/Towers/Tower.prefab");
         if (basePrefab == null) return;
 
-        CreateTowerVariant(basePrefab, "Tower_BasicShooter", "BasicTower", new Color(0.4f, 0.4f, 0.8f));
-        CreateTowerVariant(basePrefab, "Tower_BombShooter", "BombTower", new Color(0.8f, 0.3f, 0.3f));
+        CreateTowerVariant(basePrefab, "Tower_Scout", "Scout", new Color(0.4f, 0.4f, 0.8f));
+        CreateTowerVariant(basePrefab, "Tower_Mortar", "Mortar", new Color(0.8f, 0.3f, 0.3f));
     }
 
     private static void CreateTowerVariant(GameObject basePrefab, string fileName,

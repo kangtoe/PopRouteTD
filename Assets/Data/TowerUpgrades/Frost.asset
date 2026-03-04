@@ -10,73 +10,81 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 83ae5a5b1bcb8784c8baabf9e5bf3fb2, type: 3}
-  m_Name: BasicTower
+  m_Name: Frost
   m_EditorClassIdentifier: Assembly-CSharp::TowerUpgradeData
-  towerName: BasicTower
-  description: Single-target ranged attack
+  towerName: Frost
+  description: Attacks apply slow effect
   main1:
     upgradeName: Level 1
     description: Level Upgrade
-    cost: 200
+    cost: 250
     stats:
       attackInterval: 1
-      attackRange: 3.2
+      attackRange: 4.5
       splashRadius: 0
-      pierceCount: 1
+      pierceCount: 0
       areaTargets: 0
-    statusEffects: []
+    statusEffects:
+    - type: 2
+      duration: 8
   main2:
     upgradeName: Level 2
     description: Level Upgrade
     cost: 150
     stats:
-      attackInterval: -0.3
-      attackRange: 1
+      attackInterval: -0.1
+      attackRange: 0.5
       splashRadius: 0
       pierceCount: 0
       areaTargets: 0
-    statusEffects: []
+    statusEffects:
+    - type: 2
+      duration: 4
   main3:
     upgradeName: Level 3
     description: Level Upgrade
     cost: 250
     stats:
-      attackInterval: -0.2
-      attackRange: 1
+      attackInterval: -0.1
+      attackRange: 0.5
       splashRadius: 0
       pierceCount: 0
       areaTargets: 0
-    statusEffects: []
+    statusEffects:
+    - type: 2
+      duration: 4
   main4:
     upgradeName: Level 4
     description: Level Upgrade
-    cost: 350
+    cost: 450
     stats:
       attackInterval: -0.1
-      attackRange: 1
+      attackRange: 0.5
       splashRadius: 0
       pierceCount: 0
       areaTargets: 0
-    statusEffects: []
+    statusEffects:
+    - type: 2
+      duration: 4
   subA:
-    upgradeName: Eyesight
-    description: Shoots even further!
+    upgradeName: Bigger Cold
+    description: Can slow 3 additional Enemies per shot
     cost: 300
     stats:
       attackInterval: 0
-      attackRange: 2
-      splashRadius: 0
+      attackRange: 0
+      splashRadius: 1
       pierceCount: 0
-      areaTargets: 0
+      areaTargets: 3
     statusEffects: []
   subB:
-    upgradeName: Razor Sharp
-    description: Can hit more Enemy per shot.
-    cost: 1200
+    upgradeName: Ice Storm
+    description: Shoots 3x as fast!
+    cost: 2000
     stats:
-      attackInterval: 0
+      attackInterval: -0.066
       attackRange: 0
       splashRadius: 0
-      pierceCount: 1
+      pierceCount: 0
       areaTargets: 0
     statusEffects: []

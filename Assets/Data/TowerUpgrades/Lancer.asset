@@ -10,81 +10,75 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 83ae5a5b1bcb8784c8baabf9e5bf3fb2, type: 3}
-  m_Name: SlowTower
+  m_Name: Lancer
   m_EditorClassIdentifier: Assembly-CSharp::TowerUpgradeData
-  towerName: SlowTower
-  description: Attacks apply slow effect
+  towerName: Lancer
+  description: Armed with a high-powerd long range gun
   main1:
     upgradeName: Level 1
     description: Level Upgrade
-    cost: 250
+    cost: 350
     stats:
-      attackInterval: 1
-      attackRange: 4.5
+      attackInterval: 2
+      attackRange: 10
       splashRadius: 0
-      pierceCount: 0
+      pierceCount: 4
       areaTargets: 0
-    statusEffects:
-    - type: 2
-      duration: 8
+    statusEffects: []
   main2:
     upgradeName: Level 2
     description: Level Upgrade
-    cost: 150
+    cost: 300
     stats:
-      attackInterval: -0.1
-      attackRange: 0.5
+      attackInterval: -0.25
+      attackRange: 2
       splashRadius: 0
-      pierceCount: 0
+      pierceCount: 1
       areaTargets: 0
-    statusEffects:
-    - type: 2
-      duration: 4
+    statusEffects: []
   main3:
     upgradeName: Level 3
     description: Level Upgrade
-    cost: 250
+    cost: 600
     stats:
-      attackInterval: -0.1
-      attackRange: 0.5
+      attackInterval: -0.25
+      attackRange: 2
       splashRadius: 0
-      pierceCount: 0
+      pierceCount: 1
       areaTargets: 0
-    statusEffects:
-    - type: 2
-      duration: 4
+    statusEffects: []
   main4:
     upgradeName: Level 4
     description: Level Upgrade
-    cost: 450
+    cost: 1000
     stats:
-      attackInterval: -0.1
-      attackRange: 0.5
+      attackInterval: -0.25
+      attackRange: 2
+      splashRadius: 0
+      pierceCount: 2
+      areaTargets: 0
+    statusEffects: []
+  subA:
+    upgradeName: Deadly Shot
+    description: One Shot, One Kill.
+    cost: 3000
+    stats:
+      attackInterval: 0
+      attackRange: 0
+      splashRadius: 0
+      pierceCount: 6
+      areaTargets: 0
+    statusEffects: []
+  subB:
+    upgradeName: Impact!
+    description: Grants stun effect
+    cost: 1200
+    stats:
+      attackInterval: 0
+      attackRange: 0
       splashRadius: 0
       pierceCount: 0
       areaTargets: 0
     statusEffects:
-    - type: 2
-      duration: 4
-  subA:
-    upgradeName: Bigger Cold
-    description: Can slow 3 additional Enemies per shot
-    cost: 300
-    stats:
-      attackInterval: 0
-      attackRange: 0
-      splashRadius: 1
-      pierceCount: 0
-      areaTargets: 3
-    statusEffects: []
-  subB:
-    upgradeName: Ice Storm
-    description: Shoots 3x as fast!
-    cost: 2000
-    stats:
-      attackInterval: -0.066
-      attackRange: 0
-      splashRadius: 0
-      pierceCount: 0
-      areaTargets: 0
-    statusEffects: []
+    - type: 3
+      duration: 0.5

@@ -47,11 +47,11 @@
 
 | 타워 | Sub A | Sub B |
 |------|-------|-------|
-| **Basic Shooter** | Elite (스탯 보너스) | Frost (감속 부여) |
-| **Bomb Shooter** | Wide Area (스플래시 확대) | Incendiary (화상 부여) |
-| **Pierce Shooter** | Rapid Fire (공격속도 강화) | Impact (기절 부여) |
-| **Slow Shooter** | Frostbite (화상 추가) | Freeze (감속 강화) |
-| **Rapid Shooter** | Enhance (관통력 강화) | Spread (스플래시 부여) |
+| **Scout** | Elite (스탯 보너스) | Frost (감속 부여) |
+| **Mortar** | Wide Area (스플래시 확대) | Incendiary (화상 부여) |
+| **Lancer** | Rapid Fire (공격속도 강화) | Impact (기절 부여) |
+| **Frost** | Frostbite (화상 추가) | Freeze (감속 강화) |
+| **Gatling** | Enhance (관통력 강화) | Spread (스플래시 부여) |
 
 > 각 타워의 외관은 프리팹 내 부속물 오브젝트로 정의됨
 
@@ -64,7 +64,7 @@
 타워 프리팹 내에 각 단계별 부속물을 비활성 자식 오브젝트로 배치.
 
 ```
-Tower_BasicShooter
+Tower_Scout
 ├── Body (기본 본체)
 ├── FirePoint (발사 지점)
 ├── RangeIndicator (사거리 표시)
@@ -104,7 +104,7 @@ Tower_BasicShooter
 ## 밸런스 참고 사항
 
 - 각 타워는 BTD(Bloons Tower Defense) 시리즈의 영향을 강하게 받음
-  - Basic Shooter ← Dart Monkey, Bomb Shooter ← Bomb Tower, Pierce Shooter ← Super Monkey, Slow Shooter ← Glue Gunner, Rapid Shooter ← Sniper Monkey
+  - Scout ← Dart Monkey, Mortar ← Bomb Tower, Lancer ← Super Monkey, Frost ← Glue Gunner, Gatling ← Sniper Monkey
 - BTD5 기준 각 업그레이드의 수치와 비용을 일부 차용
 - 단, 현재 시스템 내에서 적용 가능한 부분 위주로 차용하였으며, 일부는 다른 수치나 효과를 가지도록 조정함
 - 구체적 수치는 플레이테스트를 통해 추가 조정 예정

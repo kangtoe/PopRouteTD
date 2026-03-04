@@ -10,28 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 83ae5a5b1bcb8784c8baabf9e5bf3fb2, type: 3}
-  m_Name: PierceTower
+  m_Name: Gatling
   m_EditorClassIdentifier: Assembly-CSharp::TowerUpgradeData
-  towerName: PierceTower
-  description: Armed with a high-powerd long range gun
+  towerName: Gatling
+  description: Fast fire rate single-target attack
   main1:
     upgradeName: Level 1
     description: Level Upgrade
-    cost: 350
+    cost: 1500
     stats:
-      attackInterval: 2
-      attackRange: 10
+      attackInterval: 0.1
+      attackRange: 5
       splashRadius: 0
-      pierceCount: 4
+      pierceCount: 1
       areaTargets: 0
     statusEffects: []
   main2:
     upgradeName: Level 2
     description: Level Upgrade
-    cost: 300
+    cost: 1500
     stats:
-      attackInterval: -0.25
-      attackRange: 2
+      attackInterval: 0
+      attackRange: 1
       splashRadius: 0
       pierceCount: 1
       areaTargets: 0
@@ -39,10 +39,10 @@ MonoBehaviour:
   main3:
     upgradeName: Level 3
     description: Level Upgrade
-    cost: 600
+    cost: 2000
     stats:
-      attackInterval: -0.25
-      attackRange: 2
+      attackInterval: 0
+      attackRange: 1.2
       splashRadius: 0
       pierceCount: 1
       areaTargets: 0
@@ -50,29 +50,18 @@ MonoBehaviour:
   main4:
     upgradeName: Level 4
     description: Level Upgrade
-    cost: 1000
+    cost: 2500
     stats:
-      attackInterval: -0.25
-      attackRange: 2
+      attackInterval: -0.02
+      attackRange: 0
       splashRadius: 0
-      pierceCount: 2
+      pierceCount: 0
       areaTargets: 0
     statusEffects: []
   subA:
-    upgradeName: Deadly Shot
-    description: One Shot, One Kill.
+    upgradeName: Shock Shot
+    description: Enemies get slowed after each hit.
     cost: 3000
-    stats:
-      attackInterval: 0
-      attackRange: 0
-      splashRadius: 0
-      pierceCount: 6
-      areaTargets: 0
-    statusEffects: []
-  subB:
-    upgradeName: Impact!
-    description: Grants stun effect
-    cost: 1200
     stats:
       attackInterval: 0
       attackRange: 0
@@ -80,5 +69,16 @@ MonoBehaviour:
       pierceCount: 0
       areaTargets: 0
     statusEffects:
-    - type: 3
-      duration: 0.5
+    - type: 2
+      duration: 0.1
+  subB:
+    upgradeName: Ultravision
+    description: Enables Tower to shoot very long range
+    cost: 1500
+    stats:
+      attackInterval: 0
+      attackRange: 2
+      splashRadius: 0
+      pierceCount: 0
+      areaTargets: 0
+    statusEffects: []

@@ -37,12 +37,12 @@
 - [x] 강화: HP·속도·보상 배율 적용
 
 ### 타워 (아군 유닛)
-- [x] Basic Shooter: 단일 타겟 원거리 공격
-- [x] Bomb Shooter: 스플래시 범위 공격
-- [x] Energy Generator: 주기적 골드 생산
-- [x] Pierce Shooter: 관통 발사체 공격
-- [x] Slow Shooter: 감속 상태이상 부여 (프리팹 생성 완료)
-- [x] Rapid Shooter: 빠른 연사속도 공격 (프리팹 생성 완료)
+- [x] Scout: 단일 타겟 원거리 공격
+- [x] Mortar: 스플래시 범위 공격
+- [x] ~~Energy Generator: 주기적 골드 생산 (구현 중단)~~
+- [x] Lancer: 관통 발사체 공격
+- [x] Frost: 감속 상태이상 부여
+- [x] Gatling: 빠른 연사속도 공격
 
 ### 전투 시스템
 - [x] 발사 라인 기반 사격 (회전 후 전방 레이캐스트 감지 시 발사)

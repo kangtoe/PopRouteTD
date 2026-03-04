@@ -1193,7 +1193,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 199296597658658468, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
       propertyPath: m_Name
-      value: Tower_Slower
+      value: Tower_Frost
       objectReference: {fileID: 0}
     - target: {fileID: 666786044444829572, guid: dd11ea2cff3acb345b43118f7d95ccb1, type: 3}
       propertyPath: m_Color.b

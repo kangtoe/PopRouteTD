@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 83ae5a5b1bcb8784c8baabf9e5bf3fb2, type: 3}
-  m_Name: RapidTower
+  m_Name: Scout
   m_EditorClassIdentifier: Assembly-CSharp::TowerUpgradeData
-  towerName: RapidTower
-  description: Fast fire rate single-target attack
+  towerName: Scout
+  description: Single-target ranged attack
   main1:
     upgradeName: Level 1
     description: Level Upgrade
-    cost: 1500
+    cost: 200
     stats:
-      attackInterval: 0.1
-      attackRange: 5
+      attackInterval: 1
+      attackRange: 3.2
       splashRadius: 0
       pierceCount: 1
       areaTargets: 0
@@ -28,57 +28,55 @@ MonoBehaviour:
   main2:
     upgradeName: Level 2
     description: Level Upgrade
-    cost: 1500
+    cost: 150
     stats:
-      attackInterval: 0
+      attackInterval: -0.3
       attackRange: 1
       splashRadius: 0
-      pierceCount: 1
+      pierceCount: 0
       areaTargets: 0
     statusEffects: []
   main3:
     upgradeName: Level 3
     description: Level Upgrade
-    cost: 2000
+    cost: 250
     stats:
-      attackInterval: 0
-      attackRange: 1.2
+      attackInterval: -0.2
+      attackRange: 1
       splashRadius: 0
-      pierceCount: 1
+      pierceCount: 0
       areaTargets: 0
     statusEffects: []
   main4:
     upgradeName: Level 4
     description: Level Upgrade
-    cost: 2500
+    cost: 350
     stats:
-      attackInterval: -0.02
-      attackRange: 0
+      attackInterval: -0.1
+      attackRange: 1
       splashRadius: 0
       pierceCount: 0
       areaTargets: 0
     statusEffects: []
   subA:
-    upgradeName: Shock Shot
-    description: Enemies get slowed after each hit.
-    cost: 3000
-    stats:
-      attackInterval: 0
-      attackRange: 0
-      splashRadius: 0
-      pierceCount: 0
-      areaTargets: 0
-    statusEffects:
-    - type: 2
-      duration: 0.1
-  subB:
-    upgradeName: Ultravision
-    description: Enables Tower to shoot very long range
-    cost: 1500
+    upgradeName: Eyesight
+    description: Shoots even further!
+    cost: 300
     stats:
       attackInterval: 0
       attackRange: 2
       splashRadius: 0
       pierceCount: 0
+      areaTargets: 0
+    statusEffects: []
+  subB:
+    upgradeName: Razor Sharp
+    description: Can hit more Enemy per shot.
+    cost: 1200
+    stats:
+      attackInterval: 0
+      attackRange: 0
+      splashRadius: 0
+      pierceCount: 1
       areaTargets: 0
     statusEffects: []

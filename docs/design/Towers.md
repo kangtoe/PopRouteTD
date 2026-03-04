@@ -50,40 +50,35 @@
 
 ## 유닛 목록
 
-- **Basic Shooter**
+- **Scout**
   - 관통력: 보통 / 비용: 낮음
   - 단일 타겟 원거리 공격
   - 가장 기본적인 공격 유닛
   - Sub A: Elite (스탯 보너스)
   - Sub B: Frost (감속 부여)
 
-- **Bomb Shooter**
+- **Mortar**
   - 관통력: 보통 / 비용: 보통
   - 스플래시 범위 공격
   - 밀집 적 처리 특화
   - Sub A: Wide Area (스플래시 확대)
   - Sub B: Incendiary (화상 부여)
 
-- **Energy Generator**
-  - 관통력: 없음 / 비용: 낮음
-  - 주기적으로 골드 생산
-  - 자원 수급용 유닛 (업그레이드 없음)
-
-- **Pierce Shooter**
+- **Lancer**
   - 관통력: 높음 / 비용: 높음
   - 관통 발사체 (다수의 적을 관통)
   - 다수의 적을 상대하는 고급 딜러
   - Sub A: Rapid Fire (공격속도 강화)
   - Sub B: Impact (기절 부여)
 
-- **Slow Shooter**
+- **Frost**
   - 관통력: 낮음 / 비용: 보통
   - 감속 상태이상 부여
   - 적 진행을 늦추는 지원 유닛
   - Sub A: Frostbite (화상 추가)
   - Sub B: Freeze (감속 강화)
 
-- **Rapid Shooter**
+- **Gatling**
   - 관통력: 낮음 / 비용: 보통
   - 빠른 연사속도 단일 타겟 공격
   - 약한 적 다수 처리 특화

@@ -23,11 +23,11 @@ public static class TowerVisualGenerator
         LoadSprites();
 
         GenerateBase();
-        GenerateBasic();
-        GenerateBomb();
-        GeneratePierce();
-        GenerateSlow();
-        GenerateRapid();
+        GenerateScout();
+        GenerateMortar();
+        GenerateLancer();
+        GenerateFrost();
+        GenerateGatling();
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -79,12 +79,12 @@ public static class TowerVisualGenerator
         PrefabUtility.UnloadPrefabContents(root);
     }
 
-    // ───────── Basic Shooter ─────────
+    // ───────── Scout ─────────
     // Body: Circle + Square barrel
     // Sub A (Elite): stat bonus   Sub B (Frost): slow
-    private static void GenerateBasic()
+    private static void GenerateScout()
     {
-        var root = BeginVariant("Tower_Basic");
+        var root = BeginVariant("Tower_Scout");
         var body = GetBodyColor(root);
 
         var m2 = FindPart(root, "Main_2");
@@ -111,15 +111,15 @@ public static class TowerVisualGenerator
         S(sb, "Cooler",     sprCircle,   P(0, 0.7f),     Sc(0.15f, 0.15f), frost);
         S(sb, "IceCrystal", sprTriangle, P(0.35f, 0.4f), Sc(0.12f, 0.12f), frost);
 
-        EndVariant(root, "Tower_Basic");
+        EndVariant(root, "Tower_Scout");
     }
 
-    // ───────── Bomb Shooter ─────────
+    // ───────── Mortar ─────────
     // Body: Square body + Capsule barrel
     // Sub A (Wide Area): splash radius   Sub B (Incendiary): burn
-    private static void GenerateBomb()
+    private static void GenerateMortar()
     {
-        var root = BeginVariant("Tower_Bomb");
+        var root = BeginVariant("Tower_Mortar");
         var body = GetBodyColor(root);
 
         var m2 = FindPart(root, "Main_2");
@@ -146,15 +146,15 @@ public static class TowerVisualGenerator
         S(sb, "FlameEmblem",  sprTriangle, P(0, 0.3f),  Sc(0.15f, 0.15f), flame);
         S(sb, "FlameBarrel",  sprCapsule,  P(0, 0.75f), Sc(0.14f, 0.18f), flame);
 
-        EndVariant(root, "Tower_Bomb");
+        EndVariant(root, "Tower_Mortar");
     }
 
-    // ───────── Pierce Shooter ─────────
+    // ───────── Lancer ─────────
     // Body: Circle + Capsule long barrel
     // Sub A (Rapid Fire): attack speed   Sub B (Impact): stun
-    private static void GeneratePierce()
+    private static void GenerateLancer()
     {
-        var root = BeginVariant("Tower_Pierce");
+        var root = BeginVariant("Tower_Lancer");
         var body = GetBodyColor(root);
 
         var m2 = FindPart(root, "Main_2");
@@ -181,15 +181,15 @@ public static class TowerVisualGenerator
         S(sb, "ImpactPlate",  sprTriangle, P(0, 0.3f),     Sc(0.15f, 0.15f), impact);
         S(sb, "Reinforcement", sprSquare,  P(0, -0.25f),   Sc(0.2f, 0.08f),  impact);
 
-        EndVariant(root, "Tower_Pierce");
+        EndVariant(root, "Tower_Lancer");
     }
 
-    // ───────── Slow Shooter ─────────
+    // ───────── Frost ─────────
     // Body: Circle + Triangle crystal top
     // Sub A (Frostbite): adds burn   Sub B (Freeze): enhanced slow
-    private static void GenerateSlow()
+    private static void GenerateFrost()
     {
-        var root = BeginVariant("Tower_Slower");
+        var root = BeginVariant("Tower_Frost");
         var body = GetBodyColor(root);
 
         var m2 = FindPart(root, "Main_2");
@@ -217,15 +217,15 @@ public static class TowerVisualGenerator
         S(sb, "CoolerL", sprCircle, P(-0.4f, -0.1f), Sc(0.12f, 0.12f), ice);
         S(sb, "CoolerR", sprCircle, P(0.4f, -0.1f),  Sc(0.12f, 0.12f), ice);
 
-        EndVariant(root, "Tower_Slower");
+        EndVariant(root, "Tower_Frost");
     }
 
-    // ───────── Rapid Shooter ─────────
+    // ───────── Gatling ─────────
     // Body: Circle (small) + Square barrel
     // Sub A (Enhance): ATK bonus   Sub B (Spread): splash conversion
-    private static void GenerateRapid()
+    private static void GenerateGatling()
     {
-        var root = BeginVariant("Tower_Rapid");
+        var root = BeginVariant("Tower_Gatling");
         var body = GetBodyColor(root);
 
         var m2 = FindPart(root, "Main_2");
@@ -254,7 +254,7 @@ public static class TowerVisualGenerator
         S(sb, "SpreadFinL",   sprTriangle, P(-0.35f, 0.4f), Sc(0.1f, 0.1f), spread);
         S(sb, "SpreadFinR",   sprTriangle, P(0.35f, 0.4f),  Sc(0.1f, 0.1f), spread);
 
-        EndVariant(root, "Tower_Rapid");
+        EndVariant(root, "Tower_Gatling");
     }
 
     // ───────── Helpers ─────────

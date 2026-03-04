@@ -58,12 +58,12 @@ public class TowerUpgradeDataEditor : Editor
         if (data.subA?.stats != null) { sp |= data.subA.stats.splashRadius > 0; }
         if (data.subB?.stats != null) { sp |= data.subB.stats.splashRadius > 0; }
 
-        float basicDps = 0f, basicRange = 0f;
-        int basicCost = 0;
-        if (baseCost > 0) GetBasicTowerInfo(out basicDps, out basicRange, out basicCost);
-        float basicDwell = enemySpeed > 0 ? 2f * basicRange / enemySpeed : 0;
-        float basicExpDmg = basicDps * basicDwell;
-        float baselineEff = basicCost > 0 ? basicExpDmg / basicCost : 0;
+        float scoutDps = 0f, scoutRange = 0f;
+        int scoutCost = 0;
+        if (baseCost > 0) GetScoutTowerInfo(out scoutDps, out scoutRange, out scoutCost);
+        float basicDwell = enemySpeed > 0 ? 2f * scoutRange / enemySpeed : 0;
+        float scoutExpDmg = scoutDps * basicDwell;
+        float baselineEff = scoutCost > 0 ? scoutExpDmg / scoutCost : 0;
         float[] dpsArr = new float[4];
         float[] cumExpDmg = new float[4];
         for (int i = 0; i < 4; i++)
@@ -84,7 +84,7 @@ public class TowerUpgradeDataEditor : Editor
                           enemySpeed <= 3.0f ? "(파랑)" :
                           enemySpeed <= 3.5f ? "(남색)" : "(보라)";
         EditorGUILayout.LabelField(
-            $"  체류시간 = 2 × 사거리 / {enemySpeed:F1} {speedRef}    |    기준: BasicTower Lv1 기대피해={basicExpDmg:F2}, 기대피해/비용×100={baselineEff * 100:F2}",
+            $"  체류시간 = 2 × 사거리 / {enemySpeed:F1} {speedRef}    |    기준: Scout Lv1 기대피해={scoutExpDmg:F2}, 기대피해/비용×100={baselineEff * 100:F2}",
             EditorStyles.miniLabel);
         EditorGUILayout.Space(3);
 
@@ -118,8 +118,8 @@ public class TowerUpgradeDataEditor : Editor
 
             C(FormatDelta(deltaDps, i == 0, "F2"), 40);
             C(FormatDelta(deltaEffMaxDmg, i == 0, "F1"), 48);
-            C(VsDps(deltaDps, basicDps, i == 0), 50);
-            C(VsExpDmg(deltaEffMaxDmg, basicExpDmg, i == 0), 50);
+            C(VsDps(deltaDps, scoutDps, i == 0), 50);
+            C(VsExpDmg(deltaEffMaxDmg, scoutExpDmg, i == 0), 50);
             DrawVsBaseline(deltaEffMaxDmg, mains[i].cost, baselineEff, 50);
             DrawEffectLabel(fxText);
 
@@ -129,8 +129,8 @@ public class TowerUpgradeDataEditor : Editor
         if (data.subA != null || data.subB != null)
         {
             EditorGUILayout.Space(2);
-            DrawSingleSubRow("A", data.subA, cum[3], dpsArr[3], cumExpDmg[3], baselineEff, basicDps, basicExpDmg, sp);
-            DrawSingleSubRow("B", data.subB, cum[3], dpsArr[3], cumExpDmg[3], baselineEff, basicDps, basicExpDmg, sp);
+            DrawSingleSubRow("A", data.subA, cum[3], dpsArr[3], cumExpDmg[3], baselineEff, scoutDps, scoutExpDmg, sp);
+            DrawSingleSubRow("B", data.subB, cum[3], dpsArr[3], cumExpDmg[3], baselineEff, scoutDps, scoutExpDmg, sp);
         }
 
         // ── 누적 테이블 ──
@@ -161,8 +161,8 @@ public class TowerUpgradeDataEditor : Editor
             }
             C($"{costs[i]}", 42); C($"{dps:F2}", 40);
             C(float.IsNaN(effMaxDmg) ? "ERR" : $"{effMaxDmg:F1}", 48);
-            C(basicDps > 0 ? $"{dps / basicDps:F2}\ubc30" : "-", 50);
-            C(VsExpDmg(effMaxDmg, basicExpDmg, true), 50);
+            C(scoutDps > 0 ? $"{dps / scoutDps:F2}\ubc30" : "-", 50);
+            C(VsExpDmg(effMaxDmg, scoutExpDmg, true), 50);
 
             DrawVsBaseline(deltaEffMaxDmg, levelCost, baselineEff, 50);
             DrawEffectLabel(fxText);
@@ -182,14 +182,14 @@ public class TowerUpgradeDataEditor : Editor
                 var s = Clone(lv4);
                 if (data.subA.stats != null) s.Add(data.subA.stats);
                 SubAnalysisRow("+A", s, lv4Cost + data.subA.cost,
-                    data.subA.cost, cumExpDmg[3], baselineEff, basicDps, basicExpDmg, sp, AccumEffects(mains, 3, data.subA));
+                    data.subA.cost, cumExpDmg[3], baselineEff, scoutDps, scoutExpDmg, sp, AccumEffects(mains, 3, data.subA));
             }
             if (data.subB != null)
             {
                 var s = Clone(lv4);
                 if (data.subB.stats != null) s.Add(data.subB.stats);
                 SubAnalysisRow("+B", s, lv4Cost + data.subB.cost,
-                    data.subB.cost, cumExpDmg[3], baselineEff, basicDps, basicExpDmg, sp, AccumEffects(mains, 3, data.subB));
+                    data.subB.cost, cumExpDmg[3], baselineEff, scoutDps, scoutExpDmg, sp, AccumEffects(mains, 3, data.subB));
             }
             if (data.subA != null && data.subB != null)
             {
@@ -198,7 +198,7 @@ public class TowerUpgradeDataEditor : Editor
                 if (data.subB.stats != null) s.Add(data.subB.stats);
                 int abCost = data.subA.cost + data.subB.cost;
                 SubAnalysisRow("+AB", s, lv4Cost + abCost,
-                    abCost, cumExpDmg[3], baselineEff, basicDps, basicExpDmg, sp, AccumEffects(mains, 3, data.subA, data.subB));
+                    abCost, cumExpDmg[3], baselineEff, scoutDps, scoutExpDmg, sp, AccumEffects(mains, 3, data.subA, data.subB));
             }
         }
 
@@ -229,7 +229,7 @@ public class TowerUpgradeDataEditor : Editor
     }
 
     private void SubAnalysisRow(string label, TowerStats s, int totalCost,
-        int subCost, float lv4ExpDmg, float baselineEff, float basicDps, float basicExpDmg, bool sp, string fxText)
+        int subCost, float lv4ExpDmg, float baselineEff, float scoutDps, float scoutExpDmg, bool sp, string fxText)
     {
         float dps = CalcDps(s);
         float dwell = enemySpeed > 0 ? 2f * s.attackRange / enemySpeed : 0;
@@ -245,8 +245,8 @@ public class TowerUpgradeDataEditor : Editor
         }
         C($"{totalCost}", 42); C($"{dps:F2}", 40);
         C(float.IsNaN(effMaxDmg) ? "ERR" : $"{effMaxDmg:F1}", 48);
-        C(basicDps > 0 ? $"{dps / basicDps:F2}\ubc30" : "-", 50);
-        C(VsExpDmg(effMaxDmg, basicExpDmg, true), 50);
+        C(scoutDps > 0 ? $"{dps / scoutDps:F2}\ubc30" : "-", 50);
+        C(VsExpDmg(effMaxDmg, scoutExpDmg, true), 50);
         float deltaEffMaxDmg = effMaxDmg - lv4ExpDmg;
         DrawVsBaseline(deltaEffMaxDmg, subCost, baselineEff, 50);
         DrawEffectLabel(fxText);
@@ -281,20 +281,20 @@ public class TowerUpgradeDataEditor : Editor
         GUILayout.Label(hasFx ? $"<color=#2196F3>{fxText}</color>" : "-", RichStyle);
     }
 
-    private static void GetBasicTowerInfo(out float basicDps, out float basicRange, out int basicCost)
+    private static void GetScoutTowerInfo(out float scoutDps, out float scoutRange, out int scoutCost)
     {
-        basicDps = 0f; basicRange = 0f; basicCost = 0;
-        const string BasicTowerName = "BasicTower";
+        scoutDps = 0f; scoutRange = 0f; scoutCost = 0;
+        const string ScoutTowerName = "Scout";
         var guids = AssetDatabase.FindAssets("t:TowerUpgradeData");
         foreach (var guid in guids)
         {
             var path = AssetDatabase.GUIDToAssetPath(guid);
             var td = AssetDatabase.LoadAssetAtPath<TowerUpgradeData>(path);
-            if (td == null || td.towerName != BasicTowerName) continue;
+            if (td == null || td.towerName != ScoutTowerName) continue;
             if (td.main1 == null || td.main1.stats == null || td.main1.cost <= 0) return;
-            basicDps = CalcDps(td.main1.stats);
-            basicRange = td.main1.stats.attackRange;
-            basicCost = td.main1.cost;
+            scoutDps = CalcDps(td.main1.stats);
+            scoutRange = td.main1.stats.attackRange;
+            scoutCost = td.main1.cost;
             return;
         }
     }
@@ -313,7 +313,7 @@ public class TowerUpgradeDataEditor : Editor
     }
 
     private void DrawSingleSubRow(string label, UpgradeLevel sub,
-        TowerStats lv4, float lv4Dps, float lv4ExpDmg, float baselineEff, float basicDps, float basicExpDmg, bool sp)
+        TowerStats lv4, float lv4Dps, float lv4ExpDmg, float baselineEff, float scoutDps, float scoutExpDmg, bool sp)
     {
         if (sub == null) return;
         var ls = sub.stats;
@@ -349,8 +349,8 @@ public class TowerUpgradeDataEditor : Editor
 
         C(FormatDelta(deltaDps, false, "F2"), 40);
         C(FormatDelta(deltaEffMaxDmg, false, "F1"), 48);
-        C(VsDps(deltaDps, basicDps, false), 50);
-        C(VsExpDmg(deltaEffMaxDmg, basicExpDmg, false), 50);
+        C(VsDps(deltaDps, scoutDps, false), 50);
+        C(VsExpDmg(deltaEffMaxDmg, scoutExpDmg, false), 50);
         DrawVsBaseline(deltaEffMaxDmg, sub.cost, baselineEff, 50);
         DrawEffectLabel(fxText);
         EditorGUILayout.EndHorizontal();
@@ -387,18 +387,18 @@ public class TowerUpgradeDataEditor : Editor
         return v > 0 ? $"+{v}" : $"{v}";
     }
 
-    private static string VsDps(float value, float basicDps, bool isBase)
+    private static string VsDps(float value, float scoutDps, bool isBase)
     {
-        if (basicDps <= 0) return "-";
-        float ratio = value / basicDps;
+        if (scoutDps <= 0) return "-";
+        float ratio = value / scoutDps;
         string s = FormatDelta(ratio, isBase, "F2");
         return s == "-" ? "-" : s + "\ubc30";
     }
 
-    private static string VsExpDmg(float value, float basicExpDmg, bool isBase)
+    private static string VsExpDmg(float value, float scoutExpDmg, bool isBase)
     {
-        if (float.IsNaN(value) || basicExpDmg <= 0) return "-";
-        float ratio = value / basicExpDmg;
+        if (float.IsNaN(value) || scoutExpDmg <= 0) return "-";
+        float ratio = value / scoutExpDmg;
         string s = FormatDelta(ratio, isBase, "F2");
         return s == "-" ? "-" : s + "\ubc30";
     }
