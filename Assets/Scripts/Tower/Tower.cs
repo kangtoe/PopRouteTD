@@ -36,6 +36,7 @@ public class Tower : MonoBehaviour
     private Coroutine boingCoroutine;
     private Coroutine fireBoingCoroutine;
     private Vector3 originalScale;
+    public Vector3 OriginalScale => originalScale;
 
     public string TowerName => upgradeData != null ? upgradeData.towerName : "";
     public int Cost => upgradeData != null ? upgradeData.main1.cost : 0;
@@ -335,10 +336,10 @@ public class Tower : MonoBehaviour
             if (range <= 0f && upgradeData != null)
                 range = upgradeData.main1.stats.attackRange;
             float diameter = range * 2f;
-            Vector3 parentScale = rangeIndicator.transform.parent.lossyScale;
+            Vector3 scale = originalScale.x > 0f ? originalScale : rangeIndicator.transform.parent.lossyScale;
             rangeIndicator.transform.localScale = new Vector3(
-                diameter / parentScale.x,
-                diameter / parentScale.y,
+                diameter / scale.x,
+                diameter / scale.y,
                 1f);
         }
     }

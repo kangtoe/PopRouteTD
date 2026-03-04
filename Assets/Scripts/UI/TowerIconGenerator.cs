@@ -30,6 +30,7 @@ public static class TowerIconGenerator
             new Vector3(OffScreenPos, OffScreenPos, 0f), Quaternion.identity);
 
         PrepareInstance(instance);
+        ResetLiveScale(instance, tower);
 
         var cloneTower = instance.GetComponent<Tower>();
         for (int level = 2; level <= targetMainLevel; level++)
@@ -47,6 +48,7 @@ public static class TowerIconGenerator
             new Vector3(OffScreenPos, OffScreenPos, 0f), Quaternion.identity);
 
         PrepareInstance(instance);
+        ResetLiveScale(instance, tower);
 
         var cloneTower = instance.GetComponent<Tower>();
         var visual = cloneTower.GetSubVisual(sub);
@@ -77,6 +79,14 @@ public static class TowerIconGenerator
             if (bomb.RangeIndicator != null)
                 bomb.RangeIndicator.gameObject.SetActive(false);
         }
+    }
+
+    private static void ResetLiveScale(GameObject instance, Tower original)
+    {
+        instance.transform.localScale = original.OriginalScale;
+        var cloneTower = instance.GetComponent<Tower>();
+        if (cloneTower != null && cloneTower.Body != null)
+            cloneTower.Body.localScale = Vector3.one;
     }
 
     private static Sprite CaptureIcon(GameObject instance, float cameraOffsetY = 0f)
