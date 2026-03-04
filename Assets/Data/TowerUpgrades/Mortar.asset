@@ -17,9 +17,9 @@ MonoBehaviour:
   main1:
     upgradeName: Level 1
     description: Level Upgrade
-    cost: 500
+    cost: 800
     stats:
-      attackInterval: 1.5
+      attackInterval: 1.75
       attackRange: 4
       splashRadius: 1
       pierceCount: 1
@@ -28,10 +28,10 @@ MonoBehaviour:
   main2:
     upgradeName: Level 2
     description: Level Upgrade
-    cost: 400
+    cost: 550
     stats:
       attackInterval: -0.15
-      attackRange: 1
+      attackRange: 0.5
       splashRadius: 0.2
       pierceCount: 0
       areaTargets: 2
@@ -39,10 +39,10 @@ MonoBehaviour:
   main3:
     upgradeName: Level 3
     description: Level Upgrade
-    cost: 550
+    cost: 850
     stats:
       attackInterval: -0.15
-      attackRange: 1
+      attackRange: 0.5
       splashRadius: 0.2
       pierceCount: 0
       areaTargets: 2
@@ -50,10 +50,10 @@ MonoBehaviour:
   main4:
     upgradeName: Level 4
     description: Level Upgrade
-    cost: 800
+    cost: 1150
     stats:
       attackInterval: -0.15
-      attackRange: 1
+      attackRange: 0.5
       splashRadius: 0.2
       pierceCount: 0
       areaTargets: 2
@@ -61,7 +61,7 @@ MonoBehaviour:
   subA:
     upgradeName: Cluster
     description: Greatly expands splash radius
-    cost: 750
+    cost: 1250
     stats:
       attackInterval: 0
       attackRange: 0

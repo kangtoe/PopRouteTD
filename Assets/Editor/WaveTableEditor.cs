@@ -291,13 +291,8 @@ public class WaveTableEditor : Editor
             int hpPerLayer = isEnhanced ? GameConstants.EnhancedMultiplier : 1;
             int dmg = layer * hpPerLayer + (hasShield ? GameConstants.DefaultShieldHp : 0);
 
-            int gold = hasShield ? GameConstants.DefaultShieldHp : 0;
-            for (int l = layer; l >= 1; l--)
-            {
-                int reward = GameConstants.BaseLayerReward;
-                if (isEnhanced) reward *= GameConstants.EnhancedMultiplier;
-                gold += reward;
-            }
+            int gold = hasShield ? GameConstants.ShieldReward : 0;
+            gold += layer * GameConstants.BaseLayerReward;
 
             totalDmg += dmg * count;
             totalGold += gold * count;

@@ -17,30 +17,30 @@ MonoBehaviour:
     - layer: 1
       variant: 0
       count: 20
-      interval: 1
+      interval: 1.5
+  - groups:
+    - layer: 1
+      variant: 0
+      count: 35
+      interval: 0.85
+  - groups:
+    - layer: 1
+      variant: 0
+      count: 25
+      interval: 0.9
+    - layer: 2
+      variant: 0
+      count: 5
+      interval: 0.9
   - groups:
     - layer: 1
       variant: 0
       count: 35
       interval: 0.75
-  - groups:
-    - layer: 1
-      variant: 0
-      count: 25
-      interval: 0.76
-    - layer: 2
-      variant: 0
-      count: 5
-      interval: 0.76
-  - groups:
-    - layer: 1
-      variant: 0
-      count: 35
-      interval: 0.74
     - layer: 2
       variant: 0
       count: 18
-      interval: 0.74
+      interval: 0.75
   - groups:
     - layer: 1
       variant: 0

@@ -62,6 +62,12 @@ public static class GameConstants
     public const string SortUI = "UI";
     public const string SortPreview = "Preview";
 
+    // Wave Scaling
+    public const float WaveScalingRate = 1.25f;
+    public const int WaveBaseBudget = 400;
+    public const float WaveBaseDuration = 30f;
+    public const float WaveMinInterval = 0.02f;
+
     // Wave Timing
     public const float PostSpawnTimeout = 15f;
     public const float PrepareDuration = 20f;
@@ -81,20 +87,30 @@ public static class GameConstants
 
     // Enhanced 배율
     public const int EnhancedMultiplier = 2;
-    public const float EnhancedSpeedMultiplier = 1.2f;
+    public const float EnhancedSpeedMultiplier = 1.5f;
     public const float EnhancedStatusResistance = 0.5f;
 
     // Shield
     public const int DefaultShieldHp = 10;
+    public const int ShieldReward = 5;
 
     // Status Effects (고정 수치)
     public const int BurnDamagePerTick = 1;
     public const float BurnTickInterval = 0.5f;
     public const float SlowSpeedMultiplier = 0.5f;
 
-    public static float GetEnemySpeed(EnemyLayer layer)
+    // Enemy Speed
+    public const float EnemyMinBaseSpeed = 0.75f;
+    public const float EnemyMaxBaseSpeed = 2.0f;
+    public const int EnemySpeedMaxWave = 40;
+    public const float EnemySpeedPerLayer = 0.75f;
+
+    public static float GetEnemySpeed(EnemyLayer layer, int waveNumber)
     {
-        return 1.0f + ((int)layer - 1) * 0.5f;
+        float t = (float)(waveNumber - 1) / (EnemySpeedMaxWave - 1);
+        if (t < 0f) t = 0f; else if (t > 1f) t = 1f;
+        float baseSpeed = EnemyMinBaseSpeed + (EnemyMaxBaseSpeed - EnemyMinBaseSpeed) * t;
+        return baseSpeed + ((int)layer - 1) * EnemySpeedPerLayer;
     }
 
     // UI Colors

@@ -17,7 +17,7 @@ MonoBehaviour:
   main1:
     upgradeName: Level 1
     description: Level Upgrade
-    cost: 250
+    cost: 225
     stats:
       attackInterval: 1
       attackRange: 4.5
@@ -30,7 +30,7 @@ MonoBehaviour:
   main2:
     upgradeName: Level 2
     description: Level Upgrade
-    cost: 150
+    cost: 120
     stats:
       attackInterval: -0.1
       attackRange: 0.5
@@ -43,7 +43,7 @@ MonoBehaviour:
   main3:
     upgradeName: Level 3
     description: Level Upgrade
-    cost: 250
+    cost: 150
     stats:
       attackInterval: -0.1
       attackRange: 0.5
@@ -56,7 +56,7 @@ MonoBehaviour:
   main4:
     upgradeName: Level 4
     description: Level Upgrade
-    cost: 450
+    cost: 210
     stats:
       attackInterval: -0.1
       attackRange: 0.5
@@ -69,7 +69,7 @@ MonoBehaviour:
   subA:
     upgradeName: Bigger Cold
     description: Can slow 3 additional Enemies per shot
-    cost: 300
+    cost: 500
     stats:
       attackInterval: 0
       attackRange: 0

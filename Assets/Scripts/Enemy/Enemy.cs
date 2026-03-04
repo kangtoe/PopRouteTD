@@ -117,7 +117,7 @@ public class Enemy : MonoBehaviour
         SetColor(layerColors.GetColor(currentLayer));
         ApplyVariantVisual();
 
-        float speed = GameConstants.GetEnemySpeed(currentLayer);
+        float speed = GameConstants.GetEnemySpeed(currentLayer, GameManager.Instance.CurrentWave);
         if (IsEnhanced) speed *= GameConstants.EnhancedSpeedMultiplier;
         follower.Initialize(path, speed);
         follower.OnReachedEnd += OnReachBase;
@@ -132,8 +132,7 @@ public class Enemy : MonoBehaviour
 
     private int GetReward()
     {
-        int baseReward = GameConstants.BaseLayerReward;
-        return IsEnhanced ? baseReward * GameConstants.EnhancedMultiplier : baseReward;
+        return GameConstants.BaseLayerReward;
     }
 
     private static bool IsShieldVariant(EnemyVariant variant)
@@ -235,7 +234,7 @@ public class Enemy : MonoBehaviour
 
     private void BreakShield(bool giveReward = true)
     {
-        if (giveReward) ResourceManager.Instance.AddGold(shieldHp);
+        if (giveReward) ResourceManager.Instance.AddGold(GameConstants.ShieldReward);
         currentShieldHp = 0;
 
         if (currentVariant == EnemyVariant.Shielded)
@@ -248,7 +247,7 @@ public class Enemy : MonoBehaviour
 
     private void ApplyLayerSpeed()
     {
-        float speed = GameConstants.GetEnemySpeed(currentLayer);
+        float speed = GameConstants.GetEnemySpeed(currentLayer, GameManager.Instance.CurrentWave);
         if (IsEnhanced) speed *= GameConstants.EnhancedSpeedMultiplier;
         follower.SetSpeed(speed);
     }

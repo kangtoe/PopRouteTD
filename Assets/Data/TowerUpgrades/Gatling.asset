@@ -17,9 +17,9 @@ MonoBehaviour:
   main1:
     upgradeName: Level 1
     description: Level Upgrade
-    cost: 1500
+    cost: 1750
     stats:
-      attackInterval: 0.1
+      attackInterval: 0.2
       attackRange: 5
       splashRadius: 0
       pierceCount: 1
@@ -28,32 +28,32 @@ MonoBehaviour:
   main2:
     upgradeName: Level 2
     description: Level Upgrade
-    cost: 1500
+    cost: 1000
     stats:
-      attackInterval: 0
-      attackRange: 1
+      attackInterval: -0.025
+      attackRange: 0.75
       splashRadius: 0
-      pierceCount: 1
+      pierceCount: 0
       areaTargets: 0
     statusEffects: []
   main3:
     upgradeName: Level 3
     description: Level Upgrade
-    cost: 2000
+    cost: 1200
     stats:
-      attackInterval: 0
-      attackRange: 1.2
+      attackInterval: -0.025
+      attackRange: 0.75
       splashRadius: 0
-      pierceCount: 1
+      pierceCount: 0
       areaTargets: 0
     statusEffects: []
   main4:
     upgradeName: Level 4
     description: Level Upgrade
-    cost: 2500
+    cost: 1500
     stats:
-      attackInterval: -0.02
-      attackRange: 0
+      attackInterval: -0.025
+      attackRange: 0.75
       splashRadius: 0
       pierceCount: 0
       areaTargets: 0
@@ -61,7 +61,7 @@ MonoBehaviour:
   subA:
     upgradeName: Shock Shot
     description: Enemies get slowed after each hit.
-    cost: 3000
+    cost: 1800
     stats:
       attackInterval: 0
       attackRange: 0
@@ -77,7 +77,7 @@ MonoBehaviour:
     cost: 1500
     stats:
       attackInterval: 0
-      attackRange: 2
+      attackRange: 1.5
       splashRadius: 0
       pierceCount: 0
       areaTargets: 0

@@ -17,12 +17,12 @@ MonoBehaviour:
   main1:
     upgradeName: Level 1
     description: Level Upgrade
-    cost: 350
+    cost: 550
     stats:
-      attackInterval: 2
-      attackRange: 10
+      attackInterval: 2.5
+      attackRange: 8
       splashRadius: 0
-      pierceCount: 4
+      pierceCount: 3
       areaTargets: 0
     statusEffects: []
   main2:
@@ -30,8 +30,8 @@ MonoBehaviour:
     description: Level Upgrade
     cost: 300
     stats:
-      attackInterval: -0.25
-      attackRange: 2
+      attackInterval: -0.2
+      attackRange: 1
       splashRadius: 0
       pierceCount: 1
       areaTargets: 0
@@ -41,8 +41,8 @@ MonoBehaviour:
     description: Level Upgrade
     cost: 600
     stats:
-      attackInterval: -0.25
-      attackRange: 2
+      attackInterval: -0.2
+      attackRange: 1
       splashRadius: 0
       pierceCount: 1
       areaTargets: 0
@@ -52,8 +52,8 @@ MonoBehaviour:
     description: Level Upgrade
     cost: 1000
     stats:
-      attackInterval: -0.25
-      attackRange: 2
+      attackInterval: -0.2
+      attackRange: 1
       splashRadius: 0
       pierceCount: 2
       areaTargets: 0

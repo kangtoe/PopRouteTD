@@ -16,10 +16,10 @@ MonoBehaviour:
   description: Single-target ranged attack
   main1:
     upgradeName: Level 1
-    description: Level Upgrade
-    cost: 200
+    description: Level Upgrade 1
+    cost: 180
     stats:
-      attackInterval: 1
+      attackInterval: 1.5
       attackRange: 3.2
       splashRadius: 0
       pierceCount: 1
@@ -27,33 +27,33 @@ MonoBehaviour:
     statusEffects: []
   main2:
     upgradeName: Level 2
-    description: Level Upgrade
-    cost: 150
+    description: Level Upgrade 2
+    cost: 50
     stats:
-      attackInterval: -0.3
-      attackRange: 1
+      attackInterval: -0.1
+      attackRange: 0.5
       splashRadius: 0
       pierceCount: 0
       areaTargets: 0
     statusEffects: []
   main3:
     upgradeName: Level 3
-    description: Level Upgrade
-    cost: 250
+    description: Level Upgrade 3
+    cost: 80
     stats:
-      attackInterval: -0.2
-      attackRange: 1
+      attackInterval: -0.15
+      attackRange: 0.5
       splashRadius: 0
       pierceCount: 0
       areaTargets: 0
     statusEffects: []
   main4:
     upgradeName: Level 4
-    description: Level Upgrade
-    cost: 350
+    description: Level Upgrade 4
+    cost: 120
     stats:
-      attackInterval: -0.1
-      attackRange: 1
+      attackInterval: -0.2
+      attackRange: 0.5
       splashRadius: 0
       pierceCount: 0
       areaTargets: 0
@@ -61,7 +61,7 @@ MonoBehaviour:
   subA:
     upgradeName: Eyesight
     description: Shoots even further!
-    cost: 300
+    cost: 250
     stats:
       attackInterval: 0
       attackRange: 2
@@ -72,7 +72,7 @@ MonoBehaviour:
   subB:
     upgradeName: Razor Sharp
     description: Can hit more Enemy per shot.
-    cost: 1200
+    cost: 500
     stats:
       attackInterval: 0
       attackRange: 0
