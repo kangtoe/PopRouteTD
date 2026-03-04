@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,31 +9,57 @@ public class TowerSelectUI : MonoBehaviour
     public static TowerSelectUI Instance { get; private set; }
 
     [SerializeField] private GameObject content;
-    [SerializeField] private Text nameText;
-    [SerializeField] private List<GameObject> towerPrefabs;
-    [SerializeField] private List<GameObject> bombPrefabs;
-    [SerializeField] private Transform buttonParent;
-    [SerializeField] private Transform bombButtonParent;
-    [SerializeField] private Text bombNameText;
-    [SerializeField] private TowerButtonUI towerButtonPrefab;
+
+    [Serializable]
+    public struct TowerSlot
+    {
+        public TowerButtonUI button;
+        public Tower prefab;
+    }
+
+    [Serializable]
+    public struct BombSlot
+    {
+        public TowerButtonUI button;
+        public Bomb prefab;
+    }
+
+    [Header("Towers")]
+    [SerializeField] private TowerSlot towerSlot1;
+    [SerializeField] private TowerSlot towerSlot2;
+    [SerializeField] private TowerSlot towerSlot3;
+    [SerializeField] private TowerSlot towerSlot4;
+    [SerializeField] private TowerSlot towerSlot5;
+
+    [Header("Bombs")]
+    [SerializeField] private BombSlot bombSlot1;
+
+    [Header("Detail")]
+    [SerializeField] private TowerButtonUI detailCardPrefab;
+
+    private TowerSlot[] towerSlots;
+    private BombSlot[] bombSlots;
 
     private readonly List<Sprite> generatedIcons = new();
-    private readonly List<(TowerButtonUI button, int cost, string label, Sprite icon, string desc)> towerButtons = new();
-    private readonly List<(TowerButtonUI button, int cost, string label, Sprite icon, string desc)> bombButtons = new();
+    private readonly List<(int cost, string label, Sprite icon, string desc)> towerData = new();
+    private readonly List<(int cost, string label, Sprite icon, string desc)> bombData = new();
 
     private TowerButtonUI detailCard;
     private TowerButtonUI draggingButton;
+    private bool eventsInitialized;
 
     private void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
+        towerSlots = new[] { towerSlot1, towerSlot2, towerSlot3, towerSlot4, towerSlot5 };
+        bombSlots = new[] { bombSlot1 };
     }
 
     private void Start()
     {
         if (Instance != this) return;
-        CreateButtons();
+        InitButtons();
         Show();
         ResourceManager.Instance.OnGoldChanged += OnGoldChanged;
         InputManager.Instance.OnDragEnded += ClearDraggingButton;
@@ -60,8 +87,6 @@ public class TowerSelectUI : MonoBehaviour
     public void Show()
     {
         content.SetActive(true);
-        if (nameText != null) nameText.text = "Towers";
-        if (bombNameText != null) bombNameText.text = "Bombs";
     }
 
     public void Hide()
@@ -70,91 +95,92 @@ public class TowerSelectUI : MonoBehaviour
         content.SetActive(false);
     }
 
-    private void CreateButtons()
+    private void InitButtons()
     {
-        foreach (var prefab in towerPrefabs)
-        {
-            var tower = prefab.GetComponent<Tower>();
-            if (tower == null) continue;
+        if (eventsInitialized) return;
+        eventsInitialized = true;
 
-            var tb = Instantiate(towerButtonPrefab, buttonParent);
+        for (int i = 0; i < towerSlots.Length; i++)
+        {
+            var slot = towerSlots[i];
+            if (slot.button == null || slot.prefab == null) continue;
+            var tower = slot.prefab;
 
             string label = tower.TowerName;
             string desc = tower.UpgradeData != null ? tower.UpgradeData.description : "";
-            var icon = TowerIconGenerator.GenerateIcon(prefab);
+            var icon = TowerIconGenerator.GenerateIcon(tower.gameObject);
             generatedIcons.Add(icon);
-            tb.SetAvailable(label, tower.Cost, icon: icon);
-            towerButtons.Add((tb, tower.Cost, label, icon, desc));
+            slot.button.SetAvailable(label, tower.Cost, icon: icon);
+            towerData.Add((tower.Cost, label, icon, desc));
 
-            // PointerDown으로 드래그 배치 시작
-            var p = prefab;
-            var btn = tb;
-            var btnObj = tb.gameObject;
-            var trigger = btnObj.GetComponent<EventTrigger>() ?? btnObj.AddComponent<EventTrigger>();
-            var entry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
-            entry.callback.AddListener(_ =>
+            var prefabObj = tower.gameObject;
+            var btn = slot.button;
+            var trigger = btn.gameObject.GetComponent<EventTrigger>();
+            if (trigger == null) trigger = btn.gameObject.AddComponent<EventTrigger>();
+
+            var down = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
+            down.callback.AddListener(_ =>
             {
-                InputManager.Instance.BeginDrag(p);
+                InputManager.Instance.BeginDrag(prefabObj);
                 if (InputManager.Instance.IsDragging)
                     SetDraggingButton(btn);
             });
-            trigger.triggers.Add(entry);
+            trigger.triggers.Add(down);
 
-            int idx = towerButtons.Count - 1;
-            var enterEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
-            enterEntry.callback.AddListener(_ => ShowTowerDetailCard(idx));
-            trigger.triggers.Add(enterEntry);
+            int idx = towerData.Count - 1;
+            var enter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+            enter.callback.AddListener(_ => ShowDetailCard(idx, false));
+            trigger.triggers.Add(enter);
 
-            var exitEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
-            exitEntry.callback.AddListener(_ => HideDetailCard());
-            trigger.triggers.Add(exitEntry);
+            var exit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+            exit.callback.AddListener(_ => HideDetailCard());
+            trigger.triggers.Add(exit);
         }
 
-        var bombParent = bombButtonParent != null ? bombButtonParent : buttonParent;
-        foreach (var prefab in bombPrefabs)
+        for (int i = 0; i < bombSlots.Length; i++)
         {
-            var bomb = prefab.GetComponent<Bomb>();
-            if (bomb == null) continue;
-
-            var tb = Instantiate(towerButtonPrefab, bombParent);
+            var slot = bombSlots[i];
+            if (slot.button == null || slot.prefab == null) continue;
+            var bomb = slot.prefab;
 
             string label = bomb.BombName;
             string desc = bomb.Description;
-            var icon = TowerIconGenerator.GenerateIcon(prefab);
+            var icon = TowerIconGenerator.GenerateIcon(bomb.gameObject);
             generatedIcons.Add(icon);
-            tb.SetAvailable(label, bomb.Cost, icon: icon);
-            bombButtons.Add((tb, bomb.Cost, label, icon, desc));
+            slot.button.SetAvailable(label, bomb.Cost, icon: icon);
+            bombData.Add((bomb.Cost, label, icon, desc));
 
-            var p = prefab;
-            var btn = tb;
-            var btnObj = tb.gameObject;
-            var trigger = btnObj.GetComponent<EventTrigger>() ?? btnObj.AddComponent<EventTrigger>();
-            var entry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
-            entry.callback.AddListener(_ =>
+            var prefabObj = bomb.gameObject;
+            var btn = slot.button;
+            var trigger = btn.gameObject.GetComponent<EventTrigger>();
+            if (trigger == null) trigger = btn.gameObject.AddComponent<EventTrigger>();
+
+            var down = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
+            down.callback.AddListener(_ =>
             {
-                InputManager.Instance.BeginDrag(p);
+                InputManager.Instance.BeginDrag(prefabObj);
                 if (InputManager.Instance.IsDragging)
                     SetDraggingButton(btn);
             });
-            trigger.triggers.Add(entry);
+            trigger.triggers.Add(down);
 
-            int idx = bombButtons.Count - 1;
-            var enterEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
-            enterEntry.callback.AddListener(_ => ShowBombDetailCard(idx));
-            trigger.triggers.Add(enterEntry);
+            int idx = bombData.Count - 1;
+            var enter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+            enter.callback.AddListener(_ => ShowDetailCard(idx, true));
+            trigger.triggers.Add(enter);
 
-            var exitEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
-            exitEntry.callback.AddListener(_ => HideDetailCard());
-            trigger.triggers.Add(exitEntry);
+            var exit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+            exit.callback.AddListener(_ => HideDetailCard());
+            trigger.triggers.Add(exit);
         }
     }
 
     private void OnGoldChanged(int _)
     {
-        foreach (var (button, cost, label, icon, _) in towerButtons)
-            button.SetAvailable(label, cost, icon: icon);
-        foreach (var (button, cost, label, icon, _) in bombButtons)
-            button.SetAvailable(label, cost, icon: icon);
+        for (int i = 0; i < towerSlots.Length && i < towerData.Count; i++)
+            towerSlots[i].button.SetAvailable(towerData[i].label, towerData[i].cost, icon: towerData[i].icon);
+        for (int i = 0; i < bombSlots.Length && i < bombData.Count; i++)
+            bombSlots[i].button.SetAvailable(bombData[i].label, bombData[i].cost, icon: bombData[i].icon);
 
         if (draggingButton != null)
             draggingButton.SetDragging(true);
@@ -178,32 +204,22 @@ public class TowerSelectUI : MonoBehaviour
     private void EnsureDetailCard()
     {
         if (detailCard == null)
-            detailCard = DetailCardHelper.Create(towerButtonPrefab, content.transform);
+            detailCard = DetailCardHelper.Create(detailCardPrefab, content.transform);
     }
 
-    private void ShowTowerDetailCard(int index)
+    private void ShowDetailCard(int index, bool isBomb)
     {
-        if (index < 0 || index >= towerButtons.Count) return;
-        var (button, _, label, _, desc) = towerButtons[index];
+        var dataList = isBomb ? bombData : towerData;
+        if (index < 0 || index >= dataList.Count) return;
+        var (_, label, _, desc) = dataList[index];
         if (string.IsNullOrEmpty(desc)) return;
+
+        var anchorButton = isBomb ? bombSlots[index].button : towerSlots[index].button;
         EnsureDetailCard();
         DetailCardHelper.Show(detailCard, label, desc);
         DetailCardHelper.PositionLeftOf(
             detailCard.GetComponent<RectTransform>(),
-            button.GetComponent<RectTransform>(),
-            content.GetComponent<RectTransform>());
-    }
-
-    private void ShowBombDetailCard(int index)
-    {
-        if (index < 0 || index >= bombButtons.Count) return;
-        var (button, _, label, _, desc) = bombButtons[index];
-        if (string.IsNullOrEmpty(desc)) return;
-        EnsureDetailCard();
-        DetailCardHelper.Show(detailCard, label, desc);
-        DetailCardHelper.PositionLeftOf(
-            detailCard.GetComponent<RectTransform>(),
-            button.GetComponent<RectTransform>(),
+            anchorButton.GetComponent<RectTransform>(),
             content.GetComponent<RectTransform>());
     }
 

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public static class DetailCardHelper
 {
-    private const float CardGap = 20f;
+    private const float CardGap = 18f;
     private const string ContentName = "_DetailContent";
 
     public static TowerButtonUI Create(TowerButtonUI prefab, Transform parent)
@@ -52,10 +52,10 @@ public static class DetailCardHelper
 
     public static void PositionLeftOf(RectTransform card, RectTransform anchor, RectTransform cardParent)
     {
-        Vector3 anchorWorld = anchor.position;
+        Vector3 anchorCenter = anchor.TransformPoint(anchor.rect.center);
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             cardParent,
-            RectTransformUtility.WorldToScreenPoint(null, anchorWorld),
+            RectTransformUtility.WorldToScreenPoint(null, anchorCenter),
             null,
             out var localPoint);
 

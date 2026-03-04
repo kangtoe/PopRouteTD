@@ -7,9 +7,6 @@ using UnityEngine.UI;
 public class TowerInfoUI : MonoBehaviour
 {
     [SerializeField] private GameObject panel;
-    [SerializeField] private Text towerNameText;
-    [SerializeField] private Text descriptionText;
-
     [Header("Targeting")]
     [SerializeField] private Button firstButton;
     [FormerlySerializedAs("weakButton")]
@@ -22,12 +19,10 @@ public class TowerInfoUI : MonoBehaviour
     [SerializeField] private Text sellButtonText;
 
     [Header("Upgrade")]
-    [SerializeField] private TowerButtonUI upgradeButtonPrefab;
-    [SerializeField] private Transform upgradeButtonParent;
-
-    private TowerButtonUI mainUpgradeButton;
-    private TowerButtonUI subAButton;
-    private TowerButtonUI subBButton;
+    [SerializeField] private TowerButtonUI mainUpgradeButton;
+    [SerializeField] private TowerButtonUI subAButton;
+    [SerializeField] private TowerButtonUI subBButton;
+    [SerializeField] private TowerButtonUI detailCardPrefab;
 
     private Tower selectedTower;
     private bool isPreview;
@@ -40,6 +35,7 @@ public class TowerInfoUI : MonoBehaviour
     private Sprite subBIcon;
 
     private TowerButtonUI detailCard;
+    private bool eventsInitialized;
 
     // Hold-to-confirm
     private const float HoldDuration = 0.5f;
@@ -69,6 +65,8 @@ public class TowerInfoUI : MonoBehaviour
         strongButton.onClick.AddListener(() => OnPriorityClicked(TargetPriority.Strong));
         sellButton.onClick.AddListener(OnSellClicked);
 
+        InitUpgradeEvents();
+        HideUpgradeButtons();
         panel.SetActive(false);
     }
 
@@ -119,7 +117,7 @@ public class TowerInfoUI : MonoBehaviour
         isPreview = false;
         ResetHold();
         HideDetailCard();
-        ClearUpgradeButtons();
+        HideUpgradeButtons();
         CleanupIcons();
         if (selectedTower != null)
         {
@@ -139,7 +137,6 @@ public class TowerInfoUI : MonoBehaviour
         var data = prefabTower.UpgradeData;
         if (data == null) return;
 
-        towerNameText.text = data.towerName;
     }
 
     private void HidePreview()
@@ -161,8 +158,6 @@ public class TowerInfoUI : MonoBehaviour
         HideDetailCard();
         var tower = selectedTower;
 
-        towerNameText.text = tower.TowerName;
-
         SetPriorityButtonsVisible(true);
 
         // 판매
@@ -172,16 +167,13 @@ public class TowerInfoUI : MonoBehaviour
         // 업그레이드 아이콘 생성
         GenerateUpgradeIcons();
 
-        // 업그레이드 버튼 동적 생성 및 갱신
-        CreateUpgradeButtons();
+        // 업그레이드 버튼 갱신
+        mainUpgradeButton.gameObject.SetActive(true);
         UpdateMainButton();
         UpdateSubButtons();
 
         // 우선순위 하이라이트
         UpdatePriorityHighlight();
-
-        // 설명 텍스트
-        UpdateDescription();
 
         // 사거리 표시 갱신
         tower.ShowRange(true);
@@ -194,11 +186,11 @@ public class TowerInfoUI : MonoBehaviour
         UpdateSubButtons();
     }
 
-    private void CreateUpgradeButtons()
+    private void InitUpgradeEvents()
     {
-        ClearUpgradeButtons();
+        if (eventsInitialized) return;
+        eventsInitialized = true;
 
-        mainUpgradeButton = Instantiate(upgradeButtonPrefab, upgradeButtonParent);
         AddUpgradeEvents(mainUpgradeButton, () =>
         {
             if (selectedTower != null && selectedTower.UpgradeMain())
@@ -206,26 +198,27 @@ public class TowerInfoUI : MonoBehaviour
         });
         AddHoverEvents(mainUpgradeButton, 0);
 
-        var subA = selectedTower.GetSubAInfo();
-        var subB = selectedTower.GetSubBInfo();
-        if (subA != null && subB != null)
+        AddUpgradeEvents(subAButton, () =>
         {
-            subAButton = Instantiate(upgradeButtonPrefab, upgradeButtonParent);
-            AddUpgradeEvents(subAButton, () =>
-            {
-                if (selectedTower != null && selectedTower.SelectSub(UpgradeTrack.A))
-                    UpdateDisplay();
-            });
-            AddHoverEvents(subAButton, 1);
+            if (selectedTower != null && selectedTower.SelectSub(UpgradeTrack.A))
+                UpdateDisplay();
+        });
+        AddHoverEvents(subAButton, 1);
 
-            subBButton = Instantiate(upgradeButtonPrefab, upgradeButtonParent);
-            AddUpgradeEvents(subBButton, () =>
-            {
-                if (selectedTower != null && selectedTower.SelectSub(UpgradeTrack.B))
-                    UpdateDisplay();
-            });
-            AddHoverEvents(subBButton, 2);
-        }
+        AddUpgradeEvents(subBButton, () =>
+        {
+            if (selectedTower != null && selectedTower.SelectSub(UpgradeTrack.B))
+                UpdateDisplay();
+        });
+        AddHoverEvents(subBButton, 2);
+    }
+
+    private void HideUpgradeButtons()
+    {
+        ResetHold();
+        mainUpgradeButton.gameObject.SetActive(false);
+        subAButton.gameObject.SetActive(false);
+        subBButton.gameObject.SetActive(false);
     }
 
     private void AddUpgradeEvents(TowerButtonUI btn, Action action)
@@ -293,22 +286,6 @@ public class TowerInfoUI : MonoBehaviour
         }
 
         ShowDetailCard(anchor, label, desc);
-    }
-
-    private void ClearUpgradeButtons()
-    {
-        ResetHold();
-        if (mainUpgradeButton != null) { Destroy(mainUpgradeButton.gameObject); mainUpgradeButton = null; }
-        if (subAButton != null) { Destroy(subAButton.gameObject); subAButton = null; }
-        if (subBButton != null) { Destroy(subBButton.gameObject); subBButton = null; }
-    }
-
-    private void UpdateDescription()
-    {
-        if (descriptionText == null) return;
-        if (selectedTower == null) { descriptionText.text = ""; return; }
-
-        descriptionText.text = selectedTower.UpgradeData != null ? selectedTower.UpgradeData.description : "";
     }
 
     private void UpdateMainButton()
@@ -431,7 +408,7 @@ public class TowerInfoUI : MonoBehaviour
     private void EnsureDetailCard()
     {
         if (detailCard == null)
-            detailCard = DetailCardHelper.Create(upgradeButtonPrefab, panel.transform);
+            detailCard = DetailCardHelper.Create(detailCardPrefab, panel.transform);
     }
 
     private void ShowDetailCard(TowerButtonUI anchor, string label, string desc)
