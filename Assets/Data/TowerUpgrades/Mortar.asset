@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Mortar
   m_EditorClassIdentifier: Assembly-CSharp::TowerUpgradeData
   towerName: Mortar
-  description: Splash area attack
+  description: Blows up groups of foes
   main1:
     upgradeName: Level 1
-    description: Level Upgrade
+    description: Blows up groups of foes
     cost: 800
     stats:
       attackInterval: 1.75
@@ -27,7 +27,7 @@ MonoBehaviour:
     statusEffects: []
   main2:
     upgradeName: Level 2
-    description: Level Upgrade
+    description: Wider blast, hits more foes
     cost: 550
     stats:
       attackInterval: -0.15
@@ -38,7 +38,7 @@ MonoBehaviour:
     statusEffects: []
   main3:
     upgradeName: Level 3
-    description: Level Upgrade
+    description: Even bigger explosions
     cost: 850
     stats:
       attackInterval: -0.15
@@ -49,7 +49,7 @@ MonoBehaviour:
     statusEffects: []
   main4:
     upgradeName: Level 4
-    description: Level Upgrade
+    description: Maximum devastation!
     cost: 1150
     stats:
       attackInterval: -0.15
@@ -60,7 +60,7 @@ MonoBehaviour:
     statusEffects: []
   subA:
     upgradeName: Cluster
-    description: Greatly expands splash radius
+    description: Massive blast radius
     cost: 1250
     stats:
       attackInterval: 0
@@ -71,7 +71,7 @@ MonoBehaviour:
     statusEffects: []
   subB:
     upgradeName: Incendiary
-    description: Grants burn effect
+    description: Sets the ground ablaze
     cost: 850
     stats:
       attackInterval: 0

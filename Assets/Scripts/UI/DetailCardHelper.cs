@@ -72,7 +72,7 @@ public static class DetailCardHelper
         var contentText = rt.Find(ContentName)?.GetComponent<Text>();
 
         if (contentText != null)
-            contentText.text = $"<size=22>{title}</size>\n\n{desc}";
+            contentText.text = $"<size=22>{title}</size>\n\n\"{desc}\"";
 
         card.gameObject.SetActive(true);
     }

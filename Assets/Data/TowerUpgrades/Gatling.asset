@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Gatling
   m_EditorClassIdentifier: Assembly-CSharp::TowerUpgradeData
   towerName: Gatling
-  description: Fast fire rate single-target attack
+  description: A hail of rapid fire
   main1:
     upgradeName: Level 1
-    description: Level Upgrade
+    description: A hail of rapid fire
     cost: 1450
     stats:
       attackInterval: 0.2
@@ -27,7 +27,7 @@ MonoBehaviour:
     statusEffects: []
   main2:
     upgradeName: Level 2
-    description: Level Upgrade
+    description: Even faster, even further
     cost: 850
     stats:
       attackInterval: -0.035
@@ -38,7 +38,7 @@ MonoBehaviour:
     statusEffects: []
   main3:
     upgradeName: Level 3
-    description: Level Upgrade
+    description: The barrel spins even faster
     cost: 1150
     stats:
       attackInterval: -0.03
@@ -49,7 +49,7 @@ MonoBehaviour:
     statusEffects: []
   main4:
     upgradeName: Level 4
-    description: Level Upgrade
+    description: Absolute bullet storm!
     cost: 1550
     stats:
       attackInterval: -0.03
@@ -59,8 +59,8 @@ MonoBehaviour:
       areaTargets: 0
     statusEffects: []
   subA:
-    upgradeName: Shock Shot
-    description: Enemies get slowed after each hit.
+    upgradeName: Shockwave
+    description: Each hit slows them down
     cost: 1250
     stats:
       attackInterval: 0
@@ -73,7 +73,7 @@ MonoBehaviour:
       duration: 0.1
   subB:
     upgradeName: Ultravision
-    description: Enables Tower to shoot very long range
+    description: Sees far, shoots far
     cost: 1250
     stats:
       attackInterval: 0

@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Scout
   m_EditorClassIdentifier: Assembly-CSharp::TowerUpgradeData
   towerName: Scout
-  description: Single-target ranged attack
+  description: Picks off targets with ease
   main1:
     upgradeName: Level 1
-    description: Level Upgrade 1
+    description: Picks off targets with ease
     cost: 180
     stats:
       attackInterval: 1.25
@@ -27,7 +27,7 @@ MonoBehaviour:
     statusEffects: []
   main2:
     upgradeName: Level 2
-    description: Level Upgrade 2
+    description: Faster shots, longer reach
     cost: 50
     stats:
       attackInterval: -0.15
@@ -38,7 +38,7 @@ MonoBehaviour:
     statusEffects: []
   main3:
     upgradeName: Level 3
-    description: Level Upgrade 3
+    description: Quicker draw, sharper aim
     cost: 80
     stats:
       attackInterval: -0.2
@@ -49,7 +49,7 @@ MonoBehaviour:
     statusEffects: []
   main4:
     upgradeName: Level 4
-    description: Level Upgrade 4
+    description: Peak precision and speed!
     cost: 120
     stats:
       attackInterval: -0.2
@@ -60,7 +60,7 @@ MonoBehaviour:
     statusEffects: []
   subA:
     upgradeName: Eyesight
-    description: Shoots even further!
+    description: Eagle-eyed precision
     cost: 220
     stats:
       attackInterval: 0
@@ -70,8 +70,8 @@ MonoBehaviour:
       areaTargets: 0
     statusEffects: []
   subB:
-    upgradeName: Razor Sharp
-    description: Can hit more Enemy per shot.
+    upgradeName: Impale
+    description: Cuts through more foes
     cost: 500
     stats:
       attackInterval: 0

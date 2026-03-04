@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Lancer
   m_EditorClassIdentifier: Assembly-CSharp::TowerUpgradeData
   towerName: Lancer
-  description: Armed with a high-powerd long range gun
+  description: A deadly long-range gun
   main1:
     upgradeName: Level 1
-    description: Level Upgrade
+    description: Bolts rip through foes
     cost: 550
     stats:
       attackInterval: 2.5
@@ -27,7 +27,7 @@ MonoBehaviour:
     statusEffects: []
   main2:
     upgradeName: Level 2
-    description: Level Upgrade
+    description: Faster bolts, deeper pierce
     cost: 300
     stats:
       attackInterval: -0.2
@@ -38,7 +38,7 @@ MonoBehaviour:
     statusEffects: []
   main3:
     upgradeName: Level 3
-    description: Level Upgrade
+    description: Longer reach, more pierce
     cost: 600
     stats:
       attackInterval: -0.2
@@ -49,7 +49,7 @@ MonoBehaviour:
     statusEffects: []
   main4:
     upgradeName: Level 4
-    description: Level Upgrade
+    description: Unstoppable piercing power!
     cost: 1000
     stats:
       attackInterval: -0.2
@@ -59,8 +59,8 @@ MonoBehaviour:
       areaTargets: 0
     statusEffects: []
   subA:
-    upgradeName: Deadly Shot
-    description: One Shot, One Kill.
+    upgradeName: Annihilate
+    description: One shot, many kills!
     cost: 3000
     stats:
       attackInterval: 0
@@ -71,7 +71,7 @@ MonoBehaviour:
     statusEffects: []
   subB:
     upgradeName: Impact!
-    description: Grants stun effect
+    description: Hits so hard it stuns
     cost: 1200
     stats:
       attackInterval: 0

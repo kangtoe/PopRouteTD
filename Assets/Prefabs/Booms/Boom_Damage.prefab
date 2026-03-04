@@ -490,7 +490,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bomb
   bombName: Bomb
-  description: '"Explodes after a short fuse!"'
+  description: Explodes after a short fuse!
   cost: 50
   fuseTime: 3
   explosionRadius: 2.5

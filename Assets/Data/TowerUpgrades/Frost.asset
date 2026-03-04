@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Frost
   m_EditorClassIdentifier: Assembly-CSharp::TowerUpgradeData
   towerName: Frost
-  description: Attacks apply slow effect
+  description: Chills enemies to a crawl
   main1:
     upgradeName: Level 1
-    description: Level Upgrade
+    description: Chills enemies to a crawl
     cost: 225
     stats:
       attackInterval: 1
@@ -29,7 +29,7 @@ MonoBehaviour:
       duration: 8
   main2:
     upgradeName: Level 2
-    description: Level Upgrade
+    description: Deeper frost, longer chill
     cost: 120
     stats:
       attackInterval: -0.1
@@ -42,7 +42,7 @@ MonoBehaviour:
       duration: 4
   main3:
     upgradeName: Level 3
-    description: Level Upgrade
+    description: The cold only gets worse
     cost: 150
     stats:
       attackInterval: -0.1
@@ -55,7 +55,7 @@ MonoBehaviour:
       duration: 4
   main4:
     upgradeName: Level 4
-    description: Level Upgrade
+    description: A bone-chilling blizzard!
     cost: 210
     stats:
       attackInterval: -0.1
@@ -67,8 +67,8 @@ MonoBehaviour:
     - type: 2
       duration: 4
   subA:
-    upgradeName: Bigger Cold
-    description: Can slow 3 additional Enemies per shot
+    upgradeName: Permafrost
+    description: Freezes the whole crowd
     cost: 450
     stats:
       attackInterval: 0
@@ -78,8 +78,8 @@ MonoBehaviour:
       areaTargets: 3
     statusEffects: []
   subB:
-    upgradeName: Ice Storm
-    description: Shoots 3x as fast!
+    upgradeName: Blizzard
+    description: Shoots three times as fast
     cost: 1200
     stats:
       attackInterval: -0.066
