@@ -75,6 +75,7 @@ public static class GameConstants
 
     // Tower
     public const float SellRefundRate = 0.5f;
+    public const float RetargetInterval = 0.2f;
 
     // 보상
     public const int BaseLayerReward = 1;

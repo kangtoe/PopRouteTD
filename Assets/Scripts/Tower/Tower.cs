@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
-    private readonly float rotationSpeed = 360f;
+    private const float RotationSmoothTime = 0.12f;
 
     private StatusEffectType statusEffectType;
     private float effectDuration;
@@ -28,6 +28,9 @@ public class Tower : MonoBehaviour
     private bool initialized;
     private Enemy currentTarget;
     private float projectileSpeed;
+    private float retargetTimer;
+    private Vector3 lastAimPos;
+    private float angularVelocity;
 
     private int mainLevel = 1;
     private bool hasSubA;
@@ -348,20 +351,38 @@ public class Tower : MonoBehaviour
     {
         if (!initialized) return;
 
-        // 매 프레임 우선순위에 따라 최적 타겟 재평가
-        currentTarget = TargetSelector.SelectTarget(transform.position, currentStats.attackRange, Priority, enemyLayerMask);
+        // 현재 타겟이 무효하면 즉시 해제 및 재평가
+        if (currentTarget != null &&
+            (!currentTarget.gameObject.activeInHierarchy ||
+             Vector3.Distance(transform.position, currentTarget.transform.position) > currentStats.attackRange))
+        {
+            currentTarget = null;
+            retargetTimer = 0f;
+        }
+
+        // 일정 간격으로 타겟 재평가
+        retargetTimer -= Time.deltaTime;
+        if (retargetTimer <= 0f)
+        {
+            currentTarget = TargetSelector.SelectTarget(transform.position, currentStats.attackRange, Priority, enemyLayerMask);
+            retargetTimer = GameConstants.RetargetInterval;
+        }
 
         // 타겟을 향해 예측 위치로 회전 및 공격
         if (currentTarget != null)
         {
-            Vector3 aimPos = PredictTargetPosition(currentTarget);
-            LookAt(aimPos);
+            lastAimPos = PredictTargetPosition(currentTarget);
+            LookAt(lastAimPos);
 
-            if (attackTimer <= 0f && IsAimedAt(aimPos))
+            if (attackTimer <= 0f && IsAimedAt(lastAimPos))
             {
                 Attack();
                 attackTimer = currentStats.attackInterval;
             }
+        }
+        else if (lastAimPos != Vector3.zero)
+        {
+            LookAt(lastAimPos);
         }
 
         attackTimer = Mathf.Max(attackTimer - Time.deltaTime, 0f);
@@ -372,7 +393,7 @@ public class Tower : MonoBehaviour
         Vector2 dir = (targetPos - transform.position).normalized;
         float targetAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
         float currentAngle = body.eulerAngles.z;
-        float newAngle = Mathf.MoveTowardsAngle(currentAngle, targetAngle, rotationSpeed * Time.deltaTime);
+        float newAngle = Mathf.SmoothDampAngle(currentAngle, targetAngle, ref angularVelocity, RotationSmoothTime);
         body.rotation = Quaternion.Euler(0, 0, newAngle);
     }
 
@@ -385,41 +406,22 @@ public class Tower : MonoBehaviour
 
     private Vector3 PredictTargetPosition(Enemy target)
     {
-        Vector3 targetPos = target.transform.position;
-        Vector3 targetVel = target.Follower.Velocity;
+        if (projectileSpeed <= 0f)
+            return target.transform.position;
 
-        if (targetVel.sqrMagnitude < 0.001f)
-            return targetPos;
+        // 초기 추정: 직선 거리 기반 도달 시간
+        float dist = Vector3.Distance(transform.position, target.transform.position);
+        float t = dist / projectileSpeed;
 
-        Vector3 relPos = targetPos - transform.position;
-        float a = Vector3.Dot(targetVel, targetVel) - projectileSpeed * projectileSpeed;
-        float b = 2f * Vector3.Dot(relPos, targetVel);
-        float c = Vector3.Dot(relPos, relPos);
-
-        float t;
-        if (Mathf.Abs(a) < 0.001f)
+        // 2회 반복으로 경로 기반 예측 수렴
+        for (int i = 0; i < 2; i++)
         {
-            // 선형 해: bt + c = 0
-            if (Mathf.Abs(b) < 0.001f) return targetPos;
-            t = -c / b;
-            if (t < 0f) return targetPos;
-        }
-        else
-        {
-            float discriminant = b * b - 4f * a * c;
-            if (discriminant < 0f) return targetPos;
-
-            float sqrtD = Mathf.Sqrt(discriminant);
-            float t1 = (-b - sqrtD) / (2f * a);
-            float t2 = (-b + sqrtD) / (2f * a);
-
-            if (t1 > 0f && t2 > 0f) t = Mathf.Min(t1, t2);
-            else if (t1 > 0f) t = t1;
-            else if (t2 > 0f) t = t2;
-            else return targetPos;
+            Vector3 predicted = target.Follower.PredictPosition(t);
+            dist = Vector3.Distance(transform.position, predicted);
+            t = dist / projectileSpeed;
         }
 
-        return targetPos + targetVel * t;
+        return target.Follower.PredictPosition(t);
     }
 
     private void Attack()

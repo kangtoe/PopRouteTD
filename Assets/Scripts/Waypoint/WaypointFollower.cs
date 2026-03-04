@@ -129,6 +129,39 @@ public class WaypointFollower : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 현재 위치에서 time초 후 경로상 예측 위치를 반환합니다.
+    /// </summary>
+    public Vector3 PredictPosition(float time)
+    {
+        if (!IsActive || waypoints == null || currentIndex >= waypoints.Length - 1)
+            return transform.position;
+
+        float remainDist = speed * SpeedMultiplier * time;
+        Vector3 pos = transform.position;
+        int idx = currentIndex;
+
+        while (remainDist > 0f && idx < waypoints.Length - 1)
+        {
+            Vector3 next = waypoints[idx + 1];
+            float segDist = Vector3.Distance(pos, next);
+
+            if (segDist > remainDist)
+            {
+                pos += (next - pos).normalized * remainDist;
+                remainDist = 0f;
+            }
+            else
+            {
+                pos = next;
+                remainDist -= segDist;
+                idx++;
+            }
+        }
+
+        return pos;
+    }
+
     private float CalculateTotalLength()
     {
         float length = 0f;
