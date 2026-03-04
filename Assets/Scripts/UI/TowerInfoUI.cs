@@ -86,7 +86,7 @@ public class TowerInfoUI : MonoBehaviour
     {
         if (holdButton == null) return;
 
-        holdTimer += Time.deltaTime;
+        holdTimer += Time.unscaledDeltaTime;
         holdButton.SetHoldProgress(holdTimer / GameConstants.HoldDuration);
 
         if (holdTimer >= GameConstants.HoldDuration)
