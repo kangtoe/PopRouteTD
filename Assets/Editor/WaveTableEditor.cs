@@ -8,7 +8,9 @@ public class WaveTableEditor : Editor
     private SerializedProperty wavesProp;
     private ReorderableList waveList;
     private int expandedWave = -1;
+    private bool showChart = true;
     private static GUIStyle statsStyle;
+    private static GUIStyle miniRight, miniCenter;
 
     private static readonly string[] LayerShort =
         { "?", "R", "O", "Y", "G", "B", "I", "P" };
@@ -29,8 +31,114 @@ public class WaveTableEditor : Editor
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
+        DrawDifficultyChart();
+        EditorGUILayout.Space(4);
         waveList.DoLayoutList();
         serializedObject.ApplyModifiedProperties();
+    }
+
+    private void DrawDifficultyChart()
+    {
+        showChart = EditorGUILayout.Foldout(showChart, "난이도 차트", true);
+        if (!showChart) return;
+
+        int n = wavesProp.arraySize;
+        if (n == 0) return;
+
+        if (miniRight == null)
+        {
+            miniRight = new GUIStyle(EditorStyles.miniLabel)
+                { alignment = TextAnchor.MiddleRight };
+            miniCenter = new GUIStyle(EditorStyles.miniLabel)
+                { alignment = TextAnchor.UpperCenter };
+        }
+
+        // gather stats
+        int[] dmgs = new int[n];
+        float[] dps = new float[n];
+        int maxDmg = 1;
+        float maxDps = 1f;
+        for (int i = 0; i < n; i++)
+        {
+            var groups = wavesProp.GetArrayElementAtIndex(i)
+                .FindPropertyRelative("groups");
+            CalcWaveStats(groups, out int d, out _, out float t);
+            dmgs[i] = d;
+            dps[i] = t > 0 ? d / t : 0f;
+            if (d > maxDmg) maxDmg = d;
+            if (dps[i] > maxDps) maxDps = dps[i];
+        }
+
+        // layout
+        const float chartH = 130f, yLabelW = 50f, xLabelH = 14f, legendH = 14f;
+        Rect area = GUILayoutUtility.GetRect(0, legendH + chartH + xLabelH + 8,
+            GUILayout.ExpandWidth(true));
+        Rect chart = new Rect(area.x + yLabelW, area.y + legendH + 2,
+            area.width - yLabelW - 10, chartH);
+
+        // legend
+        float lx = chart.x;
+        EditorGUI.DrawRect(new Rect(lx, area.y + 3, 10, 8),
+            new Color(0.3f, 0.7f, 0.4f));
+        EditorGUI.LabelField(new Rect(lx + 12, area.y, 50, legendH),
+            "Total HP", EditorStyles.miniLabel);
+        lx += 70;
+        EditorGUI.DrawRect(new Rect(lx, area.y + 3, 10, 8),
+            new Color(1f, 0.55f, 0f));
+        EditorGUI.LabelField(new Rect(lx + 12, area.y, 30, legendH),
+            "DPS", EditorStyles.miniLabel);
+
+        // background
+        EditorGUI.DrawRect(chart, new Color(0.15f, 0.15f, 0.15f));
+
+        // Y grid + labels
+        for (int g = 1; g <= 4; g++)
+        {
+            float gy = chart.yMax - chart.height * g / 4f;
+            EditorGUI.DrawRect(new Rect(chart.x, gy, chart.width, 1),
+                new Color(0.3f, 0.3f, 0.3f, 0.5f));
+            EditorGUI.LabelField(
+                new Rect(area.x, gy - 7, yLabelW - 4, 14),
+                (maxDmg * g / 4).ToString(), miniRight);
+        }
+
+        // bars
+        float barW = chart.width / n;
+        for (int i = 0; i < n; i++)
+        {
+            float ratio = (float)dmgs[i] / maxDmg;
+            float barH = ratio * chart.height;
+            Color c = ratio < 0.5f
+                ? Color.Lerp(new Color(0.3f, 0.7f, 0.4f),
+                    new Color(0.9f, 0.8f, 0.2f), ratio * 2f)
+                : Color.Lerp(new Color(0.9f, 0.8f, 0.2f),
+                    new Color(0.9f, 0.25f, 0.2f), (ratio - 0.5f) * 2f);
+            EditorGUI.DrawRect(new Rect(
+                chart.x + i * barW + 1, chart.yMax - barH,
+                Mathf.Max(barW - 2, 1), barH), c);
+        }
+
+        // DPS line
+        Handles.color = new Color(1f, 0.55f, 0f, 0.9f);
+        var points = new Vector3[n];
+        for (int i = 0; i < n; i++)
+        {
+            points[i] = new Vector3(
+                chart.x + (i + 0.5f) * barW,
+                chart.yMax - (dps[i] / maxDps) * chart.height, 0);
+        }
+        Handles.DrawAAPolyLine(2.5f, points);
+
+        // X axis labels
+        float xLabelY = chart.yMax + 1;
+        int step = n <= 10 ? 1 : 5;
+        for (int i = 0; i < n; i++)
+        {
+            if (i > 0 && (i + 1) % step != 0 && i != n - 1) continue;
+            EditorGUI.LabelField(new Rect(
+                chart.x + (i + 0.5f) * barW - 12, xLabelY, 24, xLabelH),
+                (i + 1).ToString(), miniCenter);
+        }
     }
 
     private float GetWaveHeight(int index)
