@@ -114,12 +114,14 @@ public class InputManager : MonoBehaviour
     {
         bool placed = false;
 
-        if (!EventSystem.current.IsPointerOverGameObject())
+        if (IsBombDrag())
         {
-            if (IsBombDrag())
+            if (CanPlaceCommon(worldPos))
                 placed = PlaceBomb(worldPos);
-            else if (CanPlaceAt(worldPos))
-                placed = PlaceTower(worldPos);
+        }
+        else if (CanPlaceAt(worldPos))
+        {
+            placed = PlaceTower(worldPos);
         }
 
         isDragging = false;
@@ -161,13 +163,20 @@ public class InputManager : MonoBehaviour
 
     private bool CanPlaceAt(Vector2 pos)
     {
-        if (EventSystem.current.IsPointerOverGameObject()) return false;
-        if (!IsInsideScreen(pos)) return false;
+        if (!CanPlaceCommon(pos)) return false;
         if (IsOnPath(pos)) return false;
 
         var overlap = Physics2D.OverlapCircle(pos, towerRadius, towerLayerMask);
         if (overlap != null) return false;
 
+        return true;
+    }
+
+    /// <summary>타워·폭탄 공통 배치 조건 (UI 겹침, 화면 범위)</summary>
+    private bool CanPlaceCommon(Vector2 pos)
+    {
+        if (EventSystem.current.IsPointerOverGameObject()) return false;
+        if (!IsInsideScreen(pos)) return false;
         return true;
     }
 
@@ -276,7 +285,7 @@ public class InputManager : MonoBehaviour
         if (previewObj == null) return;
 
         previewObj.transform.position = (Vector3)worldPos;
-        bool canPlace = IsBombDrag() || CanPlaceAt(worldPos);
+        bool canPlace = IsBombDrag() ? CanPlaceCommon(worldPos) : CanPlaceAt(worldPos);
         Color tint = canPlace
             ? new Color(0.3f, 0.8f, 0.3f, 0.5f)
             : new Color(0.8f, 0.3f, 0.3f, 0.5f);
