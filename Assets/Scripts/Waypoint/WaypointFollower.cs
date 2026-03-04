@@ -33,7 +33,7 @@ public class WaypointFollower : MonoBehaviour
 
     public void Initialize(WaypointPath path, float moveSpeed)
     {
-        waypoints = path.GetWaypoints();
+        waypoints = path.GetSmoothedWaypoints();
         speed = moveSpeed;
         currentIndex = 0;
         distanceTraveled = 0f;
@@ -49,7 +49,7 @@ public class WaypointFollower : MonoBehaviour
 
     public void InitializeAtProgress(WaypointPath path, float moveSpeed, int waypointIndex, float fractionToNext)
     {
-        waypoints = path.GetWaypoints();
+        waypoints = path.GetSmoothedWaypoints();
         speed = moveSpeed;
         currentIndex = waypointIndex;
         IsActive = true;
@@ -60,6 +60,7 @@ public class WaypointFollower : MonoBehaviour
         if (waypointIndex < waypoints.Length - 1)
         {
             transform.position = Vector3.Lerp(waypoints[waypointIndex], waypoints[waypointIndex + 1], fractionToNext);
+            // 회전 없이 위치만 설정
         }
         else
         {

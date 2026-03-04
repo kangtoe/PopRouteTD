@@ -15,7 +15,6 @@ public class PathDirectionIndicator : MonoBehaviour
     [SerializeField] private Color arrowColor = new(1f, 1f, 1f, 0.85f);
     [SerializeField] private float flowSpeed = 2f;          // 흐르는 속도 (유닛/초)
     [SerializeField] private float fadeDuration = 0.5f;     // 전체 페이드 인/아웃 시간
-    [SerializeField] private float cornerRadius = 0.6f;     // 코너 베지어 반경 (0 = 꺾임 그대로)
 
     private static readonly int ColorPropID = Shader.PropertyToID("_Color");
 
@@ -79,7 +78,7 @@ public class PathDirectionIndicator : MonoBehaviour
 
     private void BuildArrows()
     {
-        waypoints = BuildSmoothedWaypoints(waypointPath.GetWaypoints());
+        waypoints = waypointPath.GetSmoothedWaypoints();
         if (waypoints.Length < 2) return;
 
         segmentLengths = new float[waypoints.Length - 1];
@@ -152,42 +151,6 @@ public class PathDirectionIndicator : MonoBehaviour
             rem -= segmentLengths[i];
         }
         pos = waypoints[^1];
-    }
-
-    /// <summary>
-    /// 각 코너를 2차 베지어 곡선으로 치환해 점이 코너 안쪽을 따라 돌게 합니다.
-    /// cornerRadius 만큼 코너 전후를 잘라 곡선 샘플로 채웁니다.
-    /// </summary>
-    private Vector3[] BuildSmoothedWaypoints(Vector3[] raw)
-    {
-        if (raw.Length < 3 || cornerRadius <= 0f) return raw;
-
-        const int bezierSamples = 10;
-        var result = new List<Vector3> { raw[0] };
-
-        for (int i = 1; i < raw.Length - 1; i++)
-        {
-            Vector3 dirIn  = (raw[i] - raw[i - 1]).normalized;
-            Vector3 dirOut = (raw[i + 1] - raw[i]).normalized;
-            float segIn    = Vector3.Distance(raw[i - 1], raw[i]);
-            float segOut   = Vector3.Distance(raw[i], raw[i + 1]);
-            float r        = Mathf.Min(cornerRadius, segIn * 0.49f, segOut * 0.49f);
-
-            Vector3 pBefore = raw[i] - dirIn  * r;
-            Vector3 pAfter  = raw[i] + dirOut * r;
-
-            result.Add(pBefore);
-            // 제어점 = 코너 꼭짓점, t=0이 pBefore, t=1이 pAfter
-            for (int j = 1; j <= bezierSamples; j++)
-            {
-                float t = (float)j / bezierSamples;
-                float mt = 1f - t;
-                result.Add(mt * mt * pBefore + 2f * mt * t * raw[i] + t * t * pAfter);
-            }
-        }
-
-        result.Add(raw[^1]);
-        return result.ToArray();
     }
 
     private Mesh BuildCircleMesh()

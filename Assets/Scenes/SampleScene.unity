@@ -2151,8 +2151,8 @@ GameObject:
   m_Component:
   - component: {fileID: 684390281}
   - component: {fileID: 684390280}
-  - component: {fileID: 684390282}
   - component: {fileID: 684390283}
+  - component: {fileID: 684390284}
   m_Layer: 0
   m_Name: WaypointPath
   m_TagString: Untagged
@@ -2174,6 +2174,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WaypointPath
   pathWidth: 1
   pathColor: {r: 0.3584906, g: 0.30598077, b: 0.25872198, a: 1}
+  cornerRadius: 1.2
 --- !u!4 &684390281
 Transform:
   m_ObjectHideFlags: 0
@@ -2199,7 +2200,24 @@ Transform:
   - {fileID: 55413221}
   m_Father: {fileID: 1758701832}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!120 &684390282
+--- !u!114 &684390283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 684390279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9772739277efa0d4dba15145668c411d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PathDirectionIndicator
+  arrowSpacing: 2.5
+  arrowSize: 0.2
+  arrowColor: {r: 1, g: 1, b: 1, a: 0.75}
+  flowSpeed: 2
+  fadeDuration: 0.1
+--- !u!120 &684390284
 LineRenderer:
   serializedVersion: 3
   m_ObjectHideFlags: 0
@@ -2301,7 +2319,7 @@ LineRenderer:
       m_NumAlphaKeys: 2
     numCornerVertices: 0
     numCapVertices: 0
-    alignment: 1
+    alignment: 0
     textureMode: 0
     textureScale: {x: 1, y: 1}
     shadowBias: 0.5
@@ -2309,24 +2327,6 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &684390283
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 684390279}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9772739277efa0d4dba15145668c411d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PathDirectionIndicator
-  arrowSpacing: 2.5
-  arrowSize: 0.2
-  arrowColor: {r: 1, g: 1, b: 1, a: 0.75}
-  flowSpeed: 2
-  fadeDuration: 0.1
-  cornerRadius: 0.6
 --- !u!1 &688885804
 GameObject:
   m_ObjectHideFlags: 0
