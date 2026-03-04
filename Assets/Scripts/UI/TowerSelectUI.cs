@@ -21,6 +21,7 @@ public class TowerSelectUI : MonoBehaviour
     private readonly List<(TowerButtonUI button, int cost, string label, Sprite icon, string desc)> bombButtons = new();
 
     private TowerButtonUI detailCard;
+    private TowerButtonUI draggingButton;
 
     private void Awake()
     {
@@ -34,6 +35,7 @@ public class TowerSelectUI : MonoBehaviour
         CreateButtons();
         Show();
         ResourceManager.Instance.OnGoldChanged += OnGoldChanged;
+        InputManager.Instance.OnDragEnded += ClearDraggingButton;
     }
 
     private void OnDestroy()
@@ -41,6 +43,8 @@ public class TowerSelectUI : MonoBehaviour
         if (Instance == this) Instance = null;
         if (ResourceManager.Instance != null)
             ResourceManager.Instance.OnGoldChanged -= OnGoldChanged;
+        if (InputManager.Instance != null)
+            InputManager.Instance.OnDragEnded -= ClearDraggingButton;
 
         if (detailCard != null) Destroy(detailCard.gameObject);
 
@@ -84,10 +88,16 @@ public class TowerSelectUI : MonoBehaviour
 
             // PointerDown으로 드래그 배치 시작
             var p = prefab;
+            var btn = tb;
             var btnObj = tb.gameObject;
             var trigger = btnObj.GetComponent<EventTrigger>() ?? btnObj.AddComponent<EventTrigger>();
             var entry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
-            entry.callback.AddListener(_ => InputManager.Instance.BeginDrag(p));
+            entry.callback.AddListener(_ =>
+            {
+                InputManager.Instance.BeginDrag(p);
+                if (InputManager.Instance.IsDragging)
+                    SetDraggingButton(btn);
+            });
             trigger.triggers.Add(entry);
 
             int idx = towerButtons.Count - 1;
@@ -116,10 +126,16 @@ public class TowerSelectUI : MonoBehaviour
             bombButtons.Add((tb, bomb.Cost, label, icon, desc));
 
             var p = prefab;
+            var btn = tb;
             var btnObj = tb.gameObject;
             var trigger = btnObj.GetComponent<EventTrigger>() ?? btnObj.AddComponent<EventTrigger>();
             var entry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
-            entry.callback.AddListener(_ => InputManager.Instance.BeginDrag(p));
+            entry.callback.AddListener(_ =>
+            {
+                InputManager.Instance.BeginDrag(p);
+                if (InputManager.Instance.IsDragging)
+                    SetDraggingButton(btn);
+            });
             trigger.triggers.Add(entry);
 
             int idx = bombButtons.Count - 1;
@@ -139,6 +155,24 @@ public class TowerSelectUI : MonoBehaviour
             button.SetAvailable(label, cost, icon: icon);
         foreach (var (button, cost, label, icon, _) in bombButtons)
             button.SetAvailable(label, cost, icon: icon);
+
+        if (draggingButton != null)
+            draggingButton.SetDragging(true);
+    }
+
+    private void SetDraggingButton(TowerButtonUI button)
+    {
+        draggingButton = button;
+        button.SetDragging(true);
+    }
+
+    private void ClearDraggingButton()
+    {
+        if (draggingButton != null)
+        {
+            draggingButton.SetDragging(false);
+            draggingButton = null;
+        }
     }
 
     private void EnsureDetailCard()

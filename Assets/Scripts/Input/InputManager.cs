@@ -19,6 +19,8 @@ public class InputManager : MonoBehaviour
     private GameObject previewObj;
     private SpriteRenderer[] previewRenderers;
 
+    public bool IsDragging => isDragging;
+
     public System.Action<Tower> OnTowerClicked;
     public System.Action OnEmptyClicked;
     public System.Action<GameObject> OnTowerPlaced;

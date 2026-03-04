@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
@@ -28,11 +29,8 @@ public class TowerInfoUI : MonoBehaviour
     private TowerButtonUI subAButton;
     private TowerButtonUI subBButton;
 
-    private enum PendingUpgrade { None, Main, SubA, SubB }
-
     private Tower selectedTower;
     private bool isPreview;
-    private PendingUpgrade pendingUpgrade;
     private Image[] priorityImages;
     private static readonly Color normalColor = new(0.3f, 0.3f, 0.4f);
     private static readonly Color activeColor = new(0.2f, 0.6f, 0.3f);
@@ -42,6 +40,12 @@ public class TowerInfoUI : MonoBehaviour
     private Sprite subBIcon;
 
     private TowerButtonUI detailCard;
+
+    // Hold-to-confirm
+    private const float HoldDuration = 0.5f;
+    private TowerButtonUI holdButton;
+    private float holdTimer;
+    private Action holdAction;
 
     private void Start()
     {
@@ -83,6 +87,21 @@ public class TowerInfoUI : MonoBehaviour
             ResourceManager.Instance.OnGoldChanged -= OnGoldChanged;
     }
 
+    private void Update()
+    {
+        if (holdButton == null) return;
+
+        holdTimer += Time.deltaTime;
+        holdButton.SetHoldProgress(holdTimer / HoldDuration);
+
+        if (holdTimer >= HoldDuration)
+        {
+            var action = holdAction;
+            ResetHold();
+            action?.Invoke();
+        }
+    }
+
     private void Show(Tower tower)
     {
         if (selectedTower != null) selectedTower.ShowRange(false);
@@ -98,6 +117,7 @@ public class TowerInfoUI : MonoBehaviour
     public void Hide()
     {
         isPreview = false;
+        ResetHold();
         HideDetailCard();
         ClearUpgradeButtons();
         CleanupIcons();
@@ -137,6 +157,7 @@ public class TowerInfoUI : MonoBehaviour
 
     private void UpdateDisplay()
     {
+        ResetHold();
         HideDetailCard();
         var tower = selectedTower;
 
@@ -178,37 +199,63 @@ public class TowerInfoUI : MonoBehaviour
         ClearUpgradeButtons();
 
         mainUpgradeButton = Instantiate(upgradeButtonPrefab, upgradeButtonParent);
-        mainUpgradeButton.Button.onClick.AddListener(OnUpgradeClicked);
-        AddHoverEvents(mainUpgradeButton, PendingUpgrade.Main);
+        AddUpgradeEvents(mainUpgradeButton, () =>
+        {
+            if (selectedTower != null && selectedTower.UpgradeMain())
+                UpdateDisplay();
+        });
+        AddHoverEvents(mainUpgradeButton, 0);
 
         var subA = selectedTower.GetSubAInfo();
         var subB = selectedTower.GetSubBInfo();
         if (subA != null && subB != null)
         {
             subAButton = Instantiate(upgradeButtonPrefab, upgradeButtonParent);
-            subAButton.Button.onClick.AddListener(() => OnSubClicked(UpgradeTrack.A));
-            AddHoverEvents(subAButton, PendingUpgrade.SubA);
+            AddUpgradeEvents(subAButton, () =>
+            {
+                if (selectedTower != null && selectedTower.SelectSub(UpgradeTrack.A))
+                    UpdateDisplay();
+            });
+            AddHoverEvents(subAButton, 1);
 
             subBButton = Instantiate(upgradeButtonPrefab, upgradeButtonParent);
-            subBButton.Button.onClick.AddListener(() => OnSubClicked(UpgradeTrack.B));
-            AddHoverEvents(subBButton, PendingUpgrade.SubB);
+            AddUpgradeEvents(subBButton, () =>
+            {
+                if (selectedTower != null && selectedTower.SelectSub(UpgradeTrack.B))
+                    UpdateDisplay();
+            });
+            AddHoverEvents(subBButton, 2);
         }
     }
 
-    private void AddHoverEvents(TowerButtonUI btn, PendingUpgrade type)
+    private void AddUpgradeEvents(TowerButtonUI btn, Action action)
     {
-        var trigger = btn.gameObject.AddComponent<EventTrigger>();
+        var trigger = btn.gameObject.GetComponent<EventTrigger>() ?? btn.gameObject.AddComponent<EventTrigger>();
+
+        var down = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
+        down.callback.AddListener(_ => StartHold(btn, action));
+        trigger.triggers.Add(down);
+
+        var up = new EventTrigger.Entry { eventID = EventTriggerType.PointerUp };
+        up.callback.AddListener(_ => ResetHold());
+        trigger.triggers.Add(up);
+    }
+
+    /// <param name="hoverIndex">0=Main, 1=SubA, 2=SubB</param>
+    private void AddHoverEvents(TowerButtonUI btn, int hoverIndex)
+    {
+        var trigger = btn.gameObject.GetComponent<EventTrigger>() ?? btn.gameObject.AddComponent<EventTrigger>();
 
         var enter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
-        enter.callback.AddListener(_ => OnButtonHover(type));
+        enter.callback.AddListener(_ => OnButtonHover(hoverIndex));
         trigger.triggers.Add(enter);
 
         var exit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
-        exit.callback.AddListener(_ => { if (pendingUpgrade == PendingUpgrade.None) HideDetailCard(); });
+        exit.callback.AddListener(_ => HideDetailCard());
         trigger.triggers.Add(exit);
     }
 
-    private void OnButtonHover(PendingUpgrade type)
+    private void OnButtonHover(int hoverIndex)
     {
         if (selectedTower == null) return;
 
@@ -216,9 +263,9 @@ public class TowerInfoUI : MonoBehaviour
         string desc;
         TowerButtonUI anchor;
 
-        switch (type)
+        switch (hoverIndex)
         {
-            case PendingUpgrade.Main:
+            case 0:
                 anchor = mainUpgradeButton;
                 var mainInfo = selectedTower.CanUpgradeMain
                     ? selectedTower.GetNextMainInfo()
@@ -227,14 +274,14 @@ public class TowerInfoUI : MonoBehaviour
                 label = mainInfo.upgradeName;
                 desc = mainInfo.description;
                 break;
-            case PendingUpgrade.SubA:
+            case 1:
                 anchor = subAButton;
                 var subAInfo = selectedTower.GetSubAInfo();
                 if (subAInfo == null) return;
                 label = subAInfo.upgradeName;
                 desc = subAInfo.description;
                 break;
-            case PendingUpgrade.SubB:
+            case 2:
                 anchor = subBButton;
                 var subBInfo = selectedTower.GetSubBInfo();
                 if (subBInfo == null) return;
@@ -250,20 +297,10 @@ public class TowerInfoUI : MonoBehaviour
 
     private void ClearUpgradeButtons()
     {
-        pendingUpgrade = PendingUpgrade.None;
+        ResetHold();
         if (mainUpgradeButton != null) { Destroy(mainUpgradeButton.gameObject); mainUpgradeButton = null; }
         if (subAButton != null) { Destroy(subAButton.gameObject); subAButton = null; }
         if (subBButton != null) { Destroy(subBButton.gameObject); subBButton = null; }
-    }
-
-    private void CancelPending()
-    {
-        if (pendingUpgrade == PendingUpgrade.None) return;
-        pendingUpgrade = PendingUpgrade.None;
-        HideDetailCard();
-        UpdateMainButton();
-        UpdateSubButtons();
-        UpdateDescription();
     }
 
     private void UpdateDescription()
@@ -271,13 +308,7 @@ public class TowerInfoUI : MonoBehaviour
         if (descriptionText == null) return;
         if (selectedTower == null) { descriptionText.text = ""; return; }
 
-        descriptionText.text = pendingUpgrade switch
-        {
-            PendingUpgrade.Main => selectedTower.GetNextMainInfo()?.description ?? "",
-            PendingUpgrade.SubA => selectedTower.GetSubAInfo()?.description ?? "",
-            PendingUpgrade.SubB => selectedTower.GetSubBInfo()?.description ?? "",
-            _ => selectedTower.UpgradeData != null ? selectedTower.UpgradeData.description : ""
-        };
+        descriptionText.text = selectedTower.UpgradeData != null ? selectedTower.UpgradeData.description : "";
     }
 
     private void UpdateMainButton()
@@ -294,10 +325,7 @@ public class TowerInfoUI : MonoBehaviour
         var nextInfo = selectedTower.GetNextMainInfo();
         if (nextInfo == null) return;
 
-        if (pendingUpgrade == PendingUpgrade.Main)
-            mainUpgradeButton.SetConfirm(nextInfo.upgradeName, nextInfo.cost, nextInfo.description, mainUpgradeIcon);
-        else
-            mainUpgradeButton.SetAvailable(nextInfo.upgradeName, nextInfo.cost, nextInfo.description, mainUpgradeIcon);
+        mainUpgradeButton.SetAvailable(nextInfo.upgradeName, nextInfo.cost, nextInfo.description, mainUpgradeIcon);
     }
 
     private void UpdateSubButtons()
@@ -314,67 +342,30 @@ public class TowerInfoUI : MonoBehaviour
 
         if (selectedTower.HasSubA)
             subAButton.SetSelected(subA.upgradeName, subA.description, subAIcon);
-        else if (pendingUpgrade == PendingUpgrade.SubA)
-            subAButton.SetConfirm(subA.upgradeName, subA.cost, subA.description, subAIcon);
         else
             subAButton.SetAvailable(subA.upgradeName, subA.cost, subA.description, subAIcon);
 
         if (selectedTower.HasSubB)
             subBButton.SetSelected(subB.upgradeName, subB.description, subBIcon);
-        else if (pendingUpgrade == PendingUpgrade.SubB)
-            subBButton.SetConfirm(subB.upgradeName, subB.cost, subB.description, subBIcon);
         else
             subBButton.SetAvailable(subB.upgradeName, subB.cost, subB.description, subBIcon);
     }
 
-    private void OnUpgradeClicked()
+    private void StartHold(TowerButtonUI btn, Action action)
     {
-        if (selectedTower == null) return;
-
-        if (pendingUpgrade == PendingUpgrade.Main)
-        {
-            if (selectedTower.UpgradeMain())
-                UpdateDisplay();
-        }
-        else
-        {
-            CancelPending();
-            pendingUpgrade = PendingUpgrade.Main;
-            var info = selectedTower.GetNextMainInfo();
-            if (info != null)
-            {
-                mainUpgradeButton.SetConfirm(info.upgradeName, info.cost, info.description, mainUpgradeIcon);
-                ShowDetailCard(mainUpgradeButton, info.upgradeName, info.description);
-            }
-            UpdateDescription();
-        }
+        if (!btn.Button.interactable) return;
+        holdButton = btn;
+        holdTimer = 0f;
+        holdAction = action;
     }
 
-    private void OnSubClicked(UpgradeTrack sub)
+    private void ResetHold()
     {
-        if (selectedTower == null) return;
-
-        var track = sub == UpgradeTrack.A ? PendingUpgrade.SubA : PendingUpgrade.SubB;
-
-        if (pendingUpgrade == track)
-        {
-            if (selectedTower.SelectSub(sub))
-                UpdateDisplay();
-        }
-        else
-        {
-            CancelPending();
-            pendingUpgrade = track;
-            var btn = sub == UpgradeTrack.A ? subAButton : subBButton;
-            var info = sub == UpgradeTrack.A ? selectedTower.GetSubAInfo() : selectedTower.GetSubBInfo();
-            var icon = sub == UpgradeTrack.A ? subAIcon : subBIcon;
-            if (info != null)
-            {
-                btn.SetConfirm(info.upgradeName, info.cost, info.description, icon);
-                ShowDetailCard(btn, info.upgradeName, info.description);
-            }
-            UpdateDescription();
-        }
+        if (holdButton != null)
+            holdButton.SetHoldProgress(0f);
+        holdButton = null;
+        holdTimer = 0f;
+        holdAction = null;
     }
 
     private void OnPriorityClicked(TargetPriority priority)

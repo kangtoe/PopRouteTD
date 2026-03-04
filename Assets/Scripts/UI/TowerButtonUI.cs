@@ -14,6 +14,7 @@ public class TowerButtonUI : MonoBehaviour
     private static readonly Color normalColor = new Color(0.3f, 0.3f, 0.4f);
     private static readonly Color lockedColor = new Color(0.5f, 0.5f, 0.5f);
     private static readonly Color confirmColor = new(0.2f, 0.6f, 0.3f);
+    private static readonly Color draggingColor = new(0.2f, 0.6f, 0.3f);
 
     public Button Button => button;
 
@@ -27,6 +28,7 @@ public class TowerButtonUI : MonoBehaviour
         button.interactable = ResourceManager.Instance.Gold >= cost;
         SetBackgroundColor(normalColor);
         SetMaxImageActive(false);
+        SetHoldProgress(0);
     }
 
     /// <summary>선택 완료 상태: 하이라이트, 비활성</summary>
@@ -39,6 +41,7 @@ public class TowerButtonUI : MonoBehaviour
         button.interactable = false;
         SetBackgroundColor(normalColor);
         SetMaxImageActive(true);
+        SetHoldProgress(0);
     }
 
     /// <summary>확인 대기 상태: 주황색, 한 번 더 클릭하면 실행</summary>
@@ -51,6 +54,7 @@ public class TowerButtonUI : MonoBehaviour
         button.interactable = true;
         SetBackgroundColor(confirmColor);
         SetMaxImageActive(false);
+        SetHoldProgress(0);
     }
 
     /// <summary>잠금 상태: 회색, 비활성</summary>
@@ -63,6 +67,7 @@ public class TowerButtonUI : MonoBehaviour
         button.interactable = false;
         SetBackgroundColor(lockedColor);
         SetMaxImageActive(false);
+        SetHoldProgress(0);
     }
 
     /// <summary>최대 레벨 도달</summary>
@@ -75,6 +80,7 @@ public class TowerButtonUI : MonoBehaviour
         button.interactable = false;
         SetBackgroundColor(normalColor);
         SetMaxImageActive(true);
+        SetHoldProgress(0);
     }
 
     private void SetLabel(string text)
@@ -105,6 +111,30 @@ public class TowerButtonUI : MonoBehaviour
     {
         if (backgroundImage != null)
             backgroundImage.color = color;
+    }
+
+    public void SetDragging(bool dragging)
+    {
+        SetBackgroundColor(dragging ? draggingColor : normalColor);
+    }
+
+    [SerializeField] private Image holdFillImage;
+
+    public void SetHoldProgress(float t)
+    {
+        if (holdFillImage == null) return;
+
+        if (t > 0f)
+        {
+            holdFillImage.color = confirmColor;
+            holdFillImage.fillAmount = Mathf.Clamp01(t);
+            holdFillImage.gameObject.SetActive(true);
+        }
+        else
+        {
+            holdFillImage.fillAmount = 0f;
+            holdFillImage.gameObject.SetActive(false);
+        }
     }
 
     private void SetMaxImageActive(bool active)
