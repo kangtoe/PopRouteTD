@@ -66,14 +66,25 @@ public class PathDirectionIndicator : MonoBehaviour
         UpdateTransforms();
     }
 
+    private bool hasShown;
+
     private void OnStateChanged(GameState state)
     {
-        bool show = state == GameState.Prepare;
-        flowing = show;
-
-        if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
-        if (gameObject.activeInHierarchy)
-            fadeCoroutine = StartCoroutine(FadeGlobal(show ? 1f : 0f));
+        if (state == GameState.Prepare && !hasShown)
+        {
+            flowing = true;
+            if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
+            if (gameObject.activeInHierarchy)
+                fadeCoroutine = StartCoroutine(FadeGlobal(1f));
+        }
+        else if (state != GameState.Prepare && flowing)
+        {
+            hasShown = true;
+            flowing = false;
+            if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
+            if (gameObject.activeInHierarchy)
+                fadeCoroutine = StartCoroutine(FadeGlobal(0f));
+        }
     }
 
     private void BuildArrows()
