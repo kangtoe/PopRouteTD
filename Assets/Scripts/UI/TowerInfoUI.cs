@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -40,6 +41,8 @@ public class TowerInfoUI : MonoBehaviour
     private Sprite subAIcon;
     private Sprite subBIcon;
 
+    private TowerButtonUI detailCard;
+
     private void Start()
     {
         priorityImages = new[]
@@ -67,6 +70,7 @@ public class TowerInfoUI : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (detailCard != null) Destroy(detailCard.gameObject);
         CleanupIcons();
         if (InputManager.Instance != null)
         {
@@ -94,6 +98,7 @@ public class TowerInfoUI : MonoBehaviour
     public void Hide()
     {
         isPreview = false;
+        HideDetailCard();
         ClearUpgradeButtons();
         CleanupIcons();
         if (selectedTower != null)
@@ -132,6 +137,7 @@ public class TowerInfoUI : MonoBehaviour
 
     private void UpdateDisplay()
     {
+        HideDetailCard();
         var tower = selectedTower;
 
         towerNameText.text = tower.TowerName;
@@ -173,6 +179,7 @@ public class TowerInfoUI : MonoBehaviour
 
         mainUpgradeButton = Instantiate(upgradeButtonPrefab, upgradeButtonParent);
         mainUpgradeButton.Button.onClick.AddListener(OnUpgradeClicked);
+        AddHoverEvents(mainUpgradeButton, PendingUpgrade.Main);
 
         var subA = selectedTower.GetSubAInfo();
         var subB = selectedTower.GetSubBInfo();
@@ -180,10 +187,65 @@ public class TowerInfoUI : MonoBehaviour
         {
             subAButton = Instantiate(upgradeButtonPrefab, upgradeButtonParent);
             subAButton.Button.onClick.AddListener(() => OnSubClicked(UpgradeTrack.A));
+            AddHoverEvents(subAButton, PendingUpgrade.SubA);
 
             subBButton = Instantiate(upgradeButtonPrefab, upgradeButtonParent);
             subBButton.Button.onClick.AddListener(() => OnSubClicked(UpgradeTrack.B));
+            AddHoverEvents(subBButton, PendingUpgrade.SubB);
         }
+    }
+
+    private void AddHoverEvents(TowerButtonUI btn, PendingUpgrade type)
+    {
+        var trigger = btn.gameObject.AddComponent<EventTrigger>();
+
+        var enter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+        enter.callback.AddListener(_ => OnButtonHover(type));
+        trigger.triggers.Add(enter);
+
+        var exit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+        exit.callback.AddListener(_ => { if (pendingUpgrade == PendingUpgrade.None) HideDetailCard(); });
+        trigger.triggers.Add(exit);
+    }
+
+    private void OnButtonHover(PendingUpgrade type)
+    {
+        if (selectedTower == null) return;
+
+        string label;
+        string desc;
+        TowerButtonUI anchor;
+
+        switch (type)
+        {
+            case PendingUpgrade.Main:
+                anchor = mainUpgradeButton;
+                var mainInfo = selectedTower.CanUpgradeMain
+                    ? selectedTower.GetNextMainInfo()
+                    : selectedTower.GetCurrentMainInfo();
+                if (mainInfo == null) return;
+                label = mainInfo.upgradeName;
+                desc = mainInfo.description;
+                break;
+            case PendingUpgrade.SubA:
+                anchor = subAButton;
+                var subAInfo = selectedTower.GetSubAInfo();
+                if (subAInfo == null) return;
+                label = subAInfo.upgradeName;
+                desc = subAInfo.description;
+                break;
+            case PendingUpgrade.SubB:
+                anchor = subBButton;
+                var subBInfo = selectedTower.GetSubBInfo();
+                if (subBInfo == null) return;
+                label = subBInfo.upgradeName;
+                desc = subBInfo.description;
+                break;
+            default:
+                return;
+        }
+
+        ShowDetailCard(anchor, label, desc);
     }
 
     private void ClearUpgradeButtons()
@@ -198,6 +260,7 @@ public class TowerInfoUI : MonoBehaviour
     {
         if (pendingUpgrade == PendingUpgrade.None) return;
         pendingUpgrade = PendingUpgrade.None;
+        HideDetailCard();
         UpdateMainButton();
         UpdateSubButtons();
         UpdateDescription();
@@ -279,7 +342,10 @@ public class TowerInfoUI : MonoBehaviour
             pendingUpgrade = PendingUpgrade.Main;
             var info = selectedTower.GetNextMainInfo();
             if (info != null)
+            {
                 mainUpgradeButton.SetConfirm(info.upgradeName, info.cost, info.description, mainUpgradeIcon);
+                ShowDetailCard(mainUpgradeButton, info.upgradeName, info.description);
+            }
             UpdateDescription();
         }
     }
@@ -303,7 +369,10 @@ public class TowerInfoUI : MonoBehaviour
             var info = sub == UpgradeTrack.A ? selectedTower.GetSubAInfo() : selectedTower.GetSubBInfo();
             var icon = sub == UpgradeTrack.A ? subAIcon : subBIcon;
             if (info != null)
+            {
                 btn.SetConfirm(info.upgradeName, info.cost, info.description, icon);
+                ShowDetailCard(btn, info.upgradeName, info.description);
+            }
             UpdateDescription();
         }
     }
@@ -366,5 +435,26 @@ public class TowerInfoUI : MonoBehaviour
         lastButton.gameObject.SetActive(visible);
         closeButton.gameObject.SetActive(visible);
         strongButton.gameObject.SetActive(visible);
+    }
+
+    private void EnsureDetailCard()
+    {
+        if (detailCard == null)
+            detailCard = DetailCardHelper.Create(upgradeButtonPrefab, panel.transform);
+    }
+
+    private void ShowDetailCard(TowerButtonUI anchor, string label, string desc)
+    {
+        EnsureDetailCard();
+        DetailCardHelper.Show(detailCard, label, desc);
+        DetailCardHelper.PositionLeftOf(
+            detailCard.GetComponent<RectTransform>(),
+            anchor.GetComponent<RectTransform>(),
+            panel.GetComponent<RectTransform>());
+    }
+
+    private void HideDetailCard()
+    {
+        DetailCardHelper.Hide(detailCard);
     }
 }

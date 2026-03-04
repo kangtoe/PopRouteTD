@@ -17,8 +17,10 @@ public class TowerSelectUI : MonoBehaviour
     [SerializeField] private TowerButtonUI towerButtonPrefab;
 
     private readonly List<Sprite> generatedIcons = new();
-    private readonly List<(TowerButtonUI button, int cost, string label, Sprite icon)> towerButtons = new();
-    private readonly List<(TowerButtonUI button, int cost, string label, Sprite icon)> bombButtons = new();
+    private readonly List<(TowerButtonUI button, int cost, string label, Sprite icon, string desc)> towerButtons = new();
+    private readonly List<(TowerButtonUI button, int cost, string label, Sprite icon, string desc)> bombButtons = new();
+
+    private TowerButtonUI detailCard;
 
     private void Awake()
     {
@@ -40,6 +42,8 @@ public class TowerSelectUI : MonoBehaviour
         if (ResourceManager.Instance != null)
             ResourceManager.Instance.OnGoldChanged -= OnGoldChanged;
 
+        if (detailCard != null) Destroy(detailCard.gameObject);
+
         foreach (var icon in generatedIcons)
         {
             if (icon == null) continue;
@@ -56,7 +60,11 @@ public class TowerSelectUI : MonoBehaviour
         if (bombNameText != null) bombNameText.text = "Bombs";
     }
 
-    public void Hide() => content.SetActive(false);
+    public void Hide()
+    {
+        HideDetailCard();
+        content.SetActive(false);
+    }
 
     private void CreateButtons()
     {
@@ -68,10 +76,11 @@ public class TowerSelectUI : MonoBehaviour
             var tb = Instantiate(towerButtonPrefab, buttonParent);
 
             string label = tower.TowerName;
+            string desc = tower.UpgradeData != null ? tower.UpgradeData.description : "";
             var icon = TowerIconGenerator.GenerateIcon(prefab);
             generatedIcons.Add(icon);
             tb.SetAvailable(label, tower.Cost, icon: icon);
-            towerButtons.Add((tb, tower.Cost, label, icon));
+            towerButtons.Add((tb, tower.Cost, label, icon, desc));
 
             // PointerDown으로 드래그 배치 시작
             var p = prefab;
@@ -80,6 +89,15 @@ public class TowerSelectUI : MonoBehaviour
             var entry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
             entry.callback.AddListener(_ => InputManager.Instance.BeginDrag(p));
             trigger.triggers.Add(entry);
+
+            int idx = towerButtons.Count - 1;
+            var enterEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+            enterEntry.callback.AddListener(_ => ShowTowerDetailCard(idx));
+            trigger.triggers.Add(enterEntry);
+
+            var exitEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+            exitEntry.callback.AddListener(_ => HideDetailCard());
+            trigger.triggers.Add(exitEntry);
         }
 
         var bombParent = bombButtonParent != null ? bombButtonParent : buttonParent;
@@ -91,10 +109,11 @@ public class TowerSelectUI : MonoBehaviour
             var tb = Instantiate(towerButtonPrefab, bombParent);
 
             string label = bomb.BombName;
+            string desc = bomb.Description;
             var icon = TowerIconGenerator.GenerateIcon(prefab);
             generatedIcons.Add(icon);
             tb.SetAvailable(label, bomb.Cost, icon: icon);
-            bombButtons.Add((tb, bomb.Cost, label, icon));
+            bombButtons.Add((tb, bomb.Cost, label, icon, desc));
 
             var p = prefab;
             var btnObj = tb.gameObject;
@@ -102,14 +121,60 @@ public class TowerSelectUI : MonoBehaviour
             var entry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
             entry.callback.AddListener(_ => InputManager.Instance.BeginDrag(p));
             trigger.triggers.Add(entry);
+
+            int idx = bombButtons.Count - 1;
+            var enterEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+            enterEntry.callback.AddListener(_ => ShowBombDetailCard(idx));
+            trigger.triggers.Add(enterEntry);
+
+            var exitEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+            exitEntry.callback.AddListener(_ => HideDetailCard());
+            trigger.triggers.Add(exitEntry);
         }
     }
 
     private void OnGoldChanged(int _)
     {
-        foreach (var (button, cost, label, icon) in towerButtons)
+        foreach (var (button, cost, label, icon, _) in towerButtons)
             button.SetAvailable(label, cost, icon: icon);
-        foreach (var (button, cost, label, icon) in bombButtons)
+        foreach (var (button, cost, label, icon, _) in bombButtons)
             button.SetAvailable(label, cost, icon: icon);
+    }
+
+    private void EnsureDetailCard()
+    {
+        if (detailCard == null)
+            detailCard = DetailCardHelper.Create(towerButtonPrefab, content.transform);
+    }
+
+    private void ShowTowerDetailCard(int index)
+    {
+        if (index < 0 || index >= towerButtons.Count) return;
+        var (button, _, label, _, desc) = towerButtons[index];
+        if (string.IsNullOrEmpty(desc)) return;
+        EnsureDetailCard();
+        DetailCardHelper.Show(detailCard, label, desc);
+        DetailCardHelper.PositionLeftOf(
+            detailCard.GetComponent<RectTransform>(),
+            button.GetComponent<RectTransform>(),
+            content.GetComponent<RectTransform>());
+    }
+
+    private void ShowBombDetailCard(int index)
+    {
+        if (index < 0 || index >= bombButtons.Count) return;
+        var (button, _, label, _, desc) = bombButtons[index];
+        if (string.IsNullOrEmpty(desc)) return;
+        EnsureDetailCard();
+        DetailCardHelper.Show(detailCard, label, desc);
+        DetailCardHelper.PositionLeftOf(
+            detailCard.GetComponent<RectTransform>(),
+            button.GetComponent<RectTransform>(),
+            content.GetComponent<RectTransform>());
+    }
+
+    private void HideDetailCard()
+    {
+        DetailCardHelper.Hide(detailCard);
     }
 }

@@ -5,6 +5,7 @@ public class Bomb : MonoBehaviour
 {
     [Header("Info")]
     [SerializeField] private string bombName = "Bomb";
+    [TextArea] [SerializeField] private string description = "";
     [SerializeField] private int cost = 50;
 
     [Header("Stats")]
@@ -20,6 +21,7 @@ public class Bomb : MonoBehaviour
     [SerializeField] private SpriteRenderer rangeIndicator;
 
     public string BombName => bombName;
+    public string Description => description;
     public int Cost => cost;
     public float ExplosionRadius => explosionRadius;
     public float RenderOffsetY => renderOffsetY;
