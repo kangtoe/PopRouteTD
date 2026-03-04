@@ -47,11 +47,11 @@ TagManager:
   - name: Path
     uniqueID: 1
     locked: 0
-  - name: Tower
-    uniqueID: 2
-    locked: 0
   - name: Enemy
     uniqueID: 3
+    locked: 0
+  - name: Tower
+    uniqueID: 2
     locked: 0
   - name: Projectile
     uniqueID: 4
